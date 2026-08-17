@@ -5,121 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Universaless</title>
     <style>
-        :root {
-            --bg-color: #0f1014;
-            --card-bg: #1a1c23;
-            --accent-color: #e50914;
-            --text-color: #ffffff;
-            --text-secondary: #b3b3b3;
-        }
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .login-card {
-            background-color: var(--card-bg);
-            padding: 40px;
-            border-radius: 8px;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-        }
-        .logo {
-            font-size: 28px;
-            font-weight: bold;
-            color: var(--accent-color);
-            text-align: center;
-            margin-bottom: 30px;
-            letter-spacing: 1px;
-        }
-        .input-group {
-            margin-bottom: 20px;
-        }
-        .input-group label {
-            display: block;
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-        }
-        .input-group input {
-            width: 100%;
-            padding: 12px 15px;
-            background: #222;
-            border: 1px solid #333;
-            border-radius: 4px;
-            color: #fff;
-            outline: none;
-            font-size: 16px;
-        }
-        .input-group input:focus {
-            border-color: var(--accent-color);
-        }
-        .login-btn {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 10px;
-        }
-        .login-btn:hover {
-            opacity: 0.9;
-        }
-        .footer-text {
-            text-align: center;
-            margin-top: 25px;
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
-        .footer-text a {
-            color: var(--accent-color);
-            text-decoration: none;
-            font-weight: bold;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background-color: #0b0c10; color: #ffffff; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .login-box { background: #161b22; padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; border: 1px solid #30363d; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
+        h2 { color: #22c55e; text-align: center; margin-bottom: 20px; font-weight: 900; letter-spacing: 1px; }
+        input { width: 100%; padding: 12px; margin-bottom: 15px; background: #0b0c10; border: 1px solid #374151; color: white; border-radius: 8px; outline: none; font-size: 14px; }
+        button { width: 100%; background: #22c55e; color: black; border: none; padding: 12px; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 15px; }
+        button:hover { background: #16a34a; }
+        .footer-links { text-align: center; margin-top: 15px; font-size: 13px; }
+        .footer-links a { color: #f87171; text-decoration: none; }
     </style>
 </head>
 <body>
-
-    <div class="login-card">
-        <div class="logo">UNIVERSALESS</div>
-        <form onsubmit="handleLogin(event)">
-            <div class="input-group">
-                <label for="email">Email or Username</label>
-                <input type="text" id="email" required placeholder="Enter your email">
-            </div>
-            <div class="input-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" required placeholder="Enter your password">
-            </div>
-            <button type="submit" class="login-btn">Sign In</button>
-        </form>
-        <div class="footer-text">
+    <div class="login-box">
+        <h2>UNIVERSALESS</h2>
+        <input type="text" id="loginEmail" placeholder="Email or Username" required>
+        <input type="password" id="loginPassword" placeholder="Password" required>
+        <button onclick="handleLogin()">Sign In</button>
+        <div class="footer-links">
             <p>New to Universaless? <a href="https://instagram.com/vscode.hustler" target="_blank">Follow on IG</a></p>
-            <p style="margin-top: 10px;"><a href="index.html">&larr; Back to Home</a></p>
+            <p style="margin-top: 8px;"><a href="./index.html">← Back to Home</a></p>
         </div>
     </div>
 
     <script>
-        function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            alert(`Welcome back, ${email}! (Login simulated successfully)`);
-            window.location.href = 'index.html';
+        function handleLogin() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const pass = document.getElementById('loginPassword').value.trim();
+            if(!email || !pass) {
+                alert('Please enter email and password.');
+                return;
+            }
+            // Save session data safely
+            localStorage.setItem('universaless_user', email);
+            
+            // Immediate redirect using absolute/relative path fix
+            window.location.href = './index.html';
         }
     </script>
 </body>
