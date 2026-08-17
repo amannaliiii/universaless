@@ -3,222 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Universaless - Premium OTT & Music</title>
+    <title>Universaless App</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #0b0c10; color: #ffffff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
+        body { background-color: #0b0c10; color: #fff; font-family: 'Segoe UI', sans-serif; padding-top: 60px; padding-bottom: 70px; overflow-x: hidden; }
+
+        .app-bar { position: fixed; top: 0; left: 0; width: 100%; height: 60px; background: #14151a; display: flex; justify-content: space-between; align-items: center; padding: 0 15px; z-index: 100; border-bottom: 1px solid #1f2833; }
+        .app-logo { color: #22c55e; font-size: 20px; font-weight: 900; letter-spacing: 1px; }
+        .search-btn { background: #1f2833; border: none; color: white; padding: 8px 12px; border-radius: 8px; font-size: 14px; cursor: pointer; }
+
+        .container { padding: 10px; }
+        .section-title { font-size: 18px; font-weight: bold; margin: 10px 0 15px 5px; color: #f3f4f6; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .card { background: #161b22; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.5); cursor: pointer; }
+        .card img { width: 100%; height: 200px; object-fit: cover; }
+        .card h3 { font-size: 12px; padding: 8px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #e5e7eb; }
+
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; background: #14151a; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #1f2833; z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #9ca3af; font-size: 11px; font-weight: 600; cursor: pointer; }
+        .nav-item.active { color: #22c55e; }
+        .nav-item span { font-size: 20px; margin-bottom: 3px; }
+
+        #player { display: none; position: fixed; inset: 0; background: #000; z-index: 999; flex-direction: column; justify-content: center; }
+        .close-btn { position: absolute; top: 15px; right: 15px; background: rgba(255,0,0,0.8); color: white; border: none; padding: 8px 15px; border-radius: 20px; font-weight: bold; z-index: 1000; cursor: pointer; }
+        iframe { width: 100%; height: 100vh; border: none; }
         
-        /* Mobile Friendly Header */
-        header { background: #14151a; padding: 12px 15px; display: flex; flex-direction: column; gap: 12px; border-bottom: 1px solid #1f2833; position: sticky; top: 0; z-index: 100; }
-        .nav-top-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-        h1 { color: #22c55e; font-size: 20px; font-weight: 900; letter-spacing: 1px; }
-        
-        .nav-links { display: flex; gap: 6px; overflow-x: auto; width: 100%; padding-bottom: 4px; scrollbar-width: none; }
-        .nav-links::-webkit-scrollbar { display: none; }
-        .nav-link { background: #1f2833; color: white; border: none; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: 0.2s; }
-        .nav-link:hover, .nav-link.active { background: #22c55e; color: black; }
-        
-        .search-container { display: flex; gap: 6px; align-items: center; background: #1f2833; padding: 6px 12px; border-radius: 20px; border: 1px solid #374151; width: 100%; }
-        .search-container input { background: transparent; border: none; color: white; outline: none; font-size: 14px; width: 100%; }
-        .search-container button { background: #22c55e; border: none; color: black; padding: 6px 12px; border-radius: 14px; cursor: pointer; font-weight: bold; font-size: 12px; }
-
-        /* Hero Banner */
-        .hero { position: relative; height: 280px; background: linear-gradient(to top, #0b0c10, rgba(11,12,16,0.2)), url('https://image.tmdb.org/t/p/original/gKkl37BQuKTanygYQG1pyYgLVgf.jpg') center/cover no-repeat; display: flex; align-items: flex-end; padding: 20px; }
-        .hero-content { max-width: 100%; z-index: 2; }
-        .hero-title { font-size: 24px; font-weight: 800; margin-bottom: 6px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
-        .hero-desc { font-size: 13px; color: #d1d5db; margin-bottom: 12px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .btn-play { background: #ffffff; color: black; border: none; padding: 8px 18px; border-radius: 6px; font-weight: bold; font-size: 13px; cursor: pointer; }
-
-        /* Catalog Grid - Mobile Optimized */
-        .container { max-width: 1300px; margin: 15px auto; padding: 0 12px; flex: 1; width: 100%; }
-        .section-title { font-size: 17px; font-weight: 700; margin-bottom: 15px; border-left: 4px solid #22c55e; padding-left: 8px; color: #f3f4f6; }
-        .movie-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        @media(min-width: 600px) {
-            .movie-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
-            header { flex-direction: row; justify-content: space-between; padding: 15px 30px; }
-            .nav-links { width: auto; overflow: visible; }
-            .search-container { width: 220px; }
-            .hero { height: 400px; padding: 40px 30px; }
-            .hero-title { font-size: 34px; }
-        }
-
-        .movie-card { background: #161b22; border-radius: 8px; overflow: hidden; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
-        .movie-card img { width: 100%; height: 200px; object-fit: cover; background: #222; }
-        @media(min-width: 600px) { .movie-card img { height: 230px; } }
-        .movie-info { padding: 10px; text-align: center; }
-        .movie-card h3 { font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #f3f4f6; }
-
-        footer { background: #14151a; text-align: center; padding: 20px 15px; border-top: 1px solid #1f2833; margin-top: 30px; color: #9ca3af; font-size: 13px; }
-        footer a { color: #22c55e; text-decoration: none; font-weight: bold; }
-
-        /* Modals */
-        #playerModal, #feedbackModal { position: fixed; inset: 0; background: rgba(0,0,0,0.96); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 10px; }
-        #playerModal.active, #feedbackModal.active { display: flex; }
-        .close-btn { position: absolute; top: 15px; right: 15px; background: #dc2626; color: white; border: none; padding: 8px 16px; font-weight: bold; border-radius: 6px; cursor: pointer; z-index: 1010; font-size: 12px; }
-        iframe { width: 100%; max-width: 950px; aspect-ratio: 16/9; border: none; border-radius: 8px; }
-
-        .feedback-box { background: #161b22; padding: 20px; border-radius: 12px; width: 100%; max-width: 400px; border: 1px solid #30363d; }
-        .feedback-box h3 { margin-bottom: 15px; color: #22c55e; font-size: 18px; text-align: center; }
-        .feedback-box input, .feedback-box textarea { width: 100%; padding: 10px; margin-bottom: 12px; background: #0b0c10; border: 1px solid #374151; color: white; border-radius: 8px; outline: none; font-size: 13px; }
-        .feedback-box button { width: 100%; background: #22c55e; color: black; border: none; padding: 10px; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 14px; }
+        .error-msg { grid-column: 1/-1; text-align: center; padding: 20px; background: #1f2833; border-radius: 10px; border: 1px solid red; }
     </style>
 </head>
 <body>
-    <header>
-        <div class="nav-top-row">
-            <h1>UNIVERSALESS</h1>
-            <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Search..." onkeypress="handleSearchKey(event)">
-                <button onclick="performSearch()">🔍</button>
-            </div>
-        </div>
-        <div class="nav-links">
-            <button class="nav-link active" onclick="switchTab('all', this)">Home</button>
-            <button class="nav-link" onclick="switchTab('hindi', this)">Hindi</button>
-            <button class="nav-link" onclick="switchTab('hollywood', this)">Hollywood</button>
-            <button class="nav-link" onclick="switchTab('music', this)">🎵 Music</button>
-            <button class="nav-link" onclick="openFeedbackModal()" style="background: #1e3a8a; color: #93c5fd;">💬 Feedback</button>
-        </div>
-    </header>
 
-    <div class="hero" id="heroBanner">
-        <div class="hero-content">
-            <h2 class="hero-title">Universaless Live OTT</h2>
-            <p class="hero-desc">Massive streaming catalog powered by TMDB API.</p>
-            <button class="btn-play" onclick="playItem(933131)">▶ Play Animal</button>
-        </div>
+    <div class="app-bar">
+        <div class="app-logo">UNIVERSALESS</div>
+        <button class="search-btn" onclick="openSearch()">🔍 Search</button>
     </div>
 
     <div class="container">
-        <h2 id="sectionTitle" class="section-title">Trending Catalog</h2>
-        <div id="catalogGrid" class="movie-grid"></div>
+        <h2 class="section-title" id="pageTitle">Trending Now</h2>
+        <div class="grid" id="movieGrid"></div>
     </div>
 
-    <footer>
-        <p>&copy; 2026 Universaless. All rights reserved.</p>
-        <p style="margin-top: 6px;">Instagram: <a href="https://instagram.com/vscode.hustler" target="_blank">@vscode.hustler</a> 🔥</p>
-    </footer>
-
-    <div id="playerModal">
-        <button class="close-btn" onclick="closePlayer()">Close ✕</button>
-        <iframe id="videoIframe" src="" allowfullscreen></iframe>
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="loadTab('popular', this, 'Trending Now')"><span>🏠</span>Home</div>
+        <div class="nav-item" onclick="loadTab('hi', this, 'Hindi Movies')"><span>🇮🇳</span>Hindi</div>
+        <div class="nav-item" onclick="loadTab('en', this, 'Hollywood')"><span>🇺🇸</span>Movies</div>
+        <div class="nav-item" onclick="loadMusic(this)"><span>🎵</span>Music</div>
     </div>
 
-    <div id="feedbackModal">
-        <button class="close-btn" onclick="closeFeedbackModal()">Close ✕</button>
-        <div class="feedback-box">
-            <h3>Send Your Feedback</h3>
-            <input type="text" id="fbName" placeholder="Your Name">
-            <textarea id="fbMsg" rows="3" placeholder="Write feedback..."></textarea>
-            <button onclick="submitFeedback()">Submit</button>
-        </div>
+    <div id="player">
+        <button class="close-btn" onclick="closePlayer()">✕ Close</button>
+        <iframe id="vidFrame" src="" allowfullscreen></iframe>
     </div>
 
     <script>
         const apiKey = '4150581ccf3ec551c12884bbf92d041d';
-        const imageBase = 'https://image.tmdb.org/t/p/w500';
+        const proxyBase = 'https://gentle-rice-b132.adnanal8466.workers.dev';
 
-        async function loadHome() {
-            document.getElementById('heroBanner').style.display = 'flex';
-            document.getElementById('sectionTitle').innerText = "Trending Catalog";
+        async function fetchMovies(url) {
+            const grid = document.getElementById('movieGrid');
+            grid.innerHTML = '<p style="color:#22c55e; text-align:center; grid-column:1/-1; font-size:16px;">Movies Data Fetching... ⏳</p>';
+            
             try {
-                const res = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&page=1`);
+                const res = await fetch(url);
+                if (!res.ok) throw new Error(`Server Error Code: ${res.status}`);
+                
                 const data = await res.json();
-                renderCatalog(data.results);
-            } catch (error) { console.error("API Error:", error); }
-        }
-
-        async function loadHindi() {
-            document.getElementById('heroBanner').style.display = 'none';
-            document.getElementById('sectionTitle').innerText = "Hindi Movies";
-            try {
-                const res = await fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_original_language=hi&page=1`);
-                const data = await res.json();
-                renderCatalog(data.results);
-            } catch (error) { console.error("API Error:", error); }
-        }
-
-        async function loadHollywood() {
-            document.getElementById('heroBanner').style.display = 'none';
-            document.getElementById('sectionTitle').innerText = "Hollywood Movies";
-            try {
-                const res = await fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_original_language=en&page=1`);
-                const data = await res.json();
-                renderCatalog(data.results);
-            } catch (error) { console.error("API Error:", error); }
-        }
-
-        function loadMusic() {
-            document.getElementById('heroBanner').style.display = 'none';
-            document.getElementById('sectionTitle').innerText = "My Music Playlist";
-            const grid = document.getElementById('catalogGrid');
-            grid.innerHTML = `<div style="grid-column: 1/-1; width: 100%; display: flex; justify-content: center;"><iframe src="https://www.youtube.com/embed/videoseries?list=RDsZLEuUDx1eA" style="width:100%; aspect-ratio:16/9; border-radius:8px;" allowfullscreen></iframe></div>`;
-        }
-
-        async function performSearch() {
-            const query = document.getElementById('searchInput').value.trim();
-            if(!query) { loadHome(); return; }
-            document.getElementById('heroBanner').style.display = 'none';
-            try {
-                const res = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(query)}`);
-                const data = await res.json();
-                document.getElementById('sectionTitle').innerText = `Search: "${query}"`;
-                renderCatalog(data.results);
-            } catch (err) { console.error("Search Error:", err); }
-        }
-
-        function renderCatalog(movies) {
-            const grid = document.getElementById('catalogGrid');
-            grid.innerHTML = '';
-            if(!movies || movies.length === 0) {
-                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #f87171; padding: 20px;">No movies found.</p>';
-                return;
+                if(data.results && data.results.length > 0) {
+                    render(data.results);
+                } else {
+                    grid.innerHTML = '<p style="color:red; text-align:center; grid-column:1/-1;">Koi movie nahi mili.</p>';
+                }
+            } catch (e) {
+                console.error(e);
+                grid.innerHTML = `
+                    <div class="error-msg">
+                        <h3 style="color:red; margin-bottom:10px;">⚠️ Connection Error!</h3>
+                        <p style="font-size:12px; color:#e5e7eb; margin-bottom:5px;">${e.message}</p>
+                        <p style="font-size:12px; color:#9ca3af;">Please check your internet connection.</p>
+                    </div>`;
             }
-            movies.forEach(movie => {
-                if(!movie.poster_path) return;
-                const posterUrl = imageBase + movie.poster_path;
-                const title = movie.title || movie.name || "Unknown";
+        }
+
+        function render(movies) {
+            const grid = document.getElementById('movieGrid');
+            grid.innerHTML = '';
+            movies.forEach(m => {
+                if(!m.poster_path) return;
                 grid.innerHTML += `
-                    <div class="movie-card" onclick="playItem(${movie.id})">
-                        <img src="${posterUrl}" alt="${title}">
-                        <div class="movie-info"><h3>${title}</h3></div>
+                    <div class="card" onclick="play(${m.id})">
+                        <img src="https://image.tmdb.org/t/p/w500${m.poster_path}" alt="${m.title}">
+                        <h3>${m.title}</h3>
                     </div>`;
             });
         }
 
-        function playItem(id) {
-            document.getElementById('videoIframe').src = `https://vidsrc.to/embed/movie/${id}`;
-            document.getElementById('playerModal').classList.add('active');
+        function loadTab(type, el, title) {
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
+            document.getElementById('pageTitle').innerText = title;
+            
+            let url = `${proxyBase}/3/movie/popular?api_key=${apiKey}`;
+            if(type === 'hi') url = `${proxyBase}/3/discover/movie?api_key=${apiKey}&with_original_language=hi`;
+            if(type === 'en') url = `${proxyBase}/3/discover/movie?api_key=${apiKey}&with_original_language=en`;
+            fetchMovies(url);
         }
 
-        function switchTab(cat, btnElement) {
-            document.querySelectorAll('.nav-link').forEach(btn => btn.classList.remove('active'));
-            if(btnElement) btnElement.classList.add('active');
-            if(cat === 'all') loadHome();
-            else if(cat === 'hindi') loadHindi();
-            else if(cat === 'hollywood') loadHollywood();
-            else if(cat === 'music') loadMusic();
+        function loadMusic(el) {
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
+            document.getElementById('pageTitle').innerText = 'My Playlist';
+            document.getElementById('movieGrid').innerHTML = `
+                <div style="grid-column: 1/-1;">
+                    <iframe src="https://www.youtube.com/embed/videoseries?list=RDsZLEuUDx1eA" style="width:100%; height:250px; border-radius:10px;" allowfullscreen></iframe>
+                </div>`;
         }
 
-        function handleSearchKey(event) { if(event.key === 'Enter') performSearch(); }
-        function closePlayer() { document.getElementById('videoIframe').src = ''; document.getElementById('playerModal').classList.remove('active'); }
-        function openFeedbackModal() { document.getElementById('feedbackModal').classList.add('active'); }
-        function closeFeedbackModal() { document.getElementById('feedbackModal').classList.remove('active'); }
-
-        function submitFeedback() {
-            const name = document.getElementById('fbName').value.trim();
-            const msg = document.getElementById('fbMsg').value.trim();
-            if(!name || !msg) { alert('Please fill in both fields.'); return; }
-            let feedbacks = JSON.parse(localStorage.getItem('universaless_feedbacks') || '[]');
-            feedbacks.push({ name, msg, date: new Date().toLocaleString() });
-            localStorage.setItem('universaless_feedbacks', JSON.stringify(feedbacks));
-            alert('Feedback submitted successfully!');
-            document.getElementById('fbName').value = '';
-            document.getElementById('fbMsg').value = '';
-            closeFeedbackModal();
+        async function openSearch() {
+            const q = prompt("Enter movie name:");
+            if(q) {
+                document.getElementById('pageTitle').innerText = `Search: ${q}`;
+                fetchMovies(`${proxyBase}/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(q)}`);
+            }
         }
 
-        loadHome();
+        function play(id) {
+            const videoUrl = `https://multiembed.mov/?video_id=${id}&tmdb=1`;
+            document.getElementById('vidFrame').src = videoUrl;
+            document.getElementById('player').style.display = 'flex';
+        }
+
+        function closePlayer() {
+            document.getElementById('vidFrame').src = '';
+            document.getElementById('player').style.display = 'none';
+        }
+
+        fetchMovies(`${proxyBase}/3/movie/popular?api_key=${apiKey}`);
     </script>
 </body>
 </html>
