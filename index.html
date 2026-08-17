@@ -49,10 +49,6 @@
         .feedback-box input, .feedback-box textarea { width: 100%; padding: 12px; margin-bottom: 15px; background: #0b0c10; border: 1px solid #374151; color: white; border-radius: 8px; outline: none; font-size: 14px; }
         .feedback-box button { width: 100%; background: #22c55e; color: black; border: none; padding: 12px; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 15px; }
         .feedback-box button:hover { background: #16a34a; }
-
-        .auth-section { display: flex; align-items: center; gap: 15px; }
-        .logout-btn { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 6px 14px; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 13px; }
-        .logout-btn:hover { background: #ef4444; color: white; }
     </style>
 </head>
 <body>
@@ -71,7 +67,6 @@
             <input type="text" id="searchInput" placeholder="Search any movie..." onkeypress="handleSearchKey(event)">
             <button onclick="performSearch()">Search</button>
         </div>
-        <div id="authSection" class="auth-section"></div>
     </header>
 
     <div class="hero" id="heroBanner">
@@ -110,20 +105,6 @@
     <script>
         const apiKey = '4150581ccf3ec551c12884bbf92d041d';
         const imageBase = 'https://image.tmdb.org/t/p/w500';
-
-        if(!localStorage.getItem('universaless_user')) {
-            window.location.href = './login.html';
-        } else {
-            document.getElementById('authSection').innerHTML = `
-                <span style="color: #4ade80; font-weight: 600; font-size: 14px;">Hi, ${localStorage.getItem('universaless_user')}</span>
-                <button class="logout-btn" onclick="logoutUser()">Logout</button>
-            `;
-        }
-
-        function logoutUser() {
-            localStorage.removeItem('universaless_user');
-            window.location.href = './login.html';
-        }
 
         async function loadHome() {
             document.getElementById('heroBanner').style.display = 'flex';
