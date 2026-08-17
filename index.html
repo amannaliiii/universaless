@@ -3,45 +3,291 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Universaless</title>
+    <title>Universaless - Premium OTT & Music</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background-color: #0b0c10; color: #ffffff; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .login-box { background: #161b22; padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; border: 1px solid #30363d; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
-        h2 { color: #22c55e; text-align: center; margin-bottom: 20px; font-weight: 900; letter-spacing: 1px; }
-        input { width: 100%; padding: 12px; margin-bottom: 15px; background: #0b0c10; border: 1px solid #374151; color: white; border-radius: 8px; outline: none; font-size: 14px; }
-        button { width: 100%; background: #22c55e; color: black; border: none; padding: 12px; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 15px; }
-        button:hover { background: #16a34a; }
-        .footer-links { text-align: center; margin-top: 15px; font-size: 13px; }
-        .footer-links a { color: #f87171; text-decoration: none; }
+        body { background-color: #0b0c10; color: #ffffff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; min-height: 100vh; }
+        
+        header { background: #14151a; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1f2833; position: sticky; top: 0; z-index: 100; flex-wrap: wrap; gap: 15px; }
+        .nav-left { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+        h1 { color: #22c55e; font-size: 24px; font-weight: 900; letter-spacing: 1px; }
+        .nav-links { display: flex; gap: 8px; flex-wrap: wrap; }
+        .nav-link { background: #1f2833; color: white; border: none; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .nav-link:hover, .nav-link.active { background: #22c55e; color: black; }
+        
+        .search-container { display: flex; gap: 8px; align-items: center; background: #1f2833; padding: 6px 14px; border-radius: 20px; border: 1px solid #374151; }
+        .search-container input { background: transparent; border: none; color: white; outline: none; font-size: 14px; width: 160px; }
+        .search-container button { background: #22c55e; border: none; color: black; padding: 5px 12px; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 13px; }
+
+        .hero { position: relative; height: 420px; background: linear-gradient(to top, #0b0c10, rgba(11,12,16,0.3)), url('https://image.tmdb.org/t/p/original/gKkl37BQuKTanygYQG1pyYgLVgf.jpg') center/cover no-repeat; display: flex; align-items: flex-end; padding: 40px 30px; }
+        .hero-content { max-width: 600px; z-index: 2; }
+        .hero-title { font-size: 36px; font-weight: 800; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
+        .hero-desc { font-size: 14px; color: #d1d5db; margin-bottom: 20px; line-height: 1.5; }
+        .btn-play { background: #ffffff; color: black; border: none; padding: 10px 24px; border-radius: 6px; font-weight: bold; font-size: 15px; cursor: pointer; transition: transform 0.2s; }
+        .btn-play:hover { transform: scale(1.05); }
+
+        .container { max-width: 1300px; margin: 30px auto; padding: 0 30px; flex: 1; width: 100%; }
+        .section-title { font-size: 20px; font-weight: 700; margin-bottom: 20px; border-left: 4px solid #22c55e; padding-left: 10px; color: #f3f4f6; }
+        .movie-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 18px; }
+        .movie-card { background: #161b22; border-radius: 10px; overflow: hidden; cursor: pointer; transition: transform 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.4); display: flex; flex-direction: column; justify-content: space-between; }
+        .movie-card:hover { transform: scale(1.05); }
+        .movie-card img { width: 100%; height: 230px; object-fit: cover; background: #222; }
+        .movie-info { padding: 12px; text-align: center; }
+        .movie-card h3 { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #f3f4f6; }
+
+        footer { background: #14151a; text-align: center; padding: 25px 20px; border-top: 1px solid #1f2833; margin-top: 50px; color: #9ca3af; font-size: 14px; }
+        footer a { color: #22c55e; text-decoration: none; font-weight: bold; }
+        footer a:hover { text-decoration: underline; }
+
+        #playerModal, #feedbackModal { position: fixed; inset: 0; background: rgba(0,0,0,0.96); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 15px; }
+        #playerModal.active, #feedbackModal.active { display: flex; }
+        .close-btn { position: absolute; top: 25px; right: 25px; background: #dc2626; color: white; border: none; padding: 10px 20px; font-weight: bold; border-radius: 6px; cursor: pointer; z-index: 1010; }
+        iframe { width: 100%; max-width: 950px; aspect-ratio: 16/9; border: none; border-radius: 10px; }
+
+        .feedback-box { background: #161b22; padding: 30px; border-radius: 12px; width: 100%; max-width: 450px; border: 1px solid #30363d; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
+        .feedback-box h3 { margin-bottom: 20px; color: #22c55e; font-size: 20px; text-align: center; }
+        .feedback-box input, .feedback-box textarea { width: 100%; padding: 12px; margin-bottom: 15px; background: #0b0c10; border: 1px solid #374151; color: white; border-radius: 8px; outline: none; font-size: 14px; }
+        .feedback-box button { width: 100%; background: #22c55e; color: black; border: none; padding: 12px; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 15px; }
+        .feedback-box button:hover { background: #16a34a; }
+
+        .auth-section { display: flex; align-items: center; gap: 15px; }
+        .logout-btn { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 6px 14px; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 13px; }
+        .logout-btn:hover { background: #ef4444; color: white; }
     </style>
 </head>
 <body>
-    <div class="login-box">
-        <h2>UNIVERSALESS</h2>
-        <input type="text" id="loginEmail" placeholder="Email or Username" required>
-        <input type="password" id="loginPassword" placeholder="Password" required>
-        <button onclick="handleLogin()">Sign In</button>
-        <div class="footer-links">
-            <p>New to Universaless? <a href="https://instagram.com/vscode.hustler" target="_blank">Follow on IG</a></p>
-            <p style="margin-top: 8px;"><a href="index.html">← Back to Home</a></p>
+    <header>
+        <div class="nav-left">
+            <h1>UNIVERSALESS</h1>
+            <div class="nav-links">
+                <button class="nav-link active" onclick="switchTab('all', this)">Home</button>
+                <button class="nav-link" onclick="switchTab('hindi', this)">Hindi</button>
+                <button class="nav-link" onclick="switchTab('hollywood', this)">Hollywood</button>
+                <button class="nav-link" onclick="switchTab('music', this)">🎵 Music</button>
+                <button class="nav-link" onclick="openFeedbackModal()" style="background: #1e3a8a; color: #93c5fd;">💬 Feedback</button>
+            </div>
+        </div>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search any movie..." onkeypress="handleSearchKey(event)">
+            <button onclick="performSearch()">Search</button>
+        </div>
+        <div id="authSection" class="auth-section"></div>
+    </header>
+
+    <div class="hero" id="heroBanner">
+        <div class="hero-content">
+            <h2 class="hero-title">Universaless Live OTT</h2>
+            <p class="hero-desc">Massive streaming catalog powered by TMDB API.</p>
+            <button class="btn-play" onclick="playItem(933131)">▶ Play Animal</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2 id="sectionTitle" class="section-title">Massive Streaming Catalog</h2>
+        <div id="catalogGrid" class="movie-grid"></div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Universaless. All rights reserved.</p>
+        <p style="margin-top: 8px; color: #f3f4f6;">Instagram: <a href="https://instagram.com/vscode.hustler" target="_blank">@vscode.hustler</a> — Follow karlo bhai log! 🔥</p>
+    </footer>
+
+    <div id="playerModal">
+        <button class="close-btn" onclick="closePlayer()">Close ✕</button>
+        <iframe id="videoIframe" src="" allowfullscreen></iframe>
+    </div>
+
+    <div id="feedbackModal">
+        <button class="close-btn" onclick="closeFeedbackModal()">Close ✕</button>
+        <div class="feedback-box">
+            <h3>Send Your Feedback</h3>
+            <input type="text" id="fbName" placeholder="Your Name">
+            <textarea id="fbMsg" rows="4" placeholder="Write your feedback or request here..."></textarea>
+            <button onclick="submitFeedback()">Submit Feedback</button>
         </div>
     </div>
 
     <script>
-        function handleLogin() {
-            const email = document.getElementById('loginEmail').value.trim();
-            const pass = document.getElementById('loginPassword').value.trim();
-            if(!email || !pass) {
-                alert('Please enter email and password.');
+        const apiKey = '4150581ccf3ec551c12884bbf92d041d';
+        const imageBase = 'https://image.tmdb.org/t/p/w500';
+
+        if(!localStorage.getItem('universaless_user')) {
+            window.location.href = './login.html';
+        } else {
+            document.getElementById('authSection').innerHTML = `
+                <span style="color: #4ade80; font-weight: 600; font-size: 14px;">Hi, ${localStorage.getItem('universaless_user')}</span>
+                <button class="logout-btn" onclick="logoutUser()">Logout</button>
+            `;
+        }
+
+        function logoutUser() {
+            localStorage.removeItem('universaless_user');
+            window.location.href = './login.html';
+        }
+
+        async function loadHome() {
+            document.getElementById('heroBanner').style.display = 'flex';
+            document.getElementById('sectionTitle').innerText = "Massive Streaming Catalog (Trending & Popular)";
+            try {
+                const promises = [
+                    fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&page=1`).then(res => res.json()),
+                    fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&page=2`).then(res => res.json()),
+                    fetch(`https://api.themoviedb.org/3/movie/top_rated?api_key=${apiKey}&page=1`).then(res => res.json()),
+                    fetch(`https://api.themoviedb.org/3/movie/top_rated?api_key=${apiKey}&page=2`).then(res => res.json())
+                ];
+                const responses = await Promise.all(promises);
+                let combined = [];
+                responses.forEach(data => {
+                    if(data.results) combined = combined.concat(data.results);
+                });
+                const unique = Array.from(new Set(combined.map(m => m.id))).map(id => combined.find(m => m.id === id));
+                renderCatalog(unique);
+            } catch (error) {
+                console.error("API Error:", error);
+            }
+        }
+
+        async function loadHindi() {
+            document.getElementById('heroBanner').style.display = 'none';
+            document.getElementById('sectionTitle').innerText = "Massive Hindi Movies Catalog";
+            try {
+                const promises = [
+                    fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_original_language=hi&page=1`).then(res => res.json()),
+                    fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_original_language=hi&page=2`).then(res => res.json())
+                ];
+                const responses = await Promise.all(promises);
+                let combined = [];
+                responses.forEach(data => {
+                    if(data.results) combined = combined.concat(data.results);
+                });
+                const unique = Array.from(new Set(combined.map(m => m.id))).map(id => combined.find(m => m.id === id));
+                renderCatalog(unique);
+            } catch (error) {
+                console.error("API Error:", error);
+            }
+        }
+
+        async function loadHollywood() {
+            document.getElementById('heroBanner').style.display = 'none';
+            document.getElementById('sectionTitle').innerText = "Massive Hollywood Movies Catalog";
+            try {
+                const promises = [
+                    fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_original_language=en&page=1`).then(res => res.json()),
+                    fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_original_language=en&page=2`).then(res => res.json())
+                ];
+                const responses = await Promise.all(promises);
+                let combined = [];
+                responses.forEach(data => {
+                    if(data.results) combined = combined.concat(data.results);
+                });
+                const unique = Array.from(new Set(combined.map(m => m.id))).map(id => combined.find(m => m.id === id));
+                renderCatalog(unique);
+            } catch (error) {
+                console.error("API Error:", error);
+            }
+        }
+
+        function loadMusic() {
+            document.getElementById('heroBanner').style.display = 'none';
+            document.getElementById('sectionTitle').innerText = "My Music Playlist";
+            const grid = document.getElementById('catalogGrid');
+            grid.innerHTML = `<div style="grid-column: 1/-1; width: 100%; display: flex; justify-content: center;"><iframe src="https://www.youtube.com/embed/videoseries?list=RDsZLEuUDx1eA" style="width:100%; max-width:800px; aspect-ratio:16/9; border-radius:10px;" allowfullscreen></iframe></div>`;
+        }
+
+        async function performSearch() {
+            const query = document.getElementById('searchInput').value.trim();
+            if(!query) {
+                loadHome();
                 return;
             }
-            // Save user session
-            localStorage.setItem('universaless_user', email);
-            alert('Welcome back, ' + email + '!');
-            // Redirect to main OTT page
-            window.location.href = 'index.html';
+            document.getElementById('heroBanner').style.display = 'none';
+            const searchUrl = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(query)}`;
+            try {
+                const res = await fetch(searchUrl);
+                const data = await res.json();
+                document.getElementById('sectionTitle').innerText = `Search Results for "${query}"`;
+                renderCatalog(data.results);
+            } catch (err) {
+                console.error("Search Error:", err);
+            }
         }
+
+        function renderCatalog(movies) {
+            const grid = document.getElementById('catalogGrid');
+            grid.innerHTML = '';
+            if(!movies || movies.length === 0) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #f87171; padding: 20px;">No movies found.</p>';
+                return;
+            }
+            movies.forEach(movie => {
+                if(!movie.poster_path) return;
+                const posterUrl = imageBase + movie.poster_path;
+                const title = movie.title || movie.name || "Unknown";
+                const fallbackImg = `https://placehold.co/500x750/161b22/22c55e?text=${encodeURIComponent(title)}`;
+                grid.innerHTML += `
+                    <div class="movie-card" onclick="playItem(${movie.id})">
+                        <img src="${posterUrl}" alt="${title}" onerror="this.src='${fallbackImg}'">
+                        <div class="movie-info"><h3>${title}</h3></div>
+                    </div>`;
+            });
+        }
+
+        function playItem(id) {
+            const iframe = document.getElementById('videoIframe');
+            iframe.src = `https://vidsrc.to/embed/movie/${id}`;
+            document.getElementById('playerModal').classList.add('active');
+        }
+
+        function switchTab(cat, btnElement) {
+            document.querySelectorAll('.nav-link').forEach(btn => btn.classList.remove('active'));
+            if(btnElement) btnElement.classList.add('active');
+            
+            if(cat === 'all') {
+                loadHome();
+            } else if(cat === 'hindi') {
+                loadHindi();
+            } else if(cat === 'hollywood') {
+                loadHollywood();
+            } else if(cat === 'music') {
+                loadMusic();
+            }
+        }
+
+        function handleSearchKey(event) {
+            if(event.key === 'Enter') performSearch();
+        }
+
+        function closePlayer() {
+            const iframe = document.getElementById('videoIframe');
+            iframe.src = '';
+            document.getElementById('playerModal').classList.remove('active');
+        }
+
+        function openFeedbackModal() {
+            document.getElementById('feedbackModal').classList.add('active');
+        }
+
+        function closeFeedbackModal() {
+            document.getElementById('feedbackModal').classList.remove('active');
+        }
+
+        function submitFeedback() {
+            const name = document.getElementById('fbName').value.trim();
+            const msg = document.getElementById('fbMsg').value.trim();
+            if(!name || !msg) {
+                alert('Please fill in both fields.');
+                return;
+            }
+            let feedbacks = JSON.parse(localStorage.getItem('universaless_feedbacks') || '[]');
+            feedbacks.push({ name, msg, date: new Date().toLocaleString() });
+            localStorage.setItem('universaless_feedbacks', JSON.stringify(feedbacks));
+            alert('Thank you! Your feedback has been submitted successfully.');
+            document.getElementById('fbName').value = '';
+            document.getElementById('fbMsg').value = '';
+            closeFeedbackModal();
+        }
+
+        loadHome();
     </script>
 </body>
 </html>
