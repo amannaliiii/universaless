@@ -1,6 +1,7 @@
 {
   "name": "Universaless",
   "short_name": "Universaless",
+  "description": "Free OTT streaming platform for movies and shows",
   "start_url": "/universiless/",
   "display": "standalone",
   "background_color": "#0f1014",
@@ -8,8 +9,13 @@
   "icons": [
     {
       "src": "https://image.tmdb.org/t/p/w500/vQWk5YBFWF4bZa5abX05SJnWvuz.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "https://image.tmdb.org/t/p/w500/vQWk5YBFWF4bZa5abX05SJnWvuz.jpg",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/jpeg"
     }
   ]
 }
