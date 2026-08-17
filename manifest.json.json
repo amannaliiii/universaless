@@ -1,0 +1,15 @@
+{
+  "name": "Universaless",
+  "short_name": "Universaless",
+  "start_url": "/universiless/",
+  "display": "standalone",
+  "background_color": "#0f1014",
+  "theme_color": "#e50914",
+  "icons": [
+    {
+      "src": "https://image.tmdb.org/t/p/w500/vQWk5YBFWF4bZa5abX05SJnWvuz.jpg",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
