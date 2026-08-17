@@ -36,10 +36,7 @@
                 alert('Please enter email and password.');
                 return;
             }
-            // Save session data safely
             localStorage.setItem('universaless_user', email);
-            
-            // Immediate redirect using absolute/relative path fix
             window.location.href = './index.html';
         }
     </script>
