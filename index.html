@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universaless - Free OTT Streaming</title>
+    <style>
+        :root {
+            --bg-color: #0f1014;
+            --card-bg: #1a1c23;
+            --accent-color: #e50914;
+            --text-color: #ffffff;
+            --text-secondary: #b3b3b3;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: rgba(15, 16, 20, 0.9);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #2a2e39;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--accent-color);
+            letter-spacing: 1px;
+        }
+        .search-bar {
+            display: flex;
+            gap: 10px;
+        }
+        .search-bar input {
+            padding: 10px 15px;
+            border-radius: 4px;
+            border: 1px solid #333;
+            background: #222;
+            color: #fff;
+            width: 250px;
+            outline: none;
+        }
+        .search-bar button, .filter-btn {
+            padding: 10px 20px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .search-bar button:hover, .filter-btn:hover {
+            opacity: 0.9;
+        }
+        .filters {
+            display: flex;
+            gap: 15px;
+            padding: 20px 40px;
+            overflow-x: auto;
+        }
+        .filter-btn {
+            background-color: var(--card-bg);
+            color: var(--text-secondary);
+        }
+        .filter-btn.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        .container {
+            flex: 1;
+            padding: 20px 40px;
+        }
+        .section-title {
+            font-size: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--accent-color);
+            padding-left: 10px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        .card:hover {
+            transform: scale(1.05);
+        }
+        .card img {
+            width: 100%;
+            height: 270px;
+            object-fit: cover;
+        }
+        .card-info {
+            padding: 12px;
+        }
+        .card-title {
+            font-size: 14px;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .card-year {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+        /* Modal Player */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .modal-content {
+            width: 80%;
+            height: 80%;
+            max-width: 1000px;
+            position: relative;
+        }
+        .modal-content iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 8px;
+        }
+        .close-btn {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: rgba(15, 16, 20, 0.9);
+            border-top: 1px solid #2a2e39;
+            color: var(--text-secondary);
+            margin-top: 40px;
+        }
+        footer a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">UNIVERSALESS</div>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search movies...">
+            <button onclick="searchMovies()">Search</button>
+        </div>
+    </header>
+
+    <div class="filters">
+        <button class="filter-btn active" onclick="fetchMovies('trending')">Trending</button>
+        <button class="filter-btn" onclick="fetchMovies('popular')">Popular Movies</button>
+        <button class="filter-btn" onclick="fetchMovies('top_rated')">Top Rated</button>
+    </div>
+
+    <div class="container">
+        <div class="section-title" id="sectionTitle">Trending Movies</div>
+        <div class="grid" id="movieGrid">
+            <!-- Dynamic Movies Loaded Here -->
+        </div>
+    </div>
+
+    <!-- Video Modal Player -->
+    <div class="modal" id="playerModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closePlayer()">Close</button>
+            <iframe id="videoPlayer" src="" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <footer>
+        <p>Universaless OTT Platform &bull; Follow karlo bhai log: <a href="https://instagram.com/vscode.hustler" target="_blank">@vscode.hustler</a></p>
+    </footer>
+
+    <script>
+        const API_KEY = '4150581ccf3ec551c12884bbf92d041d';
+        const IMG_PATH = 'https://image.tmdb.org/t/p/w500';
+        
+        const movieGrid = document.getElementById('movieGrid');
+        const searchInput = document.getElementById('searchInput');
+        const sectionTitle = document.getElementById('sectionTitle');
+        const playerModal = document.getElementById('playerModal');
+        const videoPlayer = document.getElementById('videoPlayer');
+
+        async function fetchMovies(type) {
+            let url = '';
+            if(type === 'trending') {
+                url = `https://api.themoviedb.org/3/trending/movie/day?api_key=${API_KEY}`;
+                sectionTitle.innerText = "Trending Movies";
+            } else if(type === 'popular') {
+                url = `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`;
+                sectionTitle.innerText = "Popular Movies";
+            } else if(type === 'top_rated') {
+                url = `https://api.themoviedb.org/3/movie/top_rated?api_key=${API_KEY}`;
+                sectionTitle.innerText = "Top Rated Movies";
+            }
+
+            updateActiveButton(event);
+            const res = await fetch(url);
+            const data = await res.json();
+            displayMovies(data.results);
+        }
+
+        async function searchMovies() {
+            const query = searchInput.value.trim();
+            if(!query) return;
+            sectionTitle.innerText = `Search Results for: "${query}"`;
+            const res = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${query}`);
+            const data = await res.json();
+            displayMovies(data.results);
+        }
+
+        function displayMovies(movies) {
+            movieGrid.innerHTML = '';
+            movies.forEach(movie => {
+                const { id, title, poster_path, release_date } = movie;
+                if(!poster_path) return;
+
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.innerHTML = `
+                    <img src="${IMG_PATH + poster_path}" alt="${title}">
+                    <div class="card-info">
+                        <div class="card-title">${title}</div>
+                        <div class="card-year">${release_date ? release_date.split('-')[0] : 'N/A'}</div>
+                    </div>
+                `;
+                card.onclick = () => openPlayer(id);
+                movieGrid.appendChild(card);
+            });
+        }
+
+        function openPlayer(movieId) {
+            videoPlayer.src = `https://vidsrc.to/embed/movie/${movieId}`;
+            playerModal.style.display = 'flex';
+        }
+
+        function closePlayer() {
+            videoPlayer.src = '';
+            playerModal.style.display = 'none';
+        }
+
+        function updateActiveButton(e) {
+            if(!e) return;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active');
+        }
+
+        // Initial Load
+        fetchMovies('trending');
+    </script>
+</body>
+</html>
