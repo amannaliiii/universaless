@@ -82,8 +82,10 @@
             if(q) fetchMovies(`${proxyBase}/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(q)}`);
         }
 
-        function play(id) {
-            document.getElementById('vidFrame').src = `https://multiembed.mov/?video_id=${id}&tmdb=1`;
+      function play(id) {
+            // vidsrc.to is better for iframe embedding
+            const videoUrl = `https://vidsrc.to/embed/movie/${id}`;
+            document.getElementById('vidFrame').src = videoUrl;
             document.getElementById('player-overlay').style.display = 'block';
         }
 
