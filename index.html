@@ -3,63 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Universaless | Desktop Premium</title>
+    <title>Universaless | OTT Streaming Platform</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background-color: #0b0c10; color: #fff; font-family: sans-serif; padding-top: 70px; }
+        body { background-color: #0b0c10; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow-x: hidden; }
 
-        .app-bar { position: fixed; top: 0; left: 0; width: 100%; height: 60px; background: #14151a; display: flex; justify-content: space-between; align-items: center; padding: 0 30px; border-bottom: 1px solid #1f2833; z-index: 100; }
-        .app-logo { color: #22c55e; font-size: 22px; font-weight: 900; letter-spacing: 1px; cursor: pointer; }
-        .nav-links { display: flex; gap: 15px; align-items: center; }
-        .nav-link { color: #9ca3af; font-size: 14px; font-weight: 600; cursor: pointer; background: none; border: none; padding: 6px 12px; border-radius: 6px; transition: 0.2s; }
-        .nav-link:hover, .nav-link.active { color: #22c55e; background: #1f2833; }
+        /* Top Navbar */
+        .navbar { position: fixed; top: 0; left: 0; width: 100%; height: 70px; background: linear-gradient(to bottom, rgba(11,12,16,0.95), rgba(11,12,16,0.8)); backdrop-filter: blur(10px); display: flex; justify-content: space-between; align-items: center; padding: 0 40px; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .logo { font-size: 24px; font-weight: 900; color: #22c55e; letter-spacing: 2px; cursor: pointer; text-shadow: 0 0 10px rgba(34,197,94,0.3); }
+        .nav-menu { display: flex; gap: 20px; align-items: center; }
+        .nav-item { color: #d1d5db; font-size: 14px; font-weight: 600; cursor: pointer; background: none; border: none; padding: 6px 12px; border-radius: 6px; transition: 0.3s; }
+        .nav-item:hover, .nav-item.active { color: #22c55e; background: rgba(34,197,94,0.1); }
         
-        .lang-select { background: #1f2833; border: 1px solid #374151; color: white; padding: 6px 12px; border-radius: 6px; font-size: 14px; outline: none; cursor: pointer; }
-        .lang-select:focus { border-color: #22c55e; }
+        .lang-dropdown { background: #1f2833; border: 1px solid #374151; color: white; padding: 8px 14px; border-radius: 8px; font-size: 14px; outline: none; cursor: pointer; }
+        .search-input { background: #1f2833; border: 1px solid #374151; color: white; padding: 8px 16px; border-radius: 8px; font-size: 14px; outline: none; width: 220px; transition: 0.3s; }
+        .search-input:focus { border-color: #22c55e; width: 260px; box-shadow: 0 0 10px rgba(34,197,94,0.2); }
 
-        .search-box { background: #1f2833; border: 1px solid #374151; color: white; padding: 8px 15px; border-radius: 8px; font-size: 14px; outline: none; width: 220px; }
-        .search-box:focus { border-color: #22c55e; }
+        .auth-btn { background: #22c55e; color: #000; border: none; padding: 8px 18px; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.3s; }
+        .auth-btn:hover { background: #16a34a; transform: scale(1.05); }
 
-        .container { padding: 20px 40px; max-width: 1400px; margin: 0 auto; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
-        .card { background: #161b22; border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; border: 1px solid #1f2833; }
-        .card:hover { transform: scale(1.03); box-shadow: 0 10px 20px rgba(0,0,0,0.5); border-color: #22c55e; }
-        .card img { width: 100%; height: 280px; object-fit: cover; }
-        .card h3 { font-size: 14px; padding: 12px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #e5e7eb; }
+        /* Views Container */
+        .view-section { display: none; margin-top: 70px; }
+        .view-section.active-view { display: block; }
 
-        #player { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 999; flex-direction: column; }
-        .player-header { display: flex; justify-content: space-between; align-items: center; background: #14151a; padding: 12px 25px; border-bottom: 1px solid #1f2833; }
-        .servers { display: flex; gap: 10px; }
-        .server-btn { background: #1f2833; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        /* Hero Banner */
+        .hero { position: relative; width: 100%; height: 550px; background-size: cover; background-position: center; display: flex; align-items: flex-end; padding: 50px 40px; }
+        .hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, #0b0c10 0%, rgba(11,12,16,0.5) 50%, rgba(11,12,16,0.8) 100%); }
+        .hero-content { position: relative; z-index: 2; max-width: 600px; }
+        .hero-title { font-size: 42px; font-weight: 900; margin-bottom: 12px; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+        .hero-desc { font-size: 14px; color: #9ca3af; margin-bottom: 20px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .hero-btn { background: #22c55e; color: #000; border: none; padding: 12px 28px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(34,197,94,0.4); }
+        .hero-btn:hover { background: #16a34a; transform: scale(1.05); }
+
+        /* Grid Section */
+        .container { padding: 40px; max-width: 1400px; margin: 0 auto; }
+        .section-title { font-size: 20px; font-weight: 800; margin-bottom: 20px; color: #e5e7eb; border-left: 4px solid #22c55e; padding-left: 10px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 25px; }
+        .card { background: #161b22; border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; border: 1px solid rgba(255,255,255,0.05); }
+        .card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.6); border-color: #22c55e; }
+        .card img { width: 100%; height: 310px; object-fit: cover; }
+        .card h3 { font-size: 14px; padding: 14px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #f3f4f6; font-weight: 600; }
+
+        /* Subscription / Pricing View */
+        .pricing-container { max-width: 1100px; margin: 40px auto; padding: 20px; text-align: center; }
+        .pricing-title { font-size: 32px; font-weight: 900; margin-bottom: 10px; color: #fff; }
+        .pricing-subtitle { color: #9ca3af; margin-bottom: 40px; font-size: 16px; }
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 25px; }
+        .price-card { background: #161b22; border: 1px solid #1f2833; border-radius: 16px; padding: 30px 20px; display: flex; flex-direction: column; justify-content: space-between; transition: 0.3s; position: relative; }
+        .price-card.popular { border-color: #22c55e; box-shadow: 0 0 25px rgba(34,197,94,0.15); transform: scale(1.03); }
+        .badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #22c55e; color: #000; font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; }
+        .price-card h3 { font-size: 20px; margin-bottom: 15px; color: #e5e7eb; }
+        .price { font-size: 36px; font-weight: 900; color: #22c55e; margin-bottom: 20px; }
+        .price span { font-size: 14px; color: #9ca3af; font-weight: normal; }
+        .features-list { list-style: none; margin-bottom: 30px; text-align: left; color: #9ca3af; font-size: 14px; line-height: 2; }
+        .features-list li::before { content: "✓ "; color: #22c55e; font-weight: bold; }
+        .subscribe-btn { background: #1f2833; color: white; border: 1px solid #374151; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; width: 100%; }
+        .price-card.popular .subscribe-btn, .subscribe-btn:hover { background: #22c55e; color: #000; border-color: #22c55e; }
+
+        /* Login Modal / View */
+        .auth-container { max-width: 420px; margin: 60px auto; background: #161b22; border: 1px solid #1f2833; border-radius: 16px; padding: 40px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
+        .auth-container h2 { font-size: 24px; font-weight: 900; margin-bottom: 25px; text-align: center; color: #fff; }
+        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-group label { display: block; font-size: 13px; color: #9ca3af; margin-bottom: 8px; font-weight: 600; }
+        .form-control { width: 100%; background: #0b0c10; border: 1px solid #374151; color: white; padding: 12px 15px; border-radius: 8px; font-size: 14px; outline: none; transition: 0.3s; }
+        .form-control:focus { border-color: #22c55e; box-shadow: 0 0 8px rgba(34,197,94,0.2); }
+        .submit-btn { width: 100%; background: #22c55e; color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .submit-btn:hover { background: #16a34a; }
+
+        /* Video Player Modal */
+        #player { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 2000; flex-direction: column; }
+        .player-header { display: flex; justify-content: space-between; align-items: center; background: #14151a; padding: 15px 30px; border-bottom: 1px solid #1f2833; }
+        .servers { display: flex; gap: 12px; }
+        .server-btn { background: #1f2833; color: white; border: none; padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.3s; border: 1px solid #374151; }
         .server-btn:hover { background: #374151; }
-        .server-btn.active-server { background: #22c55e; color: #000; }
-        .close-btn { background: #ef4444; color: white; border: none; padding: 8px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .server-btn.active-server { background: #22c55e; color: #000; border-color: #22c55e; box-shadow: 0 0 10px rgba(34,197,94,0.3); }
+        .close-btn { background: #ef4444; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
         .close-btn:hover { background: #dc2626; }
-        
-        iframe { width: 100%; height: calc(100vh - 60px); border: none; background: #000; }
+        iframe { width: 100%; height: calc(100vh - 70px); border: none; background: #000; }
     </style>
 </head>
 <body>
 
-    <div class="app-bar">
-        <div class="app-logo" onclick="loadTab('popular', document.querySelector('.nav-link'))">UNIVERSALESS</div>
-        <div class="nav-links">
-            <button class="nav-link active" onclick="loadTab('popular', this)">Trending Hollywood</button>
-            
-            <select class="lang-select" id="langSelect" onchange="changeLanguage(this.value)">
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo" onclick="switchView('home', document.querySelector('.nav-item'))">UNIVERSALESS</div>
+        <div class="nav-menu">
+            <button class="nav-item active" onclick="switchView('home', this)">Home</button>
+            <button class="nav-item" onclick="switchView('pricing', this)">Subscription</button>
+            <select class="lang-dropdown" id="langSelect" onchange="changeLanguage(this.value)">
                 <option value="all">🌍 All Languages</option>
-                <option value="hi">🇮🇳 Hindi Dubbed / Audio</option>
-                <option value="en">🇺🇸 Hollywood Original (English)</option>
+                <option value="hi">🇮🇳 Hindi Dubbed</option>
+                <option value="en">🇺🇸 Hollywood Original</option>
             </select>
-
-            <input type="text" class="search-box" id="searchInput" placeholder="Search movies..." onkeypress="handleSearch(event)">
+            <input type="text" class="search-input" placeholder="Search movies..." onkeypress="handleSearch(event)">
+            <button class="auth-btn" onclick="switchView('login', null)">Sign In</button>
         </div>
     </div>
 
-    <div class="container">
-        <div class="grid" id="movieGrid"></div>
+    <!-- 1. Home View -->
+    <div id="homeView" class="view-section active-view">
+        <div class="hero" id="heroBanner" style="background-image: url('');">
+            <div class="hero-content">
+                <div class="hero-title" id="heroTitle">Loading Featured...</div>
+                <div class="hero-desc" id="heroDesc">Please wait while we load the top trending movie for you.</div>
+                <button class="hero-btn" id="heroPlayBtn">▶ Play Now</button>
+            </div>
+        </div>
+        <div class="container">
+            <div class="section-title">Trending Hollywood & Hindi Movies</div>
+            <div class="grid" id="movieGrid"></div>
+        </div>
     </div>
 
+    <!-- 2. Subscription / Pricing View (₹10 to ₹550) -->
+    <div id="pricingView" class="view-section">
+        <div class="pricing-container">
+            <div class="pricing-title">Choose Your Plan</div>
+            <div class="pricing-subtitle">Unlimited movies, multi-audio support, and ad-free streaming.</div>
+            
+            <div class="pricing-grid">
+                <div class="price-card">
+                    <h3>Mini Pass</h3>
+                    <div class="price">₹10 <span>/ 1 Day</span></div>
+                    <ul class="features-list">
+                        <li>1 Day Full Access</li>
+                        <li>HD Streaming Quality</li>
+                        <li>All Servers Unlocked</li>
+                    </ul>
+                    <button class="subscribe-btn" onclick="alert('Proceeding to checkout for ₹10...')">Buy Now</button>
+                </div>
+
+                <div class="price-card">
+                    <h3>Weekly Pass</h3>
+                    <div class="price">₹99 <span>/ 7 Days</span></div>
+                    <ul class="features-list">
+                        <li>7 Days Full Access</li>
+                        <li>Full HD & Multi-Audio</li>
+                        <li>Priority Server Speed</li>
+                    </ul>
+                    <button class="subscribe-btn" onclick="alert('Proceeding to checkout for ₹99...')">Buy Now</button>
+                </div>
+
+                <div class="price-card popular">
+                    <div class="badge">Most Popular</div>
+                    <h3>Monthly Pro</h3>
+                    <div class="price">₹299 <span>/ 30 Days</span></div>
+                    <ul class="features-list">
+                        <li>1 Month Unlimited Access</li>
+                        <li>4K Ultra HD Quality</li>
+                        <li>Hindi & English Audio Dubs</li>
+                        <li>Zero Ads Experience</li>
+                    </ul>
+                    <button class="subscribe-btn" onclick="alert('Proceeding to checkout for ₹299...')">Subscribe Now</button>
+                </div>
+
+                <div class="price-card">
+                    <h3>Ultimate Annual</h3>
+                    <div class="price">₹550 <span>/ Year</span></div>
+                    <ul class="features-list">
+                        <li>365 Days VIP Access</li>
+                        <li>All Premium Servers</li>
+                        <li>Early Access to New Releases</li>
+                        <li>Dedicated Support</li>
+                    </ul>
+                    <button class="subscribe-btn" onclick="alert('Proceeding to checkout for ₹550...')">Get VIP</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Login / Sign Up View -->
+    <div id="loginView" class="view-section">
+        <div class="auth-container">
+            <h2>Welcome to Universaless</h2>
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" class="form-control" placeholder="name@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" class="form-control" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="submit-btn">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Video Player Modal -->
     <div id="player">
         <div class="player-header">
             <div class="servers">
@@ -77,30 +208,55 @@
         const proxyBase = 'https://gentle-rice-b132.adnanal8466.workers.dev';
         let currentMovieId = null;
 
+        function switchView(viewName, el) {
+            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active-view'));
+            if(el) {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                el.classList.add('active');
+            }
+            if(viewName === 'home') document.getElementById('homeView').classList.add('active-view');
+            if(viewName === 'pricing') document.getElementById('pricingView').classList.add('active-view');
+            if(viewName === 'login') document.getElementById('loginView').classList.add('active-view');
+            window.scrollTo(0, 0);
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            alert("Successfully logged in!");
+            switchView('home', document.querySelector('.nav-item'));
+        }
+
         async function fetchMovies(url) {
             const grid = document.getElementById('movieGrid');
-            grid.innerHTML = '<p style="text-align:center; grid-column:1/-1; color:#22c55e; font-size:18px; padding:40px;">Loading...</p>';
+            grid.innerHTML = '<p style="text-align:center; grid-column:1/-1; color:#22c55e; font-size:18px; padding:60px;">Loading Movies...</p>';
             try {
                 const res = await fetch(url);
                 const data = await res.json();
-                grid.innerHTML = '';
-                data.results.forEach(m => {
-                    if(m.poster_path) {
-                        grid.innerHTML += `<div class="card" onclick="play(${m.id})"><img src="https://image.tmdb.org/t/p/w500${m.poster_path}"><h3>${m.title}</h3></div>`;
-                    }
-                });
-            } catch(e) { grid.innerHTML = '<p style="text-align:center; grid-column:1/-1; color:red; padding:40px;">Error loading movies.</p>'; }
-        }
+                
+                if(data.results && data.results.length > 0) {
+                    const hero = data.results[0];
+                    document.getElementById('heroBanner').style.backgroundImage = `url(https://image.tmdb.org/t/p/original${hero.backdrop_path})`;
+                    document.getElementById('heroTitle').innerText = hero.title;
+                    document.getElementById('heroDesc').innerText = hero.overview;
+                    document.getElementById('heroPlayBtn').onclick = () => play(hero.id);
 
-        function loadTab(type, el) {
-            document.querySelectorAll('.nav-link').forEach(i => i.classList.remove('active'));
-            if(el) el.classList.add('active');
-            document.getElementById('langSelect').value = 'all';
-            fetchMovies(`${proxyBase}/3/movie/popular?api_key=${apiKey}`);
+                    grid.innerHTML = '';
+                    data.results.forEach(m => {
+                        if(m.poster_path) {
+                            grid.innerHTML += `
+                                <div class="card" onclick="play(${m.id})">
+                                    <img src="https://image.tmdb.org/t/p/w500${m.poster_path}" alt="${m.title}">
+                                    <h3>${m.title}</h3>
+                                </div>`;
+                        }
+                    });
+                }
+            } catch(e) { 
+                grid.innerHTML = '<p style="text-align:center; grid-column:1/-1; color:red; padding:60px;">Error loading content. Please check connection.</p>'; 
+            }
         }
 
         function changeLanguage(lang) {
-            document.querySelectorAll('.nav-link').forEach(i => i.classList.remove('active'));
             let url = `${proxyBase}/3/movie/popular?api_key=${apiKey}`;
             if(lang === 'hi') {
                 url = `${proxyBase}/3/discover/movie?api_key=${apiKey}&with_original_language=hi`;
@@ -113,7 +269,10 @@
         function handleSearch(e) {
             if(e.key === 'Enter') {
                 const q = e.target.value.trim();
-                if(q) fetchMovies(`${proxyBase}/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(q)}`);
+                if(q) {
+                    switchView('home', document.querySelector('.nav-item'));
+                    fetchMovies(`${proxyBase}/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(q)}`);
+                }
             }
         }
 
@@ -146,6 +305,7 @@
             document.getElementById('player').style.display = 'none';
         }
 
+        // Initial Load
         fetchMovies(`${proxyBase}/3/movie/popular?api_key=${apiKey}`);
     </script>
 </body>
