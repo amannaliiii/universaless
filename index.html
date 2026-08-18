@@ -10,10 +10,14 @@
 
         .app-bar { position: fixed; top: 0; left: 0; width: 100%; height: 60px; background: #14151a; display: flex; justify-content: space-between; align-items: center; padding: 0 30px; border-bottom: 1px solid #1f2833; z-index: 100; }
         .app-logo { color: #22c55e; font-size: 22px; font-weight: 900; letter-spacing: 1px; cursor: pointer; }
-        .nav-links { display: flex; gap: 20px; align-items: center; }
-        .nav-link { color: #9ca3af; font-size: 14px; font-weight: 600; cursor: pointer; background: none; border: none; padding: 5px 10px; border-radius: 6px; transition: 0.2s; }
+        .nav-links { display: flex; gap: 15px; align-items: center; }
+        .nav-link { color: #9ca3af; font-size: 14px; font-weight: 600; cursor: pointer; background: none; border: none; padding: 6px 12px; border-radius: 6px; transition: 0.2s; }
         .nav-link:hover, .nav-link.active { color: #22c55e; background: #1f2833; }
-        .search-box { background: #1f2833; border: 1px solid #374151; color: white; padding: 8px 15px; border-radius: 8px; font-size: 14px; outline: none; width: 250px; }
+        
+        .lang-select { background: #1f2833; border: 1px solid #374151; color: white; padding: 6px 12px; border-radius: 6px; font-size: 14px; outline: none; cursor: pointer; }
+        .lang-select:focus { border-color: #22c55e; }
+
+        .search-box { background: #1f2833; border: 1px solid #374151; color: white; padding: 8px 15px; border-radius: 8px; font-size: 14px; outline: none; width: 220px; }
         .search-box:focus { border-color: #22c55e; }
 
         .container { padding: 20px 40px; max-width: 1400px; margin: 0 auto; }
@@ -41,8 +45,13 @@
         <div class="app-logo" onclick="loadTab('popular', document.querySelector('.nav-link'))">UNIVERSALESS</div>
         <div class="nav-links">
             <button class="nav-link active" onclick="loadTab('popular', this)">Home</button>
-            <button class="nav-link" onclick="loadTab('hi', this)">Hindi Dubbed</button>
-            <button class="nav-link" onclick="loadTab('en', this)">Hollywood</button>
+            
+            <select class="lang-select" id="langSelect" onchange="changeLanguage(this.value)">
+                <option value="all">🌍 All Languages</option>
+                <option value="hi">🇮🇳 Hindi</option>
+                <option value="en">🇺🇸 English</option>
+            </select>
+
             <input type="text" class="search-box" id="searchInput" placeholder="Search movies..." onkeypress="handleSearch(event)">
         </div>
     </div>
@@ -67,6 +76,7 @@
         const apiKey = '4150581ccf3ec551c12884bbf92d041d';
         const proxyBase = 'https://gentle-rice-b132.adnanal8466.workers.dev';
         let currentMovieId = null;
+        let currentLang = 'all';
 
         async function fetchMovies(url) {
             const grid = document.getElementById('movieGrid');
@@ -86,7 +96,20 @@
         function loadTab(type, el) {
             document.querySelectorAll('.nav-link').forEach(i => i.classList.remove('active'));
             if(el) el.classList.add('active');
-            let url = (type === 'hi') ? `${proxyBase}/3/discover/movie?api_key=${apiKey}&with_original_language=hi` : (type === 'en') ? `${proxyBase}/3/discover/movie?api_key=${apiKey}&with_original_language=en` : `${proxyBase}/3/movie/popular?api_key=${apiKey}`;
+            document.getElementById('langSelect').value = 'all';
+            currentLang = 'all';
+            fetchMovies(`${proxyBase}/3/movie/popular?api_key=${apiKey}`);
+        }
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('.nav-link').forEach(i => i.classList.remove('active'));
+            let url = `${proxyBase}/3/movie/popular?api_key=${apiKey}`;
+            if(lang === 'hi') {
+                url = `${proxyBase}/3/discover/movie?api_key=${apiKey}&with_original_language=hi`;
+            } else if(lang === 'en') {
+                url = `${proxyBase}/3/discover/movie?api_key=${apiKey}&with_original_language=en`;
+            }
             fetchMovies(url);
         }
 
