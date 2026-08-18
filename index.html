@@ -63,9 +63,9 @@
     <div id="player">
         <div class="player-header">
             <div class="servers">
-                <button class="server-btn active-server" onclick="changeServer(1, this)">Server 1 (Vidsrc.to)</button>
-                <button class="server-btn" onclick="changeServer(2, this)">Server 2 (2Embed)</button>
-                <button class="server-btn" onclick="changeServer(3, this)">Server 3 (Vidsrc.su Multi-Audio)</button>
+                <button class="server-btn active-server" onclick="changeServer(1, this)">Server 1 (Vidsrc)</button>
+                <button class="server-btn" onclick="changeServer(2, this)">Server 2 (AutoEmbed)</button>
+                <button class="server-btn" onclick="changeServer(3, this)">Server 3 (MoviesAPI)</button>
             </div>
             <button class="close-btn" onclick="closePlayer()">✕ Close</button>
         </div>
@@ -135,9 +135,9 @@
             if(serverNum === 1) {
                 document.getElementById('vidFrame').src = `https://vidsrc.to/embed/movie/${currentMovieId}`;
             } else if(serverNum === 2) {
-                document.getElementById('vidFrame').src = `https://www.2embed.cc/embed/${currentMovieId}`;
+                document.getElementById('vidFrame').src = `https://player.autoembed.cc/embed/movie/${currentMovieId}`;
             } else if(serverNum === 3) {
-                document.getElementById('vidFrame').src = `https://vidsrc.su/embed/movie/${currentMovieId}`;
+                document.getElementById('vidFrame').src = `https://moviesapi.club/movie/${currentMovieId}`;
             }
         }
 
