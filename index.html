@@ -44,12 +44,12 @@
     <div class="app-bar">
         <div class="app-logo" onclick="loadTab('popular', document.querySelector('.nav-link'))">UNIVERSALESS</div>
         <div class="nav-links">
-            <button class="nav-link active" onclick="loadTab('popular', this)">Home</button>
+            <button class="nav-link active" onclick="loadTab('popular', this)">Trending Hollywood</button>
             
             <select class="lang-select" id="langSelect" onchange="changeLanguage(this.value)">
                 <option value="all">🌍 All Languages</option>
-                <option value="hi">🇮🇳 Hindi</option>
-                <option value="en">🇺🇸 English</option>
+                <option value="hi">🇮🇳 Hindi Dubbed / Audio</option>
+                <option value="en">🇺🇸 Hollywood Original (English)</option>
             </select>
 
             <input type="text" class="search-box" id="searchInput" placeholder="Search movies..." onkeypress="handleSearch(event)">
@@ -76,7 +76,6 @@
         const apiKey = '4150581ccf3ec551c12884bbf92d041d';
         const proxyBase = 'https://gentle-rice-b132.adnanal8466.workers.dev';
         let currentMovieId = null;
-        let currentLang = 'all';
 
         async function fetchMovies(url) {
             const grid = document.getElementById('movieGrid');
@@ -97,12 +96,10 @@
             document.querySelectorAll('.nav-link').forEach(i => i.classList.remove('active'));
             if(el) el.classList.add('active');
             document.getElementById('langSelect').value = 'all';
-            currentLang = 'all';
             fetchMovies(`${proxyBase}/3/movie/popular?api_key=${apiKey}`);
         }
 
         function changeLanguage(lang) {
-            currentLang = lang;
             document.querySelectorAll('.nav-link').forEach(i => i.classList.remove('active'));
             let url = `${proxyBase}/3/movie/popular?api_key=${apiKey}`;
             if(lang === 'hi') {
