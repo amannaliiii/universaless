@@ -4,25 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Universaless | OTT Streaming Platform</title>
+    <!-- CSS (Styling, OTT UI, QR Modal & VIP Lock Integration) -->
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background-color: #0b0c10; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow-x: hidden; }
 
-        /* Top Navbar */
+        /* Navbar Layout */
         .navbar { position: fixed; top: 0; left: 0; width: 100%; height: 70px; background: linear-gradient(to bottom, rgba(11,12,16,0.95), rgba(11,12,16,0.8)); backdrop-filter: blur(10px); display: flex; justify-content: space-between; align-items: center; padding: 0 40px; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .logo { font-size: 24px; font-weight: 900; color: #22c55e; letter-spacing: 2px; cursor: pointer; text-shadow: 0 0 10px rgba(34,197,94,0.3); }
-        .nav-menu { display: flex; gap: 20px; align-items: center; }
+        .nav-menu { display: flex; gap: 15px; align-items: center; }
         .nav-item { color: #d1d5db; font-size: 14px; font-weight: 600; cursor: pointer; background: none; border: none; padding: 6px 12px; border-radius: 6px; transition: 0.3s; }
         .nav-item:hover, .nav-item.active { color: #22c55e; background: rgba(34,197,94,0.1); }
         
-        .lang-dropdown { background: #1f2833; border: 1px solid #374151; color: white; padding: 8px 14px; border-radius: 8px; font-size: 14px; outline: none; cursor: pointer; }
-        .search-input { background: #1f2833; border: 1px solid #374151; color: white; padding: 8px 16px; border-radius: 8px; font-size: 14px; outline: none; width: 220px; transition: 0.3s; }
-        .search-input:focus { border-color: #22c55e; width: 260px; box-shadow: 0 0 10px rgba(34,197,94,0.2); }
+        .lang-dropdown { background: #1f2833; border: 1px solid #374151; color: white; padding: 8px 12px; border-radius: 8px; font-size: 14px; outline: none; cursor: pointer; }
+        .search-input { background: #1f2833; border: 1px solid #374151; color: white; padding: 8px 14px; border-radius: 8px; font-size: 14px; outline: none; width: 200px; transition: 0.3s; }
+        .search-input:focus { border-color: #22c55e; width: 240px; box-shadow: 0 0 10px rgba(34,197,94,0.2); }
+        
+        .telegram-btn { background: #229ED9; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 6px; transition: 0.3s; }
+        .telegram-btn:hover { background: #1c88bd; transform: scale(1.05); }
+        
+        .vip-btn { background: #f59e0b; color: #000; border: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; transition: 0.3s; }
+        .vip-btn:hover { background: #d97706; transform: scale(1.05); }
 
-        .auth-btn { background: #22c55e; color: #000; border: none; padding: 8px 18px; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.3s; }
+        .auth-btn { background: #22c55e; color: #000; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.3s; }
         .auth-btn:hover { background: #16a34a; transform: scale(1.05); }
 
-        /* Views Container */
+        /* View Sections */
         .view-section { display: none; margin-top: 70px; }
         .view-section.active-view { display: block; }
 
@@ -35,7 +42,7 @@
         .hero-btn { background: #22c55e; color: #000; border: none; padding: 12px 28px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(34,197,94,0.4); }
         .hero-btn:hover { background: #16a34a; transform: scale(1.05); }
 
-        /* Grid Section */
+        /* Movie Grid */
         .container { padding: 40px; max-width: 1400px; margin: 0 auto; }
         .section-title { font-size: 20px; font-weight: 800; margin-bottom: 20px; color: #e5e7eb; border-left: 4px solid #22c55e; padding-left: 10px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 25px; }
@@ -44,7 +51,7 @@
         .card img { width: 100%; height: 310px; object-fit: cover; }
         .card h3 { font-size: 14px; padding: 14px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #f3f4f6; font-weight: 600; }
 
-        /* Subscription / Pricing View */
+        /* Subscription / Pricing Design (₹10 to ₹550) */
         .pricing-container { max-width: 1100px; margin: 40px auto; padding: 20px; text-align: center; }
         .pricing-title { font-size: 32px; font-weight: 900; margin-bottom: 10px; color: #fff; }
         .pricing-subtitle { color: #9ca3af; margin-bottom: 40px; font-size: 16px; }
@@ -60,7 +67,16 @@
         .subscribe-btn { background: #1f2833; color: white; border: 1px solid #374151; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; width: 100%; }
         .price-card.popular .subscribe-btn, .subscribe-btn:hover { background: #22c55e; color: #000; border-color: #22c55e; }
 
-        /* Login Modal / View */
+        /* QR Payment Modal Styling */
+        #paymentModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; justify-content: center; align-items: center; }
+        .modal-content { background: #161b22; border: 1px solid #374151; border-radius: 16px; padding: 30px; width: 360px; text-align: center; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.8); }
+        .modal-content h3 { font-size: 22px; color: #fff; margin-bottom: 10px; }
+        .modal-content p { color: #9ca3af; font-size: 13px; margin-bottom: 20px; }
+        .qr-box { background: #fff; padding: 15px; border-radius: 12px; display: inline-block; margin-bottom: 20px; }
+        .qr-box img { width: 180px; height: 180px; display: block; }
+        .modal-close { position: absolute; top: 15px; right: 15px; background: #ef4444; color: white; border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; cursor: pointer; }
+
+        /* Login Form Design */
         .auth-container { max-width: 420px; margin: 60px auto; background: #161b22; border: 1px solid #1f2833; border-radius: 16px; padding: 40px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
         .auth-container h2 { font-size: 24px; font-weight: 900; margin-bottom: 25px; text-align: center; color: #fff; }
         .form-group { margin-bottom: 20px; text-align: left; }
@@ -84,12 +100,14 @@
 </head>
 <body>
 
-    <!-- Navbar -->
+    <!-- HTML Structure: Navbar with Telegram, VIP Unlock & Login -->
     <div class="navbar">
         <div class="logo" onclick="switchView('home', document.querySelector('.nav-item'))">UNIVERSALESS</div>
         <div class="nav-menu">
             <button class="nav-item active" onclick="switchView('home', this)">Home</button>
             <button class="nav-item" onclick="switchView('pricing', this)">Subscription</button>
+            <button class="vip-btn" onclick="unlockVIP()">🔐 Enter VIP Code</button>
+            <a href="https://t.me/Carderucpacker" target="_blank" class="telegram-btn">💬 Telegram</a>
             <select class="lang-dropdown" id="langSelect" onchange="changeLanguage(this.value)">
                 <option value="all">🌍 All Languages</option>
                 <option value="hi">🇮🇳 Hindi Dubbed</option>
@@ -100,7 +118,7 @@
         </div>
     </div>
 
-    <!-- 1. Home View -->
+    <!-- HTML Structure: 1. Home View -->
     <div id="homeView" class="view-section active-view">
         <div class="hero" id="heroBanner" style="background-image: url('');">
             <div class="hero-content">
@@ -115,11 +133,11 @@
         </div>
     </div>
 
-    <!-- 2. Subscription / Pricing View (₹10 to ₹550) -->
+    <!-- HTML Structure: 2. Subscription Pricing View (₹10 to ₹550) -->
     <div id="pricingView" class="view-section">
         <div class="pricing-container">
             <div class="pricing-title">Choose Your Plan</div>
-            <div class="pricing-subtitle">Unlimited movies, multi-audio support, and ad-free streaming.</div>
+            <div class="pricing-subtitle">Scan QR code to pay instantly & get VIP Access Code via Telegram.</div>
             
             <div class="pricing-grid">
                 <div class="price-card">
@@ -130,7 +148,7 @@
                         <li>HD Streaming Quality</li>
                         <li>All Servers Unlocked</li>
                     </ul>
-                    <button class="subscribe-btn" onclick="alert('Proceeding to checkout for ₹10...')">Buy Now</button>
+                    <button class="subscribe-btn" onclick="openQR('Mini Pass', '₹10')">Buy Now</button>
                 </div>
 
                 <div class="price-card">
@@ -141,7 +159,7 @@
                         <li>Full HD & Multi-Audio</li>
                         <li>Priority Server Speed</li>
                     </ul>
-                    <button class="subscribe-btn" onclick="alert('Proceeding to checkout for ₹99...')">Buy Now</button>
+                    <button class="subscribe-btn" onclick="openQR('Weekly Pass', '₹99')">Buy Now</button>
                 </div>
 
                 <div class="price-card popular">
@@ -154,7 +172,7 @@
                         <li>Hindi & English Audio Dubs</li>
                         <li>Zero Ads Experience</li>
                     </ul>
-                    <button class="subscribe-btn" onclick="alert('Proceeding to checkout for ₹299...')">Subscribe Now</button>
+                    <button class="subscribe-btn" onclick="openQR('Monthly Pro', '₹299')">Subscribe Now</button>
                 </div>
 
                 <div class="price-card">
@@ -166,13 +184,28 @@
                         <li>Early Access to New Releases</li>
                         <li>Dedicated Support</li>
                     </ul>
-                    <button class="subscribe-btn" onclick="alert('Proceeding to checkout for ₹550...')">Get VIP</button>
+                    <button class="subscribe-btn" onclick="openQR('Ultimate Annual', '₹550')">Get VIP</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 3. Login / Sign Up View -->
+    <!-- QR Payment Popup Modal -->
+    <div id="paymentModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeQR()">✕</button>
+            <h3 id="modalPlanTitle">Scan & Pay</h3>
+            <p id="modalPlanPrice">Amount: ₹0</p>
+            <div class="qr-box">
+                <!-- Yahan apni uploaded image ka naam (jaise qr.jpg) daal sakta hai, ya fir UPI link -->
+                <img id="qrImage" src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=8770380594@naviaxis&pn=Universaless" alt="UPI QR Code">
+            </div>
+            <p style="font-size:11px; color:#9ca3af; margin-bottom:15px;">Payment ke baad screenshot Telegram par bhej kar VIP code lein.</p>
+            <a href="https://t.me/Carderucpacker" target="_blank" class="telegram-btn" style="justify-content:center; width:100%;">Send Screenshot on Telegram</a>
+        </div>
+    </div>
+
+    <!-- HTML Structure: 3. Login View -->
     <div id="loginView" class="view-section">
         <div class="auth-container">
             <h2>Welcome to Universaless</h2>
@@ -190,19 +223,20 @@
         </div>
     </div>
 
-    <!-- Video Player Modal -->
+    <!-- HTML Structure: Video Player Modal -->
     <div id="player">
         <div class="player-header">
             <div class="servers">
-                <button class="server-btn active-server" onclick="changeServer(1, this)">Server 1 (Vidsrc)</button>
-                <button class="server-btn" onclick="changeServer(2, this)">Server 2 (AutoEmbed)</button>
-                <button class="server-btn" onclick="changeServer(3, this)">Server 3 (MoviesAPI)</button>
+                <button class="server-btn active-server" onclick="changeServer(1, this)">Server 1 (Free)</button>
+                <button class="server-btn" onclick="changeServer(2, this)">Server 2 (VIP)</button>
+                <button class="server-btn" onclick="changeServer(3, this)">Server 3 (VIP)</button>
             </div>
             <button class="close-btn" onclick="closePlayer()">✕ Close</button>
         </div>
         <iframe id="vidFrame" src="" allowfullscreen></iframe>
     </div>
 
+    <!-- JavaScript (Logic, API Fetching, QR Modal & VIP Security) -->
     <script>
         const apiKey = '4150581ccf3ec551c12884bbf92d041d';
         const proxyBase = 'https://gentle-rice-b132.adnanal8466.workers.dev';
@@ -218,6 +252,26 @@
             if(viewName === 'pricing') document.getElementById('pricingView').classList.add('active-view');
             if(viewName === 'login') document.getElementById('loginView').classList.add('active-view');
             window.scrollTo(0, 0);
+        }
+
+        function unlockVIP() {
+            const passcode = prompt("Enter your VIP Passcode received from @Carderucpacker on Telegram:");
+            if (passcode === "VIP-ADNAN-2026") {
+                localStorage.setItem("isVIP", "true");
+                alert("🎉 VIP Access Unlocked Successfully! Saare servers ab unlocked hain.");
+            } else if (passcode) {
+                alert("❌ Invalid Passcode! Pehle plan buy karke Telegram par contact karein.");
+            }
+        }
+
+        function openQR(planName, price) {
+            document.getElementById('modalPlanTitle').innerText = planName;
+            document.getElementById('modalPlanPrice').innerText = 'Amount to Pay: ' + price;
+            document.getElementById('paymentModal').style.display = 'flex';
+        }
+
+        function closeQR() {
+            document.getElementById('paymentModal').style.display = 'none';
         }
 
         function handleLogin(e) {
@@ -288,6 +342,14 @@
         }
 
         function changeServer(serverNum, el) {
+            // Check if user is VIP for Server 2 and 3
+            if (serverNum > 1 && localStorage.getItem("isVIP") !== "true") {
+                alert("🔒 Yeh Server VIP Members ke liye locked hai! Pehle Subscription le kar Telegram (@Carderucpacker) par VIP Code lein.");
+                switchView('pricing', null);
+                closePlayer();
+                return;
+            }
+
             document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active-server'));
             el.classList.add('active-server');
 
@@ -305,7 +367,7 @@
             document.getElementById('player').style.display = 'none';
         }
 
-        // Initial Load
+        // Initial Load on startup
         fetchMovies(`${proxyBase}/3/movie/popular?api_key=${apiKey}`);
     </script>
 </body>
