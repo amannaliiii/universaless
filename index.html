@@ -3,457 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Universaless | OTT Streaming Platform</title>
+    <title>Universaless - OTT Streaming</title>
+    <!-- Tailwind CSS CDN for quick and modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background-color: #0b0c10; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow-x: hidden; }
-
-        /* Navbar Layout */
-        .navbar { position: fixed; top: 0; left: 0; width: 100%; height: 70px; background: linear-gradient(to bottom, rgba(11,12,16,0.95), rgba(11,12,16,0.8)); backdrop-filter: blur(10px); display: flex; justify-content: space-between; align-items: center; padding: 0 40px; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .logo { font-size: 24px; font-weight: 900; color: #22c55e; letter-spacing: 2px; cursor: pointer; text-shadow: 0 0 10px rgba(34,197,94,0.3); }
-        .nav-menu { display: flex; gap: 15px; align-items: center; }
-        .nav-item { color: #d1d5db; font-size: 14px; font-weight: 600; cursor: pointer; background: none; border: none; padding: 6px 12px; border-radius: 6px; transition: 0.3s; }
-        .nav-item:hover, .nav-item.active { color: #22c55e; background: rgba(34,197,94,0.1); }
-        
-        .lang-dropdown { background: #1f2833; border: 1px solid #374151; color: white; padding: 8px 12px; border-radius: 8px; font-size: 14px; outline: none; cursor: pointer; }
-        .search-input { background: #1f2833; border: 1px solid #374151; color: white; padding: 8px 14px; border-radius: 8px; font-size: 14px; outline: none; width: 200px; transition: 0.3s; }
-        .search-input:focus { border-color: #22c55e; width: 240px; box-shadow: 0 0 10px rgba(34,197,94,0.2); }
-        
-        .telegram-btn { background: #229ED9; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 6px; transition: 0.3s; }
-        .telegram-btn:hover { background: #1c88bd; transform: scale(1.05); }
-        
-        .vip-btn { background: #f59e0b; color: #000; border: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; transition: 0.3s; }
-        .vip-btn:hover { background: #d97706; transform: scale(1.05); }
-
-        .auth-btn { background: #ef4444; color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; transition: 0.3s; }
-        .auth-btn:hover { background: #dc2626; }
-
-        /* View Sections */
-        .view-section { display: none; margin-top: 70px; }
-        .view-section.active-view { display: block; }
-
-        /* Hero Banner */
-        .hero { position: relative; width: 100%; height: 550px; background-size: cover; background-position: center; display: flex; align-items: flex-end; padding: 50px 40px; }
-        .hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, #0b0c10 0%, rgba(11,12,16,0.5) 50%, rgba(11,12,16,0.8) 100%); }
-        .hero-content { position: relative; z-index: 2; max-width: 600px; }
-        .hero-title { font-size: 42px; font-weight: 900; margin-bottom: 12px; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
-        .hero-desc { font-size: 14px; color: #9ca3af; margin-bottom: 20px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-        .hero-btn { background: #22c55e; color: #000; border: none; padding: 12px 28px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(34,197,94,0.4); }
-        .hero-btn:hover { background: #16a34a; transform: scale(1.05); }
-
-        /* Movie Grid */
-        .container { padding: 40px; max-width: 1400px; margin: 0 auto; }
-        .section-title { font-size: 20px; font-weight: 800; margin-bottom: 20px; color: #e5e7eb; border-left: 4px solid #22c55e; padding-left: 10px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 25px; }
-        .card { background: #161b22; border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; border: 1px solid rgba(255,255,255,0.05); }
-        .card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.6); border-color: #22c55e; }
-        .card img { width: 100%; height: 310px; object-fit: cover; }
-        .card h3 { font-size: 14px; padding: 14px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #f3f4f6; font-weight: 600; }
-
-        /* Subscription / Pricing Design */
-        .pricing-container { max-width: 1100px; margin: 40px auto; padding: 20px; text-align: center; }
-        .pricing-title { font-size: 32px; font-weight: 900; margin-bottom: 10px; color: #fff; }
-        .pricing-subtitle { color: #9ca3af; margin-bottom: 40px; font-size: 16px; }
-        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 25px; }
-        .price-card { background: #161b22; border: 1px solid #1f2833; border-radius: 16px; padding: 30px 20px; display: flex; flex-direction: column; justify-content: space-between; transition: 0.3s; position: relative; }
-        .price-card.popular { border-color: #22c55e; box-shadow: 0 0 25px rgba(34,197,94,0.15); transform: scale(1.03); }
-        .badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #22c55e; color: #000; font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; }
-        .price-card h3 { font-size: 20px; margin-bottom: 15px; color: #e5e7eb; }
-        .price { font-size: 36px; font-weight: 900; color: #22c55e; margin-bottom: 20px; }
-        .price span { font-size: 14px; color: #9ca3af; font-weight: normal; }
-        .features-list { list-style: none; margin-bottom: 30px; text-align: left; color: #9ca3af; font-size: 14px; line-height: 2; }
-        .features-list li::before { content: "✓ "; color: #22c55e; font-weight: bold; }
-        .subscribe-btn { background: #22c55e; color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; width: 100%; }
-        .subscribe-btn:hover { background: #16a34a; }
-
-        /* Modals (Payment & Post-Login VIP Popup) */
-        #paymentModal, #postLoginVIPModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; justify-content: center; align-items: center; }
-        .modal-content { background: #161b22; border: 1px solid #374151; border-radius: 16px; padding: 30px; width: 380px; text-align: center; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.8); }
-        .modal-content h3 { font-size: 22px; color: #fff; margin-bottom: 10px; }
-        .modal-content p { color: #9ca3af; font-size: 13px; margin-bottom: 20px; }
-        .pay-upi-btn { background: #22c55e; color: #000; text-decoration: none; display: block; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 15px; margin-bottom: 12px; transition: 0.3s; }
-        .pay-upi-btn:hover { background: #16a34a; }
-        .modal-close { position: absolute; top: 15px; right: 15px; background: #ef4444; color: white; border: none; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; cursor: pointer; }
-
-        /* Login Form */
-        .auth-container { max-width: 420px; margin: 100px auto; background: #161b22; border: 1px solid #1f2833; border-radius: 16px; padding: 40px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
-        .auth-container h2 { font-size: 24px; font-weight: 900; margin-bottom: 25px; text-align: center; color: #fff; }
-        .form-group { margin-bottom: 20px; text-align: left; }
-        .form-group label { display: block; font-size: 13px; color: #9ca3af; margin-bottom: 8px; font-weight: 600; }
-        .form-control { width: 100%; background: #0b0c10; border: 1px solid #374151; color: white; padding: 12px 15px; border-radius: 8px; font-size: 14px; outline: none; transition: 0.3s; }
-        .form-control:focus { border-color: #22c55e; box-shadow: 0 0 8px rgba(34,197,94,0.2); }
-        .submit-btn { width: 100%; background: #22c55e; color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-        .submit-btn:hover { background: #16a34a; }
-
-        /* Video Player Modal */
-        #player { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 2000; flex-direction: column; }
-        .player-header { display: flex; justify-content: space-between; align-items: center; background: #14151a; padding: 15px 30px; border-bottom: 1px solid #1f2833; }
-        .servers { display: flex; gap: 10px; overflow-x: auto; max-width: calc(100vw - 150px); padding-bottom: 5px; }
-        .server-btn { background: #1f2833; color: white; border: none; padding: 8px 14px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; border: 1px solid #374151; white-space: nowrap; }
-        .server-btn:hover { background: #374151; }
-        .server-btn.active-server { background: #22c55e; color: #000; border-color: #22c55e; box-shadow: 0 0 10px rgba(34,197,94,0.3); }
-        .close-btn { background: #ef4444; color: white; border: none; padding: 8px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .close-btn:hover { background: #dc2626; }
-        iframe { width: 100%; height: calc(100vh - 70px); border: none; background: #000; }
+        body {
+            background-color: #141414;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        /* Hide scrollbar for clean horizontal rows */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 </head>
-<body>
+<body class="min-h-screen">
 
-    <!-- Navbar -->
-    <div class="navbar">
-        <div class="logo" onclick="switchView('home', document.querySelector('.nav-item'))">UNIVERSALESS</div>
-        <div class="nav-menu">
-            <button class="nav-item" onclick="switchView('home', this)">Home</button>
-            <button class="nav-item" onclick="switchView('pricing', this)">Subscription</button>
-            <button class="vip-btn" onclick="unlockVIP()">🔐 Enter VIP Code</button>
-            <a href="https://t.me/Carderucpacker" target="_blank" class="telegram-btn">💬 Telegram</a>
-            <select class="lang-dropdown" id="langSelect" onchange="changeLanguage(this.value)">
-                <option value="all">🌍 All Languages</option>
-                <option value="hi">🇮🇳 Hindi Dubbed</option>
-                <option value="en">🇺🇸 Hollywood Original</option>
-            </select>
-            <input type="text" class="search-input" placeholder="Search movies..." onkeypress="handleSearch(event)">
-            <button class="auth-btn" onclick="logout()">Sign Out</button>
+    <!-- Top Navigation Bar -->
+    <header class="fixed top-0 w-full z-50 bg-gradient-to-b from-black/80 to-transparent px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center space-x-8">
+            <h1 class="text-2xl font-bold text-red-600 tracking-wider">UNIVERSALESS</h1>
+            <nav class="hidden md:flex space-x-6 text-sm font-medium text-gray-300">
+                <a href="#" class="hover:text-white transition">Home</a>
+                <a href="#" class="hover:text-white transition">Movies</a>
+                <a href="#" class="hover:text-white transition">Series</a>
+                <a href="#" class="hover:text-white transition">My List</a>
+            </nav>
         </div>
-    </div>
-
-    <!-- 1. Login View (Default Active View on Startup) -->
-    <div id="loginView" class="view-section active-view">
-        <div class="auth-container">
-            <h2>Welcome to Universaless</h2>
-            <form onsubmit="handleLogin(event)">
-                <div class="form-group">
-                    <label>Email Address</label>
-                    <input type="email" id="loginEmail" class="form-control" placeholder="name@example.com" required>
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="loginPass" class="form-control" placeholder="••••••••" required>
-                </div>
-                <button type="submit" class="submit-btn">Sign In</button>
-            </form>
+        <div class="flex items-center space-x-4">
+            <button class="bg-red-600 hover:bg-red-700 px-4 py-1.5 rounded text-sm font-semibold transition">Login</button>
         </div>
-    </div>
+    </header>
 
-    <!-- 2. Home View -->
-    <div id="homeView" class="view-section">
-        <div class="hero" id="heroBanner" style="background-image: url('');">
-            <div class="hero-content">
-                <div class="hero-title" id="heroTitle">Loading Featured...</div>
-                <div class="hero-desc" id="heroDesc">Please wait while we load the top trending movie for you.</div>
-                <button class="hero-btn" id="heroPlayBtn">▶ Play Now</button>
+    <!-- Hero Banner Section -->
+    <section class="relative h-[70vh] flex items-center px-6 md:px-12 bg-cover bg-center" style="background-image: linear-gradient(to top, #141414, rgba(20,20,20,0.4)), url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=1920&q=80');">
+        <div class="max-w-xl space-y-4 mt-20">
+            <span class="bg-red-600 text-xs font-bold px-2.5 py-1 rounded uppercase tracking-widest">Trending #1</span>
+            <h2 class="text-4xl md:text-6xl font-extrabold tracking-tight">Cyber Heist 2026</h2>
+            <p class="text-gray-300 text-sm md:text-base line-clamp-3">Ek high-stakes thriller jahan hackers ki team digital world ko badalne ke liye sabse bada attack plan karti hai.</p>
+            <div class="flex space-x-4 pt-2">
+                <button class="bg-white text-black hover:bg-gray-200 px-6 py-2.5 rounded font-bold flex items-center space-x-2 transition">
+                    <span>▶ Play Now</span>
+                </button>
+                <button class="bg-gray-600/70 hover:bg-gray-600 px-6 py-2.5 rounded font-bold text-white backdrop-blur transition">
+                    ℹ More Info
+                </button>
             </div>
         </div>
-        <div class="container">
-            <div class="section-title">Trending Hollywood & Hindi Movies</div>
-            <div class="grid" id="movieGrid"></div>
-        </div>
-    </div>
+    </section>
 
-    <!-- 3. Subscription View -->
-    <div id="pricingView" class="view-section">
-        <div class="pricing-container">
-            <div class="pricing-title">Choose Your Plan</div>
-            <div class="pricing-subtitle">Click 'Pay Now' to automatically open your UPI app with fixed amount.</div>
-            
-            <div class="pricing-grid">
-                <div class="price-card">
-                    <h3>Mini Pass</h3>
-                    <div class="price">₹10 <span>/ 1 Day</span></div>
-                    <ul class="features-list">
-                        <li>1 Day Full Access</li>
-                        <li>All 3 Free Servers</li>
-                        <li>Server 4 (VIP) Unlocked</li>
-                    </ul>
-                    <button class="subscribe-btn" onclick="openPayment('Mini Pass', '10')">Pay ₹10 Now</button>
+    <!-- Movie Rows Section -->
+    <main class="px-6 md:px-12 py-8 space-y-8">
+        <!-- Row 1: Trending Now -->
+        <div>
+            <h3 class="text-xl font-semibold mb-4 text-gray-200">Trending Now</h3>
+            <div class="flex space-x-4 overflow-x-auto no-scrollbar pb-4">
+                <!-- Card 1 -->
+                <div class="min-w-[200px] md:min-w-[240px] h-[135px] md:h-[140px] bg-gray-800 rounded-lg overflow-hidden flex-shrink-0 cursor-pointer hover:scale-105 transition transform duration-300">
+                    <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=500&q=80" class="w-full h-full object-cover" alt="Movie">
                 </div>
-
-                <div class="price-card">
-                    <h3>Weekly Pass</h3>
-                    <div class="price">₹99 <span>/ 7 Days</span></div>
-                    <ul class="features-list">
-                        <li>7 Days Full Access</li>
-                        <li>Servers 1 to 5 Unlocked</li>
-                        <li>Multi-Audio Support</li>
-                    </ul>
-                    <button class="subscribe-btn" onclick="openPayment('Weekly Pass', '99')">Pay ₹99 Now</button>
+                <!-- Card 2 -->
+                <div class="min-w-[200px] md:min-w-[240px] h-[135px] md:h-[140px] bg-gray-800 rounded-lg overflow-hidden flex-shrink-0 cursor-pointer hover:scale-105 transition transform duration-300">
+                    <img src="https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?auto=format&fit=crop&w=500&q=80" class="w-full h-full object-cover" alt="Movie">
                 </div>
-
-                <div class="price-card popular">
-                    <div class="badge">Most Popular</div>
-                    <h3>Monthly Pro</h3>
-                    <div class="price">₹299 <span>/ 30 Days</span></div>
-                    <ul class="features-list">
-                        <li>1 Month Unlimited</li>
-                        <li>Servers 1 to 6 Unlocked</li>
-                        <li>4K Ultra HD Quality</li>
-                        <li>Zero Ads Experience</li>
-                    </ul>
-                    <button class="subscribe-btn" onclick="openPayment('Monthly Pro', '299')">Pay ₹299 Now</button>
+                <!-- Card 3 -->
+                <div class="min-w-[200px] md:min-w-[240px] h-[135px] md:h-[140px] bg-gray-800 rounded-lg overflow-hidden flex-shrink-0 cursor-pointer hover:scale-105 transition transform duration-300">
+                    <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=500&q=80" class="w-full h-full object-cover" alt="Movie">
                 </div>
-
-                <div class="price-card">
-                    <h3>Ultimate Annual</h3>
-                    <div class="price">₹550 <span>/ Year</span></div>
-                    <ul class="features-list">
-                        <li>365 Days VIP Access</li>
-                        <li>All 7 Servers Unlocked (VIP)</li>
-                        <li>Priority Server Speed</li>
-                        <li>Dedicated Support</li>
-                    </ul>
-                    <button class="subscribe-btn" onclick="openPayment('Ultimate Annual', '550')">Pay ₹550 Now</button>
+                <!-- Card 4 -->
+                <div class="min-w-[200px] md:min-w-[240px] h-[135px] md:h-[140px] bg-gray-800 rounded-lg overflow-hidden flex-shrink-0 cursor-pointer hover:scale-105 transition transform duration-300">
+                    <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=500&q=80" class="w-full h-full object-cover" alt="Movie">
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
-    <!-- Post-Login VIP Popup Modal -->
-    <div id="postLoginVIPModal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closePostLoginModal()">✕</button>
-            <h3 style="color:#22c55e;">🔥 Upgrade to VIP</h3>
-            <p>Unlock all 7 premium multi-audio servers and enjoy zero-ads streaming starting at just ₹10!</p>
-            <button onclick="goToPricing()" class="pay-upi-btn" style="border:none; cursor:pointer; width:100%;">View Subscription Plans</button>
-            <button onclick="closePostLoginModal()" class="telegram-btn" style="justify-content:center; width:100%; background:#1f2833;">Continue with Free Plan</button>
-        </div>
-    </div>
-
-    <!-- Automatic Fixed UPI Payment Modal -->
-    <div id="paymentModal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closePaymentModal()">✕</button>
-            <h3 id="modalPlanTitle">Automatic Payment</h3>
-            <p id="modalPlanPrice">Amount: ₹0</p>
-            <a id="upiIntentLink" href="#" class="pay-upi-btn" target="_blank">📲 Pay Fixed Amount via UPI App</a>
-            <p style="font-size:11px; color:#9ca3af; margin-bottom:15px;">Payment complete hone ke baad niche button par click karein.</p>
-            <button onclick="instantUnlock()" class="telegram-btn" style="justify-content:center; width:100%; background:#22c55e; color:#000;">⚡ Instant Unlock (After Payment)</button>
-        </div>
-    </div>
-
-    <!-- Video Player Modal -->
-    <div id="player">
-        <div class="player-header">
-            <div class="servers">
-                <button class="server-btn active-server" onclick="changeServer(1, this)">Server 1 (Free)</button>
-                <button class="server-btn" onclick="changeServer(2, this)">Server 2 (Free)</button>
-                <button class="server-btn" onclick="changeServer(3, this)">Server 3 (Free)</button>
-                <button class="server-btn" onclick="changeServer(4, this)">Server 4 (VIP ₹10)</button>
-                <button class="server-btn" onclick="changeServer(5, this)">Server 5 (VIP ₹99)</button>
-                <button class="server-btn" onclick="changeServer(6, this)">Server 6 (VIP ₹299)</button>
-                <button class="server-btn" onclick="changeServer(7, this)">Server 7 (VIP ₹550)</button>
-            </div>
-            <button class="close-btn" onclick="closePlayer()">✕ Close</button>
-        </div>
-        <iframe id="vidFrame" src="" allowfullscreen></iframe>
-    </div>
-
-    <!-- JavaScript Logic -->
-    <script>
-        const apiKey = '4150581ccf3ec551c12884bbf92d041d';
-        const proxyBase = 'https://gentle-rice-b132.adnanal8466.workers.dev';
-        let currentMovieId = null;
-        let selectedTierLevel = 1;
-
-        function switchView(viewName, el) {
-            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active-view'));
-            if(el) {
-                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-                el.classList.add('active');
-            }
-            if(viewName === 'home') document.getElementById('homeView').classList.add('active-view');
-            if(viewName === 'pricing') document.getElementById('pricingView').classList.add('active-view');
-            if(viewName === 'login') document.getElementById('loginView').classList.add('active-view');
-            window.scrollTo(0, 0);
-        }
-
-        function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            if(email) {
-                localStorage.setItem("isLoggedIn", "true");
-                alert("Login Successful! Welcome to Universaless.");
-                // Switch to Home View
-                switchView('home', document.querySelector('.nav-item'));
-                fetchMovies(`${proxyBase}/3/movie/popular?api_key=${apiKey}`);
-                
-                // Show Post-Login VIP Popup after a brief moment
-                setTimeout(() => {
-                    document.getElementById('postLoginVIPModal').style.display = 'flex';
-                }, 800);
-            }
-        }
-
-        function logout() {
-            localStorage.removeItem("isLoggedIn");
-            switchView('login', null);
-        }
-
-        function closePostLoginModal() {
-            document.getElementById('postLoginVIPModal').style.display = 'none';
-        }
-
-        function goToPricing() {
-            closePostLoginModal();
-            switchView('pricing', document.querySelectorAll('.nav-item')[1]);
-        }
-
-        function unlockVIP() {
-            const passcode = prompt("Enter your Tier Passcode received from @Carderucpacker on Telegram:\n(MINI-10, WEEK-99, PRO-299, VIP-550)");
-            if (passcode === "MINI-10") {
-                localStorage.setItem("vipTier", "1");
-                alert("🎉 Mini Pass Activated! Server 4 unlocked.");
-            } else if (passcode === "WEEK-99") {
-                localStorage.setItem("vipTier", "2");
-                alert("🎉 Weekly Pass Activated! Servers 4 & 5 unlocked.");
-            } else if (passcode === "PRO-299") {
-                localStorage.setItem("vipTier", "3");
-                alert("🎉 Monthly Pro Unlocked! Servers 4, 5 & 6 unlocked.");
-            } else if (passcode === "VIP-550") {
-                localStorage.setItem("vipTier", "4");
-                alert("🎉 Ultimate VIP Unlocked! All 7 servers unlocked.");
-            } else if (passcode) {
-                alert("❌ Invalid Passcode!");
-            }
-        }
-
-        function openPayment(planName, amount) {
-            document.getElementById('modalPlanTitle').innerText = planName;
-            document.getElementById('modalPlanPrice').innerText = 'Fixed Amount: ₹' + amount;
-            
-            if (amount === '10') selectedTierLevel = 1;
-            else if (amount === '99') selectedTierLevel = 2;
-            else if (amount === '299') selectedTierLevel = 3;
-            else if (amount === '550') selectedTierLevel = 4;
-
-            const upiLink = `upi://pay?pa=8770380594@naviaxis&pn=Universaless&am=${amount}&cu=INR&tn=UniversalessSubscription`;
-            document.getElementById('upiIntentLink').href = upiLink;
-            
-            document.getElementById('paymentModal').style.display = 'flex';
-        }
-
-        function closePaymentModal() {
-            document.getElementById('paymentModal').style.display = 'none';
-        }
-
-        function instantUnlock() {
-            localStorage.setItem("vipTier", selectedTierLevel);
-            alert("🎉 Payment confirmed! Your VIP Tier has been successfully unlocked.");
-            closePaymentModal();
-        }
-
-        async function fetchMovies(url) {
-            const grid = document.getElementById('movieGrid');
-            grid.innerHTML = '<p style="text-align:center; grid-column:1/-1; color:#22c55e; font-size:18px; padding:60px;">Loading Movies...</p>';
-            try {
-                const res = await fetch(url);
-                const data = await res.json();
-                
-                if(data.results && data.results.length > 0) {
-                    const hero = data.results[0];
-                    document.getElementById('heroBanner').style.backgroundImage = `url(https://image.tmdb.org/t/p/original${hero.backdrop_path})`;
-                    document.getElementById('heroTitle').innerText = hero.title;
-                    document.getElementById('heroDesc').innerText = hero.overview;
-                    document.getElementById('heroPlayBtn').onclick = () => play(hero.id);
-
-                    grid.innerHTML = '';
-                    data.results.forEach(m => {
-                        if(m.poster_path) {
-                            grid.innerHTML += `
-                                <div class="card" onclick="play(${m.id})">
-                                    <img src="https://image.tmdb.org/t/p/w500${m.poster_path}" alt="${m.title}">
-                                    <h3>${m.title}</h3>
-                                </div>`;
-                        }
-                    });
-                }
-            } catch(e) { 
-                grid.innerHTML = '<p style="text-align:center; grid-column:1/-1; color:red; padding:60px;">Error loading content. Please check connection.</p>'; 
-            }
-        }
-
-        function changeLanguage(lang) {
-            let url = `${proxyBase}/3/movie/popular?api_key=${apiKey}`;
-            if(lang === 'hi') {
-                url = `${proxyBase}/3/discover/movie?api_key=${apiKey}&with_original_language=hi`;
-            } else if(lang === 'en') {
-                url = `${proxyBase}/3/discover/movie?api_key=${apiKey}&with_original_language=en`;
-            }
-            fetchMovies(url);
-        }
-
-        function handleSearch(e) {
-            if(e.key === 'Enter') {
-                const q = e.target.value.trim();
-                if(q) {
-                    switchView('home', document.querySelectorAll('.nav-item')[0]);
-                    fetchMovies(`${proxyBase}/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(q)}`);
-                }
-            }
-        }
-
-        function play(id) {
-            currentMovieId = id;
-            document.getElementById('vidFrame').src = `https://vidsrc.to/embed/movie/${id}`;
-            document.getElementById('player').style.display = 'flex';
-            
-            document.querySelectorAll('.server-btn').forEach((b, idx) => {
-                if(idx === 0) b.classList.add('active-server');
-                else b.classList.remove('active-server');
-            });
-        }
-
-        function changeServer(serverNum, el) {
-            const tier = parseInt(localStorage.getItem("vipTier") || "0");
-
-            if (serverNum === 4 && tier < 1) {
-                alert("🔒 Server 4 ke liye Mini Pass (₹10) ya usse upar ka plan chahiye!");
-                switchView('pricing', document.querySelectorAll('.nav-item')[1]);
-                closePlayer();
-                return;
-            }
-            if (serverNum === 5 && tier < 2) {
-                alert("🔒 Server 5 ke liye Weekly Pass (₹99) ya usse upar ka plan chahiye!");
-                switchView('pricing', document.querySelectorAll('.nav-item')[1]);
-                closePlayer();
-                return;
-            }
-            if (serverNum === 6 && tier < 3) {
-                alert("🔒 Server 6 ke liye Monthly Pro (₹299) ya usse upar ka plan chahiye!");
-                switchView('pricing', document.querySelectorAll('.nav-item')[1]);
-                closePlayer();
-                return;
-            }
-            if (serverNum === 7 && tier < 4) {
-                alert("🔒 Server 7 ke liye Ultimate Annual VIP (₹550) plan chahiye!");
-                switchView('pricing', document.querySelectorAll('.nav-item')[1]);
-                closePlayer();
-                return;
-            }
-
-            document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active-server'));
-            el.classList.add('active-server');
-
-            if(serverNum === 1) {
-                document.getElementById('vidFrame').src = `https://vidsrc.to/embed/movie/${currentMovieId}`;
-            } else if(serverNum === 2) {
-                document.getElementById('vidFrame').src = `https://vidsrc.cc/v2/embed/movie/${currentMovieId}`;
-            } else if(serverNum === 3) {
-                document.getElementById('vidFrame').src = `https://2embed.cc/embed/${currentMovieId}`;
-            } else if(serverNum === 4) {
-                document.getElementById('vidFrame').src = `https://vidsrc.su/embed/movie/${currentMovieId}`;
-            } else if(serverNum === 5) {
-                document.getElementById('vidFrame').src = `https://player.autoembed.cc/embed/movie/${currentMovieId}`;
-            } else if(serverNum === 6) {
-                document.getElementById('vidFrame').src = `https://vidlink.pro/embed/movie/${currentMovieId}`;
-            } else if(serverNum === 7) {
-                document.getElementById('vidFrame').src = `https://vidsrc.vip/embed/movie/${currentMovieId}`;
-            }
-        }
-
-        function closePlayer() {
-            document.getElementById('vidFrame').src = '';
-            document.getElementById('player').style.display = 'none';
-        }
-    </script>
 </body>
 </html>
