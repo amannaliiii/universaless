@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Universaless - OTT Streaming</title>
-    <!-- Tailwind CSS CDN for quick and modern styling -->
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -12,7 +12,6 @@
             color: #ffffff;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        /* Hide scrollbar for clean horizontal rows */
         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
@@ -47,7 +46,7 @@
             <h2 class="text-4xl md:text-6xl font-extrabold tracking-tight">Cyber Heist 2026</h2>
             <p class="text-gray-300 text-sm md:text-base line-clamp-3">Ek high-stakes thriller jahan hackers ki team digital world ko badalne ke liye sabse bada attack plan karti hai.</p>
             <div class="flex space-x-4 pt-2">
-                <button class="bg-white text-black hover:bg-gray-200 px-6 py-2.5 rounded font-bold flex items-center space-x-2 transition">
+                <button onclick="openPlayer('https://vidsrc.xyz/embed/movie/tt0111161')" class="bg-white text-black hover:bg-gray-200 px-6 py-2.5 rounded font-bold flex items-center space-x-2 transition cursor-pointer">
                     <span>▶ Play Now</span>
                 </button>
                 <button class="bg-gray-600/70 hover:bg-gray-600 px-6 py-2.5 rounded font-bold text-white backdrop-blur transition">
@@ -59,29 +58,51 @@
 
     <!-- Movie Rows Section -->
     <main class="px-6 md:px-12 py-8 space-y-8">
-        <!-- Row 1: Trending Now -->
         <div>
             <h3 class="text-xl font-semibold mb-4 text-gray-200">Trending Now</h3>
             <div class="flex space-x-4 overflow-x-auto no-scrollbar pb-4">
                 <!-- Card 1 -->
-                <div class="min-w-[200px] md:min-w-[240px] h-[135px] md:h-[140px] bg-gray-800 rounded-lg overflow-hidden flex-shrink-0 cursor-pointer hover:scale-105 transition transform duration-300">
+                <div onclick="openPlayer('https://vidsrc.xyz/embed/movie/tt0468569')" class="min-w-[200px] md:min-w-[240px] h-[135px] md:h-[140px] bg-gray-800 rounded-lg overflow-hidden flex-shrink-0 cursor-pointer hover:scale-105 transition transform duration-300">
                     <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=500&q=80" class="w-full h-full object-cover" alt="Movie">
                 </div>
                 <!-- Card 2 -->
-                <div class="min-w-[200px] md:min-w-[240px] h-[135px] md:h-[140px] bg-gray-800 rounded-lg overflow-hidden flex-shrink-0 cursor-pointer hover:scale-105 transition transform duration-300">
+                <div onclick="openPlayer('https://vidsrc.xyz/embed/movie/tt0816692')" class="min-w-[200px] md:min-w-[240px] h-[135px] md:h-[140px] bg-gray-800 rounded-lg overflow-hidden flex-shrink-0 cursor-pointer hover:scale-105 transition transform duration-300">
                     <img src="https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?auto=format&fit=crop&w=500&q=80" class="w-full h-full object-cover" alt="Movie">
                 </div>
                 <!-- Card 3 -->
-                <div class="min-w-[200px] md:min-w-[240px] h-[135px] md:h-[140px] bg-gray-800 rounded-lg overflow-hidden flex-shrink-0 cursor-pointer hover:scale-105 transition transform duration-300">
+                <div onclick="openPlayer('https://vidsrc.xyz/embed/movie/tt1375666')" class="min-w-[200px] md:min-w-[240px] h-[135px] md:h-[140px] bg-gray-800 rounded-lg overflow-hidden flex-shrink-0 cursor-pointer hover:scale-105 transition transform duration-300">
                     <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=500&q=80" class="w-full h-full object-cover" alt="Movie">
-                </div>
-                <!-- Card 4 -->
-                <div class="min-w-[200px] md:min-w-[240px] h-[135px] md:h-[140px] bg-gray-800 rounded-lg overflow-hidden flex-shrink-0 cursor-pointer hover:scale-105 transition transform duration-300">
-                    <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=500&q=80" class="w-full h-full object-cover" alt="Movie">
                 </div>
             </div>
         </div>
     </main>
+
+    <!-- Functional Video Player Modal (Hidden by default) -->
+    <div id="videoModal" class="fixed inset-0 z-50 bg-black/90 hidden flex flex-col items-center justify-center p-4">
+        <div class="w-full max-w-4xl flex justify-end mb-2">
+            <button onclick="closePlayer()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-1.5 rounded cursor-pointer transition">✕ Close Player</button>
+        </div>
+        <div class="w-full max-w-4xl h-[70vh] bg-black rounded-lg overflow-hidden shadow-2xl border border-gray-800">
+            <iframe id="videoFrame" src="" class="w-full h-full border-0" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <!-- JavaScript to Handle Streaming & Player -->
+    <script>
+        function openPlayer(streamUrl) {
+            const modal = document.getElementById('videoModal');
+            const iframe = document.getElementById('videoFrame');
+            iframe.src = streamUrl; // Load the streaming link dynamically
+            modal.classList.remove('hidden');
+        }
+
+        function closePlayer() {
+            const modal = document.getElementById('videoModal');
+            const iframe = document.getElementById('videoFrame');
+            iframe.src = ""; // Stop the video when closed
+            modal.classList.add('hidden');
+        }
+    </script>
 
 </body>
 </html>
