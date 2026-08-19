@@ -3,106 +3,633 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Universaless - OTT Streaming</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Universaless™ | Cyberpunk OTT Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --neon-pink: #FF007F;
+            --mustard-yellow: #FFE600;
+            --electric-cyan: #00F0FF;
+            --deep-black: #050508;
+            --acid-green: #39FF14;
+        }
+
         body {
-            background-color: #141414;
-            color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--deep-black);
+            color: #fff;
+            font-family: 'Space Grotesk', sans-serif;
+            overflow-x: hidden;
         }
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
+
+        /* Interactive Shader Canvas */
+        #shader-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
         }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
+
+        /* Dithering & Grain Overlay */
+        .dither-overlay {
+            position: fixed;
+            inset: 0;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 0);
+            background-size: 4px 4px;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.5;
         }
+
+        /* Groovy Marquee Ticker */
+        .marquee {
+            position: relative;
+            z-index: 100;
+            background: var(--mustard-yellow);
+            color: var(--deep-black);
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 13px;
+            text-transform: uppercase;
+            padding: 8px 0;
+            overflow: hidden;
+            white-space: nowrap;
+            border-bottom: 2px solid var(--deep-black);
+        }
+        .marquee-track {
+            display: inline-block;
+            animation: marquee 25s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Navbar Layout */
+        .navbar {
+            position: relative;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 30px;
+            background: rgba(5, 5, 8, 0.85);
+            backdrop-filter: blur(15px);
+            border-bottom: 2px dashed rgba(255, 255, 255, 0.15);
+        }
+        .logo {
+            font-family: 'Syne', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--acid-green);
+            letter-spacing: 1px;
+            cursor: pointer;
+            text-shadow: 2px 2px 0px var(--neon-pink);
+        }
+        .nav-menu { display: flex; gap: 10px; align-items: center; }
+        .nav-item { color: #d1d5db; font-size: 13px; font-weight: 700; cursor: pointer; background: none; border: none; padding: 6px 12px; border-radius: 6px; transition: 0.3s; text-transform: uppercase; }
+        .nav-item:hover, .nav-item.active { color: var(--deep-black); background: var(--electric-cyan); box-shadow: 0 0 10px var(--electric-cyan); }
+        
+        .lang-dropdown { background: #11131a; border: 1px solid rgba(255,255,255,0.2); color: white; padding: 6px 10px; border-radius: 6px; font-size: 12px; outline: none; cursor: pointer; font-weight: 600; }
+        .search-input { background: #11131a; border: 1px solid rgba(255,255,255,0.2); color: white; padding: 6px 12px; border-radius: 6px; font-size: 13px; outline: none; width: 130px; transition: 0.3s; }
+        .search-input:focus { border-color: var(--acid-green); width: 180px; box-shadow: 0 0 10px rgba(57,255,20,0.3); }
+        
+        .telegram-btn { background: #229ED9; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 12px; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 4px; transition: 0.3s; }
+        .telegram-btn:hover { background: #1c88bd; transform: scale(1.05); }
+        
+        .vip-btn { background: var(--mustard-yellow); color: var(--deep-black); border: none; padding: 6px 12px; border-radius: 6px; font-weight: 800; font-size: 12px; cursor: pointer; transition: 0.3s; }
+        .vip-btn:hover { background: var(--acid-green); transform: scale(1.05); }
+
+        .auth-btn { background: var(--neon-pink); color: #fff; border: none; padding: 6px 14px; border-radius: 6px; font-weight: 800; font-size: 13px; cursor: pointer; transition: 0.3s; }
+        .auth-btn:hover { background: #e0006e; box-shadow: 0 0 10px var(--neon-pink); }
+
+        /* View Sections */
+        .view-section { display: none; position: relative; z-index: 10; }
+        .view-section.active-view { display: block; }
+
+        /* Hero Banner */
+        .hero { position: relative; width: 100%; height: 460px; background-size: cover; background-position: center; display: flex; align-items: flex-end; padding: 40px 30px; border-bottom: 2px solid rgba(255,255,255,0.1); }
+        .hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, var(--deep-black) 0%, rgba(5,5,8,0.4) 60%, rgba(5,5,8,0.8) 100%); }
+        .hero-content { position: relative; z-index: 2; max-width: 100%; }
+        .hero-title { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; margin-bottom: 10px; color: #fff; text-shadow: 3px 3px 0px var(--neon-pink); text-transform: uppercase; }
+        .hero-desc { font-size: 13px; color: #cbd5e1; margin-bottom: 20px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; max-width: 700px; }
+        .hero-btn { background: var(--acid-green); color: var(--deep-black); border: none; padding: 12px 28px; font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 800; border-radius: 8px; cursor: pointer; transition: 0.3s; box-shadow: 4px 4px 0px #fff; }
+        .hero-btn:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0px var(--electric-cyan); }
+
+        /* Movie Grid & Badges */
+        .container { padding: 40px 30px; max-width: 1400px; margin: 0 auto; }
+        .section-title { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 25px; color: var(--electric-cyan); text-transform: uppercase; border-left: 5px solid var(--neon-pink); padding-left: 12px; text-shadow: 0 0 10px rgba(0,240,255,0.3); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 25px; }
+        .card { background: rgba(17, 19, 26, 0.85); border: 2px solid rgba(255,255,255,0.1); border-radius: 14px; overflow: hidden; cursor: pointer; transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s; backdrop-filter: blur(10px); position: relative; }
+        .card:hover { transform: translateY(-8px) rotate(0.5deg); border-color: var(--acid-green); box-shadow: 0 15px 30px rgba(57,255,20,0.2); }
+        .card img { width: 100%; height: 280px; object-fit: cover; }
+        .card h3 { font-size: 14px; padding: 14px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; font-weight: 700; font-family: 'Syne', sans-serif; }
+        
+        /* Coming Soon Badge */
+        .coming-soon-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--neon-pink);
+            color: white;
+            font-family: 'Syne', sans-serif;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 4px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            box-shadow: 0 0 10px var(--neon-pink);
+            letter-spacing: 0.5px;
+        }
+
+        /* Subscription / Pricing Design */
+        .pricing-container { max-width: 1100px; margin: 40px auto; padding: 20px; text-align: center; }
+        .pricing-title { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; margin-bottom: 10px; color: var(--electric-cyan); text-transform: uppercase; text-shadow: 2px 2px 0px var(--neon-pink); }
+        .pricing-subtitle { color: #94a3b8; margin-bottom: 40px; font-size: 15px; }
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 25px; }
+        .price-card { background: rgba(17, 19, 26, 0.9); border: 2px solid rgba(255,255,255,0.15); border-radius: 18px; padding: 30px 20px; display: flex; flex-direction: column; justify-content: space-between; transition: 0.3s; position: relative; backdrop-filter: blur(15px); }
+        .price-card.popular { border-color: var(--acid-green); box-shadow: 0 0 30px rgba(57,255,20,0.2); transform: scale(1.02); }
+        .badge { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: var(--acid-green); color: var(--deep-black); font-size: 11px; font-weight: 800; padding: 4px 14px; border-radius: 20px; text-transform: uppercase; font-family: 'Syne', sans-serif; }
+        .price-card h3 { font-family: 'Syne', sans-serif; font-size: 20px; margin-bottom: 15px; color: #fff; text-transform: uppercase; }
+        .price { font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800; color: var(--mustard-yellow); margin-bottom: 20px; }
+        .price span { font-size: 13px; color: #94a3b8; font-weight: normal; font-family: 'Space Grotesk', sans-serif; }
+        .features-list { list-style: none; margin-bottom: 25px; text-align: left; color: #cbd5e1; font-size: 13px; line-height: 2; }
+        .features-list li::before { content: "⚡ "; color: var(--acid-green); font-weight: bold; }
+        .subscribe-btn { background: var(--mustard-yellow); color: var(--deep-black); border: none; padding: 12px; border-radius: 8px; font-family: 'Syne', sans-serif; font-weight: 800; cursor: pointer; transition: 0.3s; width: 100%; font-size: 14px; text-transform: uppercase; box-shadow: 3px 3px 0px #fff; }
+        .subscribe-btn:hover { background: var(--acid-green); transform: translate(-2px, -2px); box-shadow: 5px 5px 0px var(--electric-cyan); }
+
+        /* Modals */
+        #paymentModal, #postLoginVIPModal { display: none; position: fixed; inset: 0; background: rgba(5,5,8,0.9); z-index: 3000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(10px); }
+        .modal-content { background: #11131a; border: 2px solid var(--electric-cyan); border-radius: 18px; padding: 30px; width: 100%; max-width: 380px; text-align: center; position: relative; box-shadow: 0 20px 50px rgba(0,240,255,0.2); }
+        .modal-content h3 { font-family: 'Syne', sans-serif; font-size: 22px; color: #fff; margin-bottom: 10px; text-transform: uppercase; }
+        .modal-content p { color: #94a3b8; font-size: 13px; margin-bottom: 20px; }
+        .pay-upi-btn { background: var(--acid-green); color: var(--deep-black); text-decoration: none; display: block; padding: 14px; border-radius: 8px; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 15px; margin-bottom: 12px; transition: 0.3s; text-transform: uppercase; box-shadow: 3px 3px 0px #fff; }
+        .pay-upi-btn:hover { background: var(--electric-cyan); transform: translate(-2px, -2px); }
+        .modal-close { position: absolute; top: 12px; right: 12px; background: var(--neon-pink); color: white; border: none; width: 28px; height: 28px; border-radius: 50%; font-weight: bold; cursor: pointer; font-size: 12px; }
+
+        /* Login Container */
+        .auth-container { max-width: 400px; margin: 100px auto; background: rgba(17, 19, 26, 0.9); border: 2px solid var(--neon-pink); border-radius: 18px; padding: 40px; box-shadow: 0 20px 50px rgba(255,0,127,0.2); backdrop-filter: blur(15px); }
+        .auth-container h2 { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; margin-bottom: 25px; text-align: center; color: #fff; text-transform: uppercase; text-shadow: 2px 2px 0px var(--neon-pink); }
+        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-group label { display: block; font-size: 12px; color: #94a3b8; margin-bottom: 8px; font-weight: 700; text-transform: uppercase; }
+        .form-control { width: 100%; background: var(--deep-black); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 12px 15px; border-radius: 8px; font-size: 14px; outline: none; transition: 0.3s; font-family: 'Space Grotesk', sans-serif; }
+        .form-control:focus { border-color: var(--electric-cyan); box-shadow: 0 0 10px rgba(0,240,255,0.3); }
+        .submit-btn { width: 100%; background: var(--acid-green); color: var(--deep-black); border: none; padding: 14px; border-radius: 8px; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.3s; margin-top: 10px; text-transform: uppercase; box-shadow: 4px 4px 0px #fff; }
+        .submit-btn:hover { background: var(--electric-cyan); transform: translate(-2px, -2px); }
+
+        /* Video Player */
+        #player { display: none; position: fixed; inset: 0; background: rgba(5,5,8,0.99); z-index: 2000; flex-direction: column; }
+        .player-header { display: flex; justify-content: space-between; align-items: center; background: #11131a; padding: 12px 25px; border-bottom: 2px solid rgba(255,255,255,0.1); gap: 15px; }
+        .servers { display: flex; gap: 8px; overflow-x: auto; max-width: calc(100vw - 120px); padding-bottom: 4px; }
+        .server-btn { background: var(--deep-black); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 8px 14px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; white-space: nowrap; font-family: 'Syne', sans-serif; }
+        .server-btn:hover { border-color: var(--electric-cyan); color: var(--electric-cyan); }
+        .server-btn.active-server { background: var(--acid-green); color: var(--deep-black); border-color: var(--acid-green); box-shadow: 0 0 12px var(--acid-green); }
+        .close-btn { background: var(--neon-pink); color: white; border: none; padding: 8px 18px; border-radius: 6px; font-weight: 800; cursor: pointer; font-size: 12px; font-family: 'Syne', sans-serif; text-transform: uppercase; }
+        .close-btn:hover { background: #e0006e; }
+        iframe { width: 100%; height: calc(100vh - 65px); border: none; background: #000; }
     </style>
 </head>
-<body class="min-h-screen">
+<body>
 
-    <!-- Top Navigation Bar -->
-    <header class="fixed top-0 w-full z-50 bg-gradient-to-b from-black/80 to-transparent px-6 py-4 flex justify-between items-center">
-        <div class="flex items-center space-x-8">
-            <h1 class="text-2xl font-bold text-red-600 tracking-wider">UNIVERSALESS</h1>
-            <nav class="hidden md:flex space-x-6 text-sm font-medium text-gray-300">
-                <a href="#" class="hover:text-white transition">Home</a>
-                <a href="#" class="hover:text-white transition">Movies</a>
-                <a href="#" class="hover:text-white transition">Series</a>
-                <a href="#" class="hover:text-white transition">My List</a>
-            </nav>
-        </div>
-        <div class="flex items-center space-x-4">
-            <button class="bg-red-600 hover:bg-red-700 px-4 py-1.5 rounded text-sm font-semibold transition">Login</button>
-        </div>
-    </header>
+    <!-- Dithering Grid Overlay -->
+    <div class="dither-overlay"></div>
 
-    <!-- Hero Banner Section -->
-    <section class="relative h-[70vh] flex items-center px-6 md:px-12 bg-cover bg-center" style="background-image: linear-gradient(to top, #141414, rgba(20,20,20,0.4)), url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=1920&q=80');">
-        <div class="max-w-xl space-y-4 mt-20">
-            <span class="bg-red-600 text-xs font-bold px-2.5 py-1 rounded uppercase tracking-widest">Trending #1</span>
-            <h2 class="text-4xl md:text-6xl font-extrabold tracking-tight">Cyber Heist 2026</h2>
-            <p class="text-gray-300 text-sm md:text-base line-clamp-3">Ek high-stakes thriller jahan hackers ki team digital world ko badalne ke liye sabse bada attack plan karti hai.</p>
-            <div class="flex space-x-4 pt-2">
-                <button onclick="openPlayer('https://vidsrc.xyz/embed/movie/tt0111161')" class="bg-white text-black hover:bg-gray-200 px-6 py-2.5 rounded font-bold flex items-center space-x-2 transition cursor-pointer">
-                    <span>▶ Play Now</span>
-                </button>
-                <button class="bg-gray-600/70 hover:bg-gray-600 px-6 py-2.5 rounded font-bold text-white backdrop-blur transition">
-                    ℹ More Info
-                </button>
-            </div>
-        </div>
-    </section>
+    <!-- Interactive Groovy Shader Background -->
+    <canvas id="shader-canvas"></canvas>
 
-    <!-- Movie Rows Section -->
-    <main class="px-6 md:px-12 py-8 space-y-8">
-        <div>
-            <h3 class="text-xl font-semibold mb-4 text-gray-200">Trending Now</h3>
-            <div class="flex space-x-4 overflow-x-auto no-scrollbar pb-4">
-                <!-- Card 1 -->
-                <div onclick="openPlayer('https://vidsrc.xyz/embed/movie/tt0468569')" class="min-w-[200px] md:min-w-[240px] h-[135px] md:h-[140px] bg-gray-800 rounded-lg overflow-hidden flex-shrink-0 cursor-pointer hover:scale-105 transition transform duration-300">
-                    <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=500&q=80" class="w-full h-full object-cover" alt="Movie">
-                </div>
-                <!-- Card 2 -->
-                <div onclick="openPlayer('https://vidsrc.xyz/embed/movie/tt0816692')" class="min-w-[200px] md:min-w-[240px] h-[135px] md:h-[140px] bg-gray-800 rounded-lg overflow-hidden flex-shrink-0 cursor-pointer hover:scale-105 transition transform duration-300">
-                    <img src="https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?auto=format&fit=crop&w=500&q=80" class="w-full h-full object-cover" alt="Movie">
-                </div>
-                <!-- Card 3 -->
-                <div onclick="openPlayer('https://vidsrc.xyz/embed/movie/tt1375666')" class="min-w-[200px] md:min-w-[240px] h-[135px] md:h-[140px] bg-gray-800 rounded-lg overflow-hidden flex-shrink-0 cursor-pointer hover:scale-105 transition transform duration-300">
-                    <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=500&q=80" class="w-full h-full object-cover" alt="Movie">
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Functional Video Player Modal (Hidden by default) -->
-    <div id="videoModal" class="fixed inset-0 z-50 bg-black/90 hidden flex flex-col items-center justify-center p-4">
-        <div class="w-full max-w-4xl flex justify-end mb-2">
-            <button onclick="closePlayer()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-1.5 rounded cursor-pointer transition">✕ Close Player</button>
-        </div>
-        <div class="w-full max-w-4xl h-[70vh] bg-black rounded-lg overflow-hidden shadow-2xl border border-gray-800">
-            <iframe id="videoFrame" src="" class="w-full h-full border-0" allowfullscreen></iframe>
+    <!-- Groovy Marquee Ticker -->
+    <div class="marquee">
+        <div class="marquee-track">
+            ⚡ UNIVERSALESS OTT 🌭 7 CYBER SERVERS UNLOCKED ⚡ INSTANT UPI PAYMENTS 🎬 STREAM HINDI & HOLLYWOOD IN 4K ⚡ UNIVERSALESS OTT 🌭 7 CYBER SERVERS UNLOCKED ⚡ INSTANT UPI PAYMENTS 🎬 STREAM HINDI & HOLLYWOOD IN 4K ⚡
         </div>
     </div>
 
-    <!-- JavaScript to Handle Streaming & Player -->
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo" onclick="switchView('home', document.querySelector('.nav-item'))">UNIVERSALESS</div>
+        <div class="nav-menu">
+            <button class="nav-item" onclick="switchView('home', this)">Home</button>
+            <button class="nav-item" onclick="switchView('pricing', this)">VIP Pass</button>
+            <button class="vip-btn" onclick="unlockVIP()">🔑 Code</button>
+            <a href="https://t.me/Carderucpacker" target="_blank" class="telegram-btn">💬 TG</a>
+            <select class="lang-dropdown" id="langSelect" onchange="changeLanguage(this.value)">
+                <option value="all">🌍 All</option>
+                <option value="hi">🇮🇳 Hindi</option>
+                <option value="en">🇺🇸 Eng</option>
+            </select>
+            <input type="text" class="search-input" placeholder="Search..." onkeypress="handleSearch(event)">
+            <button class="auth-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <!-- 1. Login View -->
+    <div id="loginView" class="view-section active-view">
+        <div class="auth-container">
+            <h2>System Access</h2>
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Cyber Email</label>
+                    <input type="email" id="loginEmail" class="form-control" placeholder="user@universaless.net" required>
+                </div>
+                <div class="form-group">
+                    <label>Neural Password</label>
+                    <input type="password" id="loginPass" class="form-control" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="submit-btn">Initialize Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. Home View -->
+    <div id="homeView" class="view-section">
+        <div class="hero" id="heroBanner" style="background-image: url('');">
+            <div class="hero-content">
+                <div class="hero-title" id="heroTitle">Loading Featured...</div>
+                <div class="hero-desc" id="heroDesc">Please wait while we load the top trending cinematic release for you.</div>
+                <button class="hero-btn" id="heroPlayBtn">▶ Play Stream Now</button>
+            </div>
+        </div>
+        <div class="container">
+            <div class="section-title">Trending Cyber Library</div>
+            <div class="grid" id="movieGrid"></div>
+        </div>
+    </div>
+
+    <!-- 3. Subscription View -->
+    <div id="pricingView" class="view-section">
+        <div class="pricing-container">
+            <div class="pricing-title">VIP Access Protocols</div>
+            <div class="pricing-subtitle">Select your tier and execute automatic fixed-amount UPI transfer.</div>
+            
+            <div class="pricing-grid">
+                <div class="price-card">
+                    <h3>Mini Pass</h3>
+                    <div class="price">₹10 <span>/ 1 Day</span></div>
+                    <ul class="features-list">
+                        <li>1 Day Full Access</li>
+                        <li>All 3 Free Servers</li>
+                        <li>Server 4 (VIP) Unlocked</li>
+                    </ul>
+                    <button class="subscribe-btn" onclick="openPayment('Mini Pass', '10')">Pay ₹10 Now</button>
+                </div>
+
+                <div class="price-card">
+                    <h3>Weekly Pass</h3>
+                    <div class="price">₹99 <span>/ 7 Days</span></div>
+                    <ul class="features-list">
+                        <li>7 Days Full Access</li>
+                        <li>Servers 1 to 5 Unlocked</li>
+                        <li>Multi-Audio Support</li>
+                    </ul>
+                    <button class="subscribe-btn" onclick="openPayment('Weekly Pass', '99')">Pay ₹99 Now</button>
+                </div>
+
+                <div class="price-card popular">
+                    <div class="badge">Most Popular</div>
+                    <h3>Monthly Pro</h3>
+                    <div class="price">₹299 <span>/ 30 Days</span></div>
+                    <ul class="features-list">
+                        <li>1 Month Unlimited</li>
+                        <li>Servers 1 to 6 Unlocked</li>
+                        <li>4K Ultra HD Quality</li>
+                        <li>Zero Ads Experience</li>
+                    </ul>
+                    <button class="subscribe-btn" onclick="openPayment('Monthly Pro', '299')">Pay ₹299 Now</button>
+                </div>
+
+                <div class="price-card">
+                    <h3>Ultimate Annual</h3>
+                    <div class="price">₹550 <span>/ Year</span></div>
+                    <ul class="features-list">
+                        <li>365 Days VIP Access</li>
+                        <li>All 7 Servers Unlocked (VIP)</li>
+                        <li>Priority Server Speed</li>
+                        <li>Dedicated Support</li>
+                    </ul>
+                    <button class="subscribe-btn" onclick="openPayment('Ultimate Annual', '550')">Pay ₹550 Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Post-Login VIP Popup Modal -->
+    <div id="postLoginVIPModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closePostLoginModal()">✕</button>
+            <h3 style="color:var(--acid-green);">🔥 Upgrade to VIP</h3>
+            <p>Unlock all 7 premium multi-audio servers and enjoy zero-ads streaming starting at just ₹10!</p>
+            <button onclick="goToPricing()" class="pay-upi-btn" style="border:none; cursor:pointer; width:100%;">View Subscription Plans</button>
+            <button onclick="closePostLoginModal()" class="telegram-btn" style="justify-content:center; width:100%; background:#1f2833; margin-top:8px;">Continue with Free Plan</button>
+        </div>
+    </div>
+
+    <!-- Automatic Fixed UPI Payment Modal -->
+    <div id="paymentModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closePaymentModal()">✕</button>
+            <h3 id="modalPlanTitle">Automatic Payment</h3>
+            <p id="modalPlanPrice">Amount: ₹0</p>
+            <a id="upiIntentLink" href="#" class="pay-upi-btn" target="_blank">📲 Pay Fixed Amount via UPI App</a>
+            <p style="font-size:11px; color:#9ca3af; margin-bottom:12px;">Payment complete hone ke baad niche button par click karein.</p>
+            <button onclick="instantUnlock()" class="telegram-btn" style="justify-content:center; width:100%; background:var(--acid-green); color:var(--deep-black); font-weight:800;">⚡ Instant Unlock (After Payment)</button>
+        </div>
+    </div>
+
+    <!-- Video Player Modal -->
+    <div id="player">
+        <div class="player-header">
+            <div class="servers">
+                <button class="server-btn active-server" onclick="changeServer(1, this)">Server 1 (Free)</button>
+                <button class="server-btn" onclick="changeServer(2, this)">Server 2 (Free)</button>
+                <button class="server-btn" onclick="changeServer(3, this)">Server 3 (Free)</button>
+                <button class="server-btn" onclick="changeServer(4, this)">Server 4 (VIP ₹10)</button>
+                <button class="server-btn" onclick="changeServer(5, this)">Server 5 (VIP ₹99)</button>
+                <button class="server-btn" onclick="changeServer(6, this)">Server 6 (VIP ₹299)</button>
+                <button class="server-btn" onclick="changeServer(7, this)">Server 7 (VIP ₹550)</button>
+            </div>
+            <button class="close-btn" onclick="closePlayer()">✕ Close</button>
+        </div>
+        <iframe id="vidFrame" src="" allowfullscreen></iframe>
+    </div>
+
+    <!-- JavaScript Logic & Wave Shader -->
     <script>
-        function openPlayer(streamUrl) {
-            const modal = document.getElementById('videoModal');
-            const iframe = document.getElementById('videoFrame');
-            iframe.src = streamUrl; // Load the streaming link dynamically
-            modal.classList.remove('hidden');
+        // Interactive Wavy Shader Background
+        const canvas = document.getElementById('shader-canvas');
+        const ctx = canvas.getContext('2d');
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
+
+        let mouse = { x: width / 2, y: height / 2, targetX: width / 2, targetY: height / 2 };
+        window.addEventListener('mousemove', (e) => {
+            mouse.targetX = e.clientX;
+            mouse.targetY = e.clientY;
+        });
+
+        let time = 0;
+        function animateShader() {
+            mouse.x += (mouse.targetX - mouse.x) * 0.05;
+            mouse.y += (mouse.targetY - mouse.y) * 0.05;
+
+            ctx.fillStyle = '#050508';
+            ctx.fillRect(0, 0, width, height);
+            time += 0.015;
+
+            const numWaves = 5;
+            for (let i = 0; i < numWaves; i++) {
+                ctx.beginPath();
+                ctx.moveTo(0, height);
+
+                for (let x = 0; x < width; x += 30) {
+                    const dx = x - mouse.x;
+                    const dy = height * 0.5 - mouse.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const mouseEffect = Math.sin(distance * 0.004 - time * 2) * 40;
+
+                    const y = height * 0.5 + 
+                              Math.sin(x * 0.002 + time + i * 0.6) * (70 + i * 20) + 
+                              Math.cos(x * 0.004 - time * 1.2) * 30 +
+                              mouseEffect * (1 - x / width);
+
+                    ctx.lineTo(x, y);
+                }
+
+                ctx.lineTo(width, height);
+                ctx.closePath();
+
+                const colors = [
+                    'rgba(255, 0, 127, 0.12)', // Neon Pink
+                    'rgba(255, 230, 0, 0.08)',  // Mustard
+                    'rgba(0, 240, 255, 0.09)',  // Cyan
+                    'rgba(57, 255, 20, 0.06)'   // Acid Green
+                ];
+                ctx.fillStyle = colors[i % colors.length];
+                ctx.fill();
+            }
+            requestAnimationFrame(animateShader);
+        }
+        animateShader();
+
+        // OTT App Logic
+        const apiKey = '4150581ccf3ec551c12884bbf92d041d';
+        const proxyBase = 'https://gentle-rice-b132.adnanal8466.workers.dev';
+        let currentMovieId = null;
+        let selectedTierLevel = 1;
+
+        function switchView(viewName, el) {
+            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active-view'));
+            if(el) {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                el.classList.add('active');
+            }
+            if(viewName === 'home') document.getElementById('homeView').classList.add('active-view');
+            if(viewName === 'pricing') document.getElementById('pricingView').classList.add('active-view');
+            if(viewName === 'login') document.getElementById('loginView').classList.add('active-view');
+            window.scrollTo(0, 0);
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            if(email) {
+                localStorage.setItem("isLoggedIn", "true");
+                switchView('home', document.querySelector('.nav-item'));
+                fetchMovies(`${proxyBase}/3/movie/popular?api_key=${apiKey}`);
+                
+                setTimeout(() => {
+                    document.getElementById('postLoginVIPModal').style.display = 'flex';
+                }, 800);
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem("isLoggedIn");
+            switchView('login', null);
+        }
+
+        function closePostLoginModal() {
+            document.getElementById('postLoginVIPModal').style.display = 'none';
+        }
+
+        function goToPricing() {
+            closePostLoginModal();
+            switchView('pricing', document.querySelectorAll('.nav-item')[1]);
+        }
+
+        function unlockVIP() {
+            const passcode = prompt("Enter your Tier Passcode received from @Carderucpacker on Telegram:\n(MINI-10, WEEK-99, PRO-299, VIP-550)");
+            if (passcode === "MINI-10") {
+                localStorage.setItem("vipTier", "1");
+                alert("🎉 Mini Pass Activated! Server 4 unlocked.");
+            } else if (passcode === "WEEK-99") {
+                localStorage.setItem("vipTier", "2");
+                alert("🎉 Weekly Pass Activated! Servers 4 & 5 unlocked.");
+            } else if (passcode === "PRO-299") {
+                localStorage.setItem("vipTier", "3");
+                alert("🎉 Monthly Pro Unlocked! Servers 4, 5 & 6 unlocked.");
+            } else if (passcode === "VIP-550") {
+                localStorage.setItem("vipTier", "4");
+                alert("🎉 Ultimate VIP Unlocked! All 7 servers unlocked.");
+            } else if (passcode) {
+                alert("❌ Invalid Passcode!");
+            }
+        }
+
+        function openPayment(planName, amount) {
+            document.getElementById('modalPlanTitle').innerText = planName;
+            document.getElementById('modalPlanPrice').innerText = 'Fixed Amount: ₹' + amount;
+            
+            if (amount === '10') selectedTierLevel = 1;
+            else if (amount === '99') selectedTierLevel = 2;
+            else if (amount === '299') selectedTierLevel = 3;
+            else if (amount === '550') selectedTierLevel = 4;
+
+            const upiLink = `upi://pay?pa=8770380594@naviaxis&pn=Universaless&am=${amount}&cu=INR&tn=UniversalessSubscription`;
+            document.getElementById('upiIntentLink').href = upiLink;
+            document.getElementById('paymentModal').style.display = 'flex';
+        }
+
+        function closePaymentModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+        }
+
+        function instantUnlock() {
+            localStorage.setItem("vipTier", selectedTierLevel);
+            alert("🎉 Payment confirmed! Your VIP Tier has been successfully unlocked.");
+            closePaymentModal();
+        }
+
+        async function fetchMovies(url) {
+            const grid = document.getElementById('movieGrid');
+            grid.innerHTML = '<p style="text-align:center; grid-column:1/-1; color:var(--acid-green); font-size:16px; padding:40px; font-family:\'Syne\',sans-serif;">Loading Cyber Streams...</p>';
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+                
+                if(data.results && data.results.length > 0) {
+                    const hero = data.results[0];
+                    const todayDate = new Date();
+                    const heroRelease = new Date(hero.release_date || '2020-01-01');
+                    const isHeroComingSoon = heroRelease > todayDate;
+
+                    document.getElementById('heroBanner').style.backgroundImage = `url(https://image.tmdb.org/t/p/original${hero.backdrop_path})`;
+                    document.getElementById('heroTitle').innerText = hero.title + (isHeroComingSoon ? " [COMING SOON]" : "");
+                    document.getElementById('heroDesc').innerText = hero.overview;
+                    
+                    if (isHeroComingSoon) {
+                        document.getElementById('heroPlayBtn').innerText = "⏳ Coming Soon";
+                        document.getElementById('heroPlayBtn').onclick = () => alert("⏳ Yeh movie abhi release nahi hui hai! Jald hi aayegi.");
+                    } else {
+                        document.getElementById('heroPlayBtn').innerText = "▶ Play Stream Now";
+                        document.getElementById('heroPlayBtn').onclick = () => play(hero.id);
+                    }
+
+                    grid.innerHTML = '';
+                    data.results.forEach(m => {
+                        if(m.poster_path) {
+                            const releaseDate = new Date(m.release_date || '2020-01-01');
+                            const isComingSoon = releaseDate > todayDate;
+                            
+                            const badgeHTML = isComingSoon ? `<div class="coming-soon-badge">Coming Soon</div>` : '';
+                            const clickAction = isComingSoon ? `alert('⏳ ${m.title} is Coming Soon! Release date: ${m.release_date}')` : `play(${m.id})`;
+
+                            grid.innerHTML += `
+                                <div class="card" onclick="${clickAction}">
+                                    ${badgeHTML}
+                                    <img src="https://image.tmdb.org/t/p/w500${m.poster_path}" alt="${m.title}">
+                                    <h3>${m.title}</h3>
+                                </div>`;
+                        }
+                    });
+                }
+            } catch(e) { 
+                grid.innerHTML = '<p style="text-align:center; grid-column:1/-1; color:var(--neon-pink); padding:40px;">Error loading content. Check neural connection.</p>'; 
+            }
+        }
+
+        function changeLanguage(lang) {
+            let url = `${proxyBase}/3/movie/popular?api_key=${apiKey}`;
+            if(lang === 'hi') {
+                url = `${proxyBase}/3/discover/movie?api_key=${apiKey}&with_original_language=hi`;
+            } else if(lang === 'en') {
+                url = `${proxyBase}/3/discover/movie?api_key=${apiKey}&with_original_language=en`;
+            }
+            fetchMovies(url);
+        }
+
+        function handleSearch(e) {
+            if(e.key === 'Enter') {
+                const q = e.target.value.trim();
+                if(q) {
+                    switchView('home', document.querySelectorAll('.nav-item')[0]);
+                    fetchMovies(`${proxyBase}/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(q)}`);
+                }
+            }
+        }
+
+        function play(id) {
+            currentMovieId = id;
+            document.getElementById('vidFrame').src = `https://vidsrc.to/embed/movie/${id}`;
+            document.getElementById('player').style.display = 'flex';
+            
+            document.querySelectorAll('.server-btn').forEach((b, idx) => {
+                if(idx === 0) b.classList.add('active-server');
+                else b.classList.remove('active-server');
+            });
+        }
+
+        function changeServer(serverNum, el) {
+            const tier = parseInt(localStorage.getItem("vipTier") || "0");
+
+            if (serverNum === 4 && tier < 1) {
+                alert("🔒 Server 4 requires Mini Pass (₹10) or higher!");
+                switchView('pricing', document.querySelectorAll('.nav-item')[1]);
+                closePlayer();
+                return;
+            }
+            if (serverNum === 5 && tier < 2) {
+                alert("🔒 Server 5 requires Weekly Pass (₹99) or higher!");
+                switchView('pricing', document.querySelectorAll('.nav-item')[1]);
+                closePlayer();
+                return;
+            }
+            if (serverNum === 6 && tier < 3) {
+                alert("🔒 Server 6 requires Monthly Pro (₹299) or higher!");
+                switchView('pricing', document.querySelectorAll('.nav-item')[1]);
+                closePlayer();
+                return;
+            }
+            if (serverNum === 7 && tier < 4) {
+                alert("🔒 Server 7 requires Ultimate Annual VIP (₹550) plan!");
+                switchView('pricing', document.querySelectorAll('.nav-item')[1]);
+                closePlayer();
+                return;
+            }
+
+            document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active-server'));
+            el.classList.add('active-server');
+
+            if(serverNum === 1) document.getElementById('vidFrame').src = `https://vidsrc.to/embed/movie/${currentMovieId}`;
+            else if(serverNum === 2) document.getElementById('vidFrame').src = `https://vidsrc.cc/v2/embed/movie/${currentMovieId}`;
+            else if(serverNum === 3) document.getElementById('vidFrame').src = `https://2embed.cc/embed/${currentMovieId}`;
+            else if(serverNum === 4) document.getElementById('vidFrame').src = `https://vidsrc.su/embed/movie/${currentMovieId}`;
+            else if(serverNum === 5) document.getElementById('vidFrame').src = `https://player.autoembed.cc/embed/movie/${currentMovieId}`;
+            else if(serverNum === 6) document.getElementById('vidFrame').src = `https://vidlink.pro/embed/movie/${currentMovieId}`;
+            else if(serverNum === 7) document.getElementById('vidFrame').src = `https://vidsrc.vip/embed/movie/${currentMovieId}`;
         }
 
         function closePlayer() {
-            const modal = document.getElementById('videoModal');
-            const iframe = document.getElementById('videoFrame');
-            iframe.src = ""; // Stop the video when closed
-            modal.classList.add('hidden');
+            document.getElementById('vidFrame').src = '';
+            document.getElementById('player').style.display = 'none';
         }
     </script>
-
 </body>
 </html>
