@@ -179,6 +179,9 @@
         .form-control:focus { border-color: var(--electric-cyan); box-shadow: 0 0 10px rgba(0,240,255,0.3); }
         .submit-btn { width: 100%; background: var(--acid-green); color: var(--deep-black); border: none; padding: 14px; border-radius: 8px; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.3s; margin-top: 10px; text-transform: uppercase; box-shadow: 4px 4px 0px #fff; }
         .submit-btn:hover { background: var(--electric-cyan); transform: translate(-2px, -2px); }
+        
+        /* 2FA Input Custom Styling */
+        #otpCode { text-align: center; letter-spacing: 12px; font-size: 22px; font-weight: bold; }
 
         /* Video Player */
         #player { display: none; position: fixed; inset: 0; background: rgba(5,5,8,0.99); z-index: 2000; flex-direction: column; }
@@ -191,6 +194,16 @@
         .close-btn:hover { background: #e0006e; }
         iframe { width: 100%; height: calc(100vh - 65px); border: none; background: #000; }
     </style>
+
+    <!-- EmailJS SDK Initialization -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function(){
+            emailjs.init({
+                publicKey: "F9sqNCN9LoRcE9FC1",
+            });
+        })();
+    </script>
 </head>
 <body>
 
@@ -228,18 +241,32 @@
     <!-- 1. Login View -->
     <div id="loginView" class="view-section active-view">
         <div class="auth-container">
-            <h2>System Access</h2>
-            <form onsubmit="handleLogin(event)">
+            <h2 id="authTitle">System Access</h2>
+            
+            <!-- Step 1: Initial Login Form -->
+            <form id="loginForm" onsubmit="handleLogin(event)">
                 <div class="form-group">
                     <label>Cyber Email</label>
                     <input type="email" id="loginEmail" class="form-control" placeholder="user@universaless.net" required>
                 </div>
                 <div class="form-group">
-                    <label>Neural Password</label>
-                    <input type="password" id="loginPass" class="form-control" placeholder="••••••••" required>
+                    <label>Neural Password (Min 10 Chars)</label>
+                    <input type="password" id="loginPass" class="form-control" placeholder="••••••••••" required minlength="10">
                 </div>
                 <button type="submit" class="submit-btn">Initialize Login</button>
             </form>
+
+            <!-- Step 2: 2FA Verification Form (Hidden Initially) -->
+            <form id="twoFactorForm" onsubmit="handle2FA(event)" style="display: none;">
+                <p style="color: #94a3b8; font-size: 13px; margin-bottom: 20px; text-align: center;">A verification code has been sent to your neural device.</p>
+                <div class="form-group">
+                    <label>6-Digit Verification Code</label>
+                    <input type="text" id="otpCode" class="form-control" placeholder="000000" required pattern="\d{6}" maxlength="6">
+                </div>
+                <button type="submit" class="submit-btn">Verify & Enter</button>
+                <button type="button" class="auth-btn" style="width: 100%; margin-top: 15px; background: transparent; border: 1px solid var(--neon-pink); box-shadow: none;" onclick="goBackToLogin()">Cancel</button>
+            </form>
+
         </div>
     </div>
 
@@ -436,23 +463,85 @@
             window.scrollTo(0, 0);
         }
 
+        // OTP store karne ke liye ek global variable
+        let generatedOTP = "";
+
+        // Handle Login for Step 1
         function handleLogin(e) {
             e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            if(email) {
+            const emailInput = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPass').value;
+            const btn = e.target.querySelector('.submit-btn');
+
+            if (pass.length < 10) {
+                alert("Password must be at least 10 characters long!");
+                return;
+            }
+
+            if(emailInput && pass.length >= 10) {
+                btn.innerText = "Sending Neural OTP...";
+                btn.disabled = true;
+
+                // 6-Digit ka random OTP generate karo
+                generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+                let currentTime = new Date().toLocaleTimeString();
+
+                // EmailJS API Call with Real Keys
+                emailjs.send("service_ydhq81o", "template_ctcykhi", {
+                    email: emailInput,
+                    passcode: generatedOTP,
+                    time: currentTime
+                }).then(function(response) {
+                    console.log("OTP Sent!", response.status);
+                    
+                    document.getElementById('loginForm').style.display = 'none';
+                    document.getElementById('twoFactorForm').style.display = 'block';
+                    document.getElementById('authTitle').innerText = '2-Step Verification';
+                    document.getElementById('otpCode').focus();
+                    
+                    btn.innerText = "Initialize Login";
+                    btn.disabled = false;
+                }, function(error) {
+                    console.error("Failed to send OTP", error);
+                    alert("❌ OTP send nahi ho paaya. Error: " + error.text);
+                    btn.innerText = "Initialize Login";
+                    btn.disabled = false;
+                });
+            }
+        }
+
+        // Handle 2FA Verification for Step 2
+        function handle2FA(e) {
+            e.preventDefault();
+            const otp = document.getElementById('otpCode').value;
+
+            if(otp === generatedOTP) { 
                 localStorage.setItem("isLoggedIn", "true");
                 switchView('home', document.querySelector('.nav-item'));
                 fetchMovies(`${proxyBase}/3/movie/popular?api_key=${apiKey}`);
                 
+                document.getElementById('loginForm').reset();
+                document.getElementById('twoFactorForm').reset();
+                goBackToLogin();
+
                 setTimeout(() => {
                     document.getElementById('postLoginVIPModal').style.display = 'flex';
                 }, 800);
+            } else {
+                alert("❌ Invalid Verification Code! Sahi OTP daalein.");
             }
+        }
+
+        function goBackToLogin() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('twoFactorForm').style.display = 'none';
+            document.getElementById('authTitle').innerText = 'System Access';
         }
 
         function logout() {
             localStorage.removeItem("isLoggedIn");
             switchView('login', null);
+            goBackToLogin(); 
         }
 
         function closePostLoginModal() {
