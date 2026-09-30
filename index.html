@@ -99,9 +99,6 @@
         
         .telegram-btn { background: #229ED9; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 12px; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 4px; transition: 0.3s; }
         .telegram-btn:hover { background: #1c88bd; transform: scale(1.05); }
-        
-        .vip-btn { background: var(--mustard-yellow); color: var(--deep-black); border: none; padding: 6px 12px; border-radius: 6px; font-weight: 800; font-size: 12px; cursor: pointer; transition: 0.3s; }
-        .vip-btn:hover { background: var(--acid-green); transform: scale(1.05); }
 
         .auth-btn { background: var(--neon-pink); color: #fff; border: none; padding: 6px 14px; border-radius: 6px; font-weight: 800; font-size: 13px; cursor: pointer; transition: 0.3s; }
         .auth-btn:hover { background: #e0006e; box-shadow: 0 0 10px var(--neon-pink); }
@@ -144,31 +141,6 @@
             box-shadow: 0 0 10px var(--neon-pink);
             letter-spacing: 0.5px;
         }
-
-        /* Subscription / Pricing Design */
-        .pricing-container { max-width: 1100px; margin: 40px auto; padding: 20px; text-align: center; }
-        .pricing-title { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; margin-bottom: 10px; color: var(--electric-cyan); text-transform: uppercase; text-shadow: 2px 2px 0px var(--neon-pink); }
-        .pricing-subtitle { color: #94a3b8; margin-bottom: 40px; font-size: 15px; }
-        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 25px; }
-        .price-card { background: rgba(17, 19, 26, 0.9); border: 2px solid rgba(255,255,255,0.15); border-radius: 18px; padding: 30px 20px; display: flex; flex-direction: column; justify-content: space-between; transition: 0.3s; position: relative; backdrop-filter: blur(15px); }
-        .price-card.popular { border-color: var(--acid-green); box-shadow: 0 0 30px rgba(57,255,20,0.2); transform: scale(1.02); }
-        .badge { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: var(--acid-green); color: var(--deep-black); font-size: 11px; font-weight: 800; padding: 4px 14px; border-radius: 20px; text-transform: uppercase; font-family: 'Syne', sans-serif; }
-        .price-card h3 { font-family: 'Syne', sans-serif; font-size: 20px; margin-bottom: 15px; color: #fff; text-transform: uppercase; }
-        .price { font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800; color: var(--mustard-yellow); margin-bottom: 20px; }
-        .price span { font-size: 13px; color: #94a3b8; font-weight: normal; font-family: 'Space Grotesk', sans-serif; }
-        .features-list { list-style: none; margin-bottom: 25px; text-align: left; color: #cbd5e1; font-size: 13px; line-height: 2; }
-        .features-list li::before { content: "⚡ "; color: var(--acid-green); font-weight: bold; }
-        .subscribe-btn { background: var(--mustard-yellow); color: var(--deep-black); border: none; padding: 12px; border-radius: 8px; font-family: 'Syne', sans-serif; font-weight: 800; cursor: pointer; transition: 0.3s; width: 100%; font-size: 14px; text-transform: uppercase; box-shadow: 3px 3px 0px #fff; }
-        .subscribe-btn:hover { background: var(--acid-green); transform: translate(-2px, -2px); box-shadow: 5px 5px 0px var(--electric-cyan); }
-
-        /* Modals */
-        #paymentModal, #postLoginVIPModal { display: none; position: fixed; inset: 0; background: rgba(5,5,8,0.9); z-index: 3000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(10px); }
-        .modal-content { background: #11131a; border: 2px solid var(--electric-cyan); border-radius: 18px; padding: 30px; width: 100%; max-width: 380px; text-align: center; position: relative; box-shadow: 0 20px 50px rgba(0,240,255,0.2); }
-        .modal-content h3 { font-family: 'Syne', sans-serif; font-size: 22px; color: #fff; margin-bottom: 10px; text-transform: uppercase; }
-        .modal-content p { color: #94a3b8; font-size: 13px; margin-bottom: 20px; }
-        .pay-upi-btn { background: var(--acid-green); color: var(--deep-black); text-decoration: none; display: block; padding: 14px; border-radius: 8px; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 15px; margin-bottom: 12px; transition: 0.3s; text-transform: uppercase; box-shadow: 3px 3px 0px #fff; }
-        .pay-upi-btn:hover { background: var(--electric-cyan); transform: translate(-2px, -2px); }
-        .modal-close { position: absolute; top: 12px; right: 12px; background: var(--neon-pink); color: white; border: none; width: 28px; height: 28px; border-radius: 50%; font-weight: bold; cursor: pointer; font-size: 12px; }
 
         /* Login Container */
         .auth-container { max-width: 400px; margin: 100px auto; background: rgba(17, 19, 26, 0.9); border: 2px solid var(--neon-pink); border-radius: 18px; padding: 40px; box-shadow: 0 20px 50px rgba(255,0,127,0.2); backdrop-filter: blur(15px); }
@@ -216,7 +188,7 @@
     <!-- Groovy Marquee Ticker -->
     <div class="marquee">
         <div class="marquee-track">
-            ⚡ UNIVERSALESS OTT 🌭 7 CYBER SERVERS UNLOCKED ⚡ INSTANT UPI PAYMENTS 🎬 STREAM HINDI & HOLLYWOOD IN 4K ⚡ UNIVERSALESS OTT 🌭 7 CYBER SERVERS UNLOCKED ⚡ INSTANT UPI PAYMENTS 🎬 STREAM HINDI & HOLLYWOOD IN 4K ⚡
+            ⚡ UNIVERSALESS OTT 🌭 ALL 7 CYBER SERVERS UNLOCKED 🎬 STREAM HINDI & HOLLYWOOD IN 4K ⚡ UNIVERSALESS OTT 🌭 ALL 7 CYBER SERVERS UNLOCKED 🎬 STREAM HINDI & HOLLYWOOD IN 4K ⚡
         </div>
     </div>
 
@@ -224,9 +196,7 @@
     <div class="navbar">
         <div class="logo" onclick="switchView('home', document.querySelector('.nav-item'))">UNIVERSALESS</div>
         <div class="nav-menu">
-            <button class="nav-item" onclick="switchView('home', this)">Home</button>
-            <button class="nav-item" onclick="switchView('pricing', this)">VIP Pass</button>
-            <button class="vip-btn" onclick="unlockVIP()">🔑 Code</button>
+            <button class="nav-item active" onclick="switchView('home', this)">Home</button>
             <a href="https://t.me/Carderucpacker" target="_blank" class="telegram-btn">💬 TG</a>
             <select class="lang-dropdown" id="langSelect" onchange="changeLanguage(this.value)">
                 <option value="all">🌍 All</option>
@@ -256,7 +226,7 @@
                 <button type="submit" class="submit-btn">Initialize Login</button>
             </form>
 
-            <!-- Step 2: 2FA Verification Form (Hidden Initially) -->
+            <!-- Step 2: 2FA Verification Form -->
             <form id="twoFactorForm" onsubmit="handle2FA(event)" style="display: none;">
                 <p style="color: #94a3b8; font-size: 13px; margin-bottom: 20px; text-align: center;">A verification code has been sent to your neural device.</p>
                 <div class="form-group">
@@ -285,97 +255,17 @@
         </div>
     </div>
 
-    <!-- 3. Subscription View -->
-    <div id="pricingView" class="view-section">
-        <div class="pricing-container">
-            <div class="pricing-title">VIP Access Protocols</div>
-            <div class="pricing-subtitle">Select your tier and execute automatic fixed-amount UPI transfer.</div>
-            
-            <div class="pricing-grid">
-                <div class="price-card">
-                    <h3>Mini Pass</h3>
-                    <div class="price">₹10 <span>/ 1 Day</span></div>
-                    <ul class="features-list">
-                        <li>1 Day Full Access</li>
-                        <li>All 3 Free Servers</li>
-                        <li>Server 4 (VIP) Unlocked</li>
-                    </ul>
-                    <button class="subscribe-btn" onclick="openPayment('Mini Pass', '10')">Pay ₹10 Now</button>
-                </div>
-
-                <div class="price-card">
-                    <h3>Weekly Pass</h3>
-                    <div class="price">₹99 <span>/ 7 Days</span></div>
-                    <ul class="features-list">
-                        <li>7 Days Full Access</li>
-                        <li>Servers 1 to 5 Unlocked</li>
-                        <li>Multi-Audio Support</li>
-                    </ul>
-                    <button class="subscribe-btn" onclick="openPayment('Weekly Pass', '99')">Pay ₹99 Now</button>
-                </div>
-
-                <div class="price-card popular">
-                    <div class="badge">Most Popular</div>
-                    <h3>Monthly Pro</h3>
-                    <div class="price">₹299 <span>/ 30 Days</span></div>
-                    <ul class="features-list">
-                        <li>1 Month Unlimited</li>
-                        <li>Servers 1 to 6 Unlocked</li>
-                        <li>4K Ultra HD Quality</li>
-                        <li>Zero Ads Experience</li>
-                    </ul>
-                    <button class="subscribe-btn" onclick="openPayment('Monthly Pro', '299')">Pay ₹299 Now</button>
-                </div>
-
-                <div class="price-card">
-                    <h3>Ultimate Annual</h3>
-                    <div class="price">₹550 <span>/ Year</span></div>
-                    <ul class="features-list">
-                        <li>365 Days VIP Access</li>
-                        <li>All 7 Servers Unlocked (VIP)</li>
-                        <li>Priority Server Speed</li>
-                        <li>Dedicated Support</li>
-                    </ul>
-                    <button class="subscribe-btn" onclick="openPayment('Ultimate Annual', '550')">Pay ₹550 Now</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Post-Login VIP Popup Modal -->
-    <div id="postLoginVIPModal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closePostLoginModal()">✕</button>
-            <h3 style="color:var(--acid-green);">🔥 Upgrade to VIP</h3>
-            <p>Unlock all 7 premium multi-audio servers and enjoy zero-ads streaming starting at just ₹10!</p>
-            <button onclick="goToPricing()" class="pay-upi-btn" style="border:none; cursor:pointer; width:100%;">View Subscription Plans</button>
-            <button onclick="closePostLoginModal()" class="telegram-btn" style="justify-content:center; width:100%; background:#1f2833; margin-top:8px;">Continue with Free Plan</button>
-        </div>
-    </div>
-
-    <!-- Automatic Fixed UPI Payment Modal -->
-    <div id="paymentModal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closePaymentModal()">✕</button>
-            <h3 id="modalPlanTitle">Automatic Payment</h3>
-            <p id="modalPlanPrice">Amount: ₹0</p>
-            <a id="upiIntentLink" href="#" class="pay-upi-btn" target="_blank">📲 Pay Fixed Amount via UPI App</a>
-            <p style="font-size:11px; color:#9ca3af; margin-bottom:12px;">Payment complete hone ke baad niche button par click karein.</p>
-            <button onclick="instantUnlock()" class="telegram-btn" style="justify-content:center; width:100%; background:var(--acid-green); color:var(--deep-black); font-weight:800;">⚡ Instant Unlock (After Payment)</button>
-        </div>
-    </div>
-
     <!-- Video Player Modal -->
     <div id="player">
         <div class="player-header">
             <div class="servers">
-                <button class="server-btn active-server" onclick="changeServer(1, this)">Server 1 (Free)</button>
-                <button class="server-btn" onclick="changeServer(2, this)">Server 2 (Free)</button>
-                <button class="server-btn" onclick="changeServer(3, this)">Server 3 (Free)</button>
-                <button class="server-btn" onclick="changeServer(4, this)">Server 4 (VIP ₹10)</button>
-                <button class="server-btn" onclick="changeServer(5, this)">Server 5 (VIP ₹99)</button>
-                <button class="server-btn" onclick="changeServer(6, this)">Server 6 (VIP ₹299)</button>
-                <button class="server-btn" onclick="changeServer(7, this)">Server 7 (VIP ₹550)</button>
+                <button class="server-btn active-server" onclick="changeServer(1, this)">Server 1</button>
+                <button class="server-btn" onclick="changeServer(2, this)">Server 2</button>
+                <button class="server-btn" onclick="changeServer(3, this)">Server 3</button>
+                <button class="server-btn" onclick="changeServer(4, this)">Server 4</button>
+                <button class="server-btn" onclick="changeServer(5, this)">Server 5</button>
+                <button class="server-btn" onclick="changeServer(6, this)">Server 6</button>
+                <button class="server-btn" onclick="changeServer(7, this)">Server 7</button>
             </div>
             <button class="close-btn" onclick="closePlayer()">✕ Close</button>
         </div>
@@ -449,7 +339,6 @@
         const apiKey = '4150581ccf3ec551c12884bbf92d041d';
         const proxyBase = 'https://gentle-rice-b132.adnanal8466.workers.dev';
         let currentMovieId = null;
-        let selectedTierLevel = 1;
 
         function switchView(viewName, el) {
             document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active-view'));
@@ -458,7 +347,6 @@
                 el.classList.add('active');
             }
             if(viewName === 'home') document.getElementById('homeView').classList.add('active-view');
-            if(viewName === 'pricing') document.getElementById('pricingView').classList.add('active-view');
             if(viewName === 'login') document.getElementById('loginView').classList.add('active-view');
             window.scrollTo(0, 0);
         }
@@ -482,11 +370,9 @@
                 btn.innerText = "Sending Neural OTP...";
                 btn.disabled = true;
 
-                // 6-Digit ka random OTP generate karo
                 generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
                 let currentTime = new Date().toLocaleTimeString();
 
-                // EmailJS API Call with Real Keys
                 emailjs.send("service_ydhq81o", "template_ctcykhi", {
                     email: emailInput,
                     passcode: generatedOTP,
@@ -523,10 +409,6 @@
                 document.getElementById('loginForm').reset();
                 document.getElementById('twoFactorForm').reset();
                 goBackToLogin();
-
-                setTimeout(() => {
-                    document.getElementById('postLoginVIPModal').style.display = 'flex';
-                }, 800);
             } else {
                 alert("❌ Invalid Verification Code! Sahi OTP daalein.");
             }
@@ -542,58 +424,6 @@
             localStorage.removeItem("isLoggedIn");
             switchView('login', null);
             goBackToLogin(); 
-        }
-
-        function closePostLoginModal() {
-            document.getElementById('postLoginVIPModal').style.display = 'none';
-        }
-
-        function goToPricing() {
-            closePostLoginModal();
-            switchView('pricing', document.querySelectorAll('.nav-item')[1]);
-        }
-
-        function unlockVIP() {
-            const passcode = prompt("Enter your Tier Passcode received from @Carderucpacker on Telegram:\n(MINI-10, WEEK-99, PRO-299, VIP-550)");
-            if (passcode === "MINI-10") {
-                localStorage.setItem("vipTier", "1");
-                alert("🎉 Mini Pass Activated! Server 4 unlocked.");
-            } else if (passcode === "WEEK-99") {
-                localStorage.setItem("vipTier", "2");
-                alert("🎉 Weekly Pass Activated! Servers 4 & 5 unlocked.");
-            } else if (passcode === "PRO-299") {
-                localStorage.setItem("vipTier", "3");
-                alert("🎉 Monthly Pro Unlocked! Servers 4, 5 & 6 unlocked.");
-            } else if (passcode === "VIP-550") {
-                localStorage.setItem("vipTier", "4");
-                alert("🎉 Ultimate VIP Unlocked! All 7 servers unlocked.");
-            } else if (passcode) {
-                alert("❌ Invalid Passcode!");
-            }
-        }
-
-        function openPayment(planName, amount) {
-            document.getElementById('modalPlanTitle').innerText = planName;
-            document.getElementById('modalPlanPrice').innerText = 'Fixed Amount: ₹' + amount;
-            
-            if (amount === '10') selectedTierLevel = 1;
-            else if (amount === '99') selectedTierLevel = 2;
-            else if (amount === '299') selectedTierLevel = 3;
-            else if (amount === '550') selectedTierLevel = 4;
-
-            const upiLink = `upi://pay?pa=8770380594@naviaxis&pn=Universaless&am=${amount}&cu=INR&tn=UniversalessSubscription`;
-            document.getElementById('upiIntentLink').href = upiLink;
-            document.getElementById('paymentModal').style.display = 'flex';
-        }
-
-        function closePaymentModal() {
-            document.getElementById('paymentModal').style.display = 'none';
-        }
-
-        function instantUnlock() {
-            localStorage.setItem("vipTier", selectedTierLevel);
-            alert("🎉 Payment confirmed! Your VIP Tier has been successfully unlocked.");
-            closePaymentModal();
         }
 
         async function fetchMovies(url) {
@@ -676,33 +506,6 @@
         }
 
         function changeServer(serverNum, el) {
-            const tier = parseInt(localStorage.getItem("vipTier") || "0");
-
-            if (serverNum === 4 && tier < 1) {
-                alert("🔒 Server 4 requires Mini Pass (₹10) or higher!");
-                switchView('pricing', document.querySelectorAll('.nav-item')[1]);
-                closePlayer();
-                return;
-            }
-            if (serverNum === 5 && tier < 2) {
-                alert("🔒 Server 5 requires Weekly Pass (₹99) or higher!");
-                switchView('pricing', document.querySelectorAll('.nav-item')[1]);
-                closePlayer();
-                return;
-            }
-            if (serverNum === 6 && tier < 3) {
-                alert("🔒 Server 6 requires Monthly Pro (₹299) or higher!");
-                switchView('pricing', document.querySelectorAll('.nav-item')[1]);
-                closePlayer();
-                return;
-            }
-            if (serverNum === 7 && tier < 4) {
-                alert("🔒 Server 7 requires Ultimate Annual VIP (₹550) plan!");
-                switchView('pricing', document.querySelectorAll('.nav-item')[1]);
-                closePlayer();
-                return;
-            }
-
             document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active-server'));
             el.classList.add('active-server');
 
