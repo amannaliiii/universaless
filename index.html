@@ -1,170 +1,125 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="bg-void text-chalk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Universaless™ | Cyberpunk OTT Platform</title>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        :root {
-            --neon-pink: #FF007F;
-            --mustard-yellow: #FFE600;
-            --electric-cyan: #00F0FF;
-            --deep-black: #050508;
-            --acid-green: #39FF14;
-        }
+    <title>Universaless | Raw Streaming</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Oswald for Brutalist Headings, Space Mono for Metadata/UI -->
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        brutal: ['Oswald', 'sans-serif'],
+                        mono: ['Space Mono', 'monospace'],
+                    },
+                    colors: {
+                        void: '#000000',      // Pure black
+                        chalk: '#f3f4f6',     // Off-white for stark contrast
+                        zinc_raw: '#27272a',  // Hard gray
+                        blood: '#ff0000',     // Accent raw red
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
         body {
-            background-color: var(--deep-black);
-            color: #fff;
-            font-family: 'Space Grotesk', sans-serif;
+            background-color: #000;
+            color: #f3f4f6;
+            margin: 0;
             overflow-x: hidden;
         }
 
-        /* Interactive Shader Canvas */
-        #shader-canvas {
+        /* 35mm Retro Film Noise Overlay */
+        .noise-overlay {
             position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.08; /* Subtle grain */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Snappy Hide/Show */
+        .view-hidden { display: none !important; }
+        .view-active { display: block !important; }
+
+        /* Hide scrollbar but keep scroll */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Base Glitch Effect for Text */
+        .glitch-hover {
+            position: relative;
+        }
+        .glitch-hover:hover::before,
+        .glitch-hover:hover::after {
+            content: attr(data-text);
+            position: absolute;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
-            pointer-events: none;
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
+        .glitch-hover:hover::before {
+            left: 2px;
+            text-shadow: -1px 0 red;
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim 2s infinite linear alternate-reverse;
+        }
+        .glitch-hover:hover::after {
+            left: -2px;
+            text-shadow: -1px 0 blue;
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim 2s infinite linear alternate-reverse;
         }
 
-        /* Dithering & Grain Overlay */
-        .dither-overlay {
-            position: fixed;
-            inset: 0;
-            background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 0);
-            background-size: 4px 4px;
-            z-index: 1;
-            pointer-events: none;
-            opacity: 0.5;
+        @keyframes glitch-anim {
+            0% { clip: rect(10px, 9999px, 31px, 0); }
+            20% { clip: rect(61px, 9999px, 11px, 0); }
+            40% { clip: rect(32px, 9999px, 83px, 0); }
+            60% { clip: rect(98px, 9999px, 45px, 0); }
+            80% { clip: rect(24px, 9999px, 78px, 0); }
+            100% { clip: rect(55px, 9999px, 12px, 0); }
         }
 
-        /* Groovy Marquee Ticker */
-        .marquee {
+        /* Button Glitch Hover */
+        .btn-glitch {
             position: relative;
-            z-index: 100;
-            background: var(--mustard-yellow);
-            color: var(--deep-black);
-            font-family: 'Syne', sans-serif;
-            font-weight: 800;
-            font-size: 13px;
-            text-transform: uppercase;
-            padding: 8px 0;
             overflow: hidden;
-            white-space: nowrap;
-            border-bottom: 2px solid var(--deep-black);
         }
-        .marquee-track {
-            display: inline-block;
-            animation: marquee 25s linear infinite;
+        .btn-glitch:hover {
+            background-color: #f3f4f6;
+            color: #000;
         }
-        @keyframes marquee {
-            0% { transform: translateX(0%); }
-            100% { transform: translateX(-50%); }
-        }
-
-        /* Navbar Layout */
-        .navbar {
-            position: relative;
-            z-index: 100;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 18px 30px;
-            background: rgba(5, 5, 8, 0.85);
-            backdrop-filter: blur(15px);
-            border-bottom: 2px dashed rgba(255, 255, 255, 0.15);
-        }
-        .logo {
-            font-family: 'Syne', sans-serif;
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--acid-green);
-            letter-spacing: 1px;
-            cursor: pointer;
-            text-shadow: 2px 2px 0px var(--neon-pink);
-        }
-        .nav-menu { display: flex; gap: 10px; align-items: center; }
-        .nav-item { color: #d1d5db; font-size: 13px; font-weight: 700; cursor: pointer; background: none; border: none; padding: 6px 12px; border-radius: 6px; transition: 0.3s; text-transform: uppercase; }
-        .nav-item:hover, .nav-item.active { color: var(--deep-black); background: var(--electric-cyan); box-shadow: 0 0 10px var(--electric-cyan); }
-        
-        .lang-dropdown { background: #11131a; border: 1px solid rgba(255,255,255,0.2); color: white; padding: 6px 10px; border-radius: 6px; font-size: 12px; outline: none; cursor: pointer; font-weight: 600; }
-        .search-input { background: #11131a; border: 1px solid rgba(255,255,255,0.2); color: white; padding: 6px 12px; border-radius: 6px; font-size: 13px; outline: none; width: 130px; transition: 0.3s; }
-        .search-input:focus { border-color: var(--acid-green); width: 180px; box-shadow: 0 0 10px rgba(57,255,20,0.3); }
-        
-        .telegram-btn { background: #229ED9; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 12px; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 4px; transition: 0.3s; }
-        .telegram-btn:hover { background: #1c88bd; transform: scale(1.05); }
-
-        .auth-btn { background: var(--neon-pink); color: #fff; border: none; padding: 6px 14px; border-radius: 6px; font-weight: 800; font-size: 13px; cursor: pointer; transition: 0.3s; }
-        .auth-btn:hover { background: #e0006e; box-shadow: 0 0 10px var(--neon-pink); }
-
-        /* View Sections */
-        .view-section { display: none; position: relative; z-index: 10; }
-        .view-section.active-view { display: block; }
-
-        /* Hero Banner */
-        .hero { position: relative; width: 100%; height: 460px; background-size: cover; background-position: center; display: flex; align-items: flex-end; padding: 40px 30px; border-bottom: 2px solid rgba(255,255,255,0.1); }
-        .hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, var(--deep-black) 0%, rgba(5,5,8,0.4) 60%, rgba(5,5,8,0.8) 100%); }
-        .hero-content { position: relative; z-index: 2; max-width: 100%; }
-        .hero-title { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; margin-bottom: 10px; color: #fff; text-shadow: 3px 3px 0px var(--neon-pink); text-transform: uppercase; }
-        .hero-desc { font-size: 13px; color: #cbd5e1; margin-bottom: 20px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; max-width: 700px; }
-        .hero-btn { background: var(--acid-green); color: var(--deep-black); border: none; padding: 12px 28px; font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 800; border-radius: 8px; cursor: pointer; transition: 0.3s; box-shadow: 4px 4px 0px #fff; }
-        .hero-btn:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0px var(--electric-cyan); }
-
-        /* Movie Grid & Badges */
-        .container { padding: 40px 30px; max-width: 1400px; margin: 0 auto; }
-        .section-title { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 25px; color: var(--electric-cyan); text-transform: uppercase; border-left: 5px solid var(--neon-pink); padding-left: 12px; text-shadow: 0 0 10px rgba(0,240,255,0.3); }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 25px; }
-        .card { background: rgba(17, 19, 26, 0.85); border: 2px solid rgba(255,255,255,0.1); border-radius: 14px; overflow: hidden; cursor: pointer; transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s; backdrop-filter: blur(10px); position: relative; }
-        .card:hover { transform: translateY(-8px) rotate(0.5deg); border-color: var(--acid-green); box-shadow: 0 15px 30px rgba(57,255,20,0.2); }
-        .card img { width: 100%; height: 280px; object-fit: cover; }
-        .card h3 { font-size: 14px; padding: 14px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; font-weight: 700; font-family: 'Syne', sans-serif; }
-        
-        /* Coming Soon Badge */
-        .coming-soon-badge {
+        .btn-glitch::before {
+            content: '';
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background: var(--neon-pink);
-            color: white;
-            font-family: 'Syne', sans-serif;
-            font-size: 10px;
-            font-weight: 800;
-            padding: 4px 8px;
-            border-radius: 4px;
-            text-transform: uppercase;
-            box-shadow: 0 0 10px var(--neon-pink);
-            letter-spacing: 0.5px;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: rgba(255, 0, 0, 0.5);
+            transition: none;
+        }
+        .btn-glitch:hover::before {
+            left: 100%;
+            transition: left 0.15s ease-in-out;
         }
 
-        /* Login Container */
-        .auth-container { max-width: 400px; margin: 100px auto; background: rgba(17, 19, 26, 0.9); border: 2px solid var(--neon-pink); border-radius: 18px; padding: 40px; box-shadow: 0 20px 50px rgba(255,0,127,0.2); backdrop-filter: blur(15px); }
-        .auth-container h2 { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; margin-bottom: 25px; text-align: center; color: #fff; text-transform: uppercase; text-shadow: 2px 2px 0px var(--neon-pink); }
-        .form-group { margin-bottom: 20px; text-align: left; }
-        .form-group label { display: block; font-size: 12px; color: #94a3b8; margin-bottom: 8px; font-weight: 700; text-transform: uppercase; }
-        .form-control { width: 100%; background: var(--deep-black); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 12px 15px; border-radius: 8px; font-size: 14px; outline: none; transition: 0.3s; font-family: 'Space Grotesk', sans-serif; }
-        .form-control:focus { border-color: var(--electric-cyan); box-shadow: 0 0 10px rgba(0,240,255,0.3); }
-        .submit-btn { width: 100%; background: var(--acid-green); color: var(--deep-black); border: none; padding: 14px; border-radius: 8px; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.3s; margin-top: 10px; text-transform: uppercase; box-shadow: 4px 4px 0px #fff; }
-        .submit-btn:hover { background: var(--electric-cyan); transform: translate(-2px, -2px); }
-        
-        /* 2FA Input Custom Styling */
-        #otpCode { text-align: center; letter-spacing: 12px; font-size: 22px; font-weight: bold; }
-
-        /* Video Player */
-        #player { display: none; position: fixed; inset: 0; background: rgba(5,5,8,0.99); z-index: 2000; flex-direction: column; }
-        .player-header { display: flex; justify-content: space-between; align-items: center; background: #11131a; padding: 12px 25px; border-bottom: 2px solid rgba(255,255,255,0.1); gap: 15px; }
-        .servers { display: flex; gap: 8px; overflow-x: auto; max-width: calc(100vw - 120px); padding-bottom: 4px; }
-        .server-btn { background: var(--deep-black); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 8px 14px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; white-space: nowrap; font-family: 'Syne', sans-serif; }
-        .server-btn:hover { border-color: var(--electric-cyan); color: var(--electric-cyan); }
-        .server-btn.active-server { background: var(--acid-green); color: var(--deep-black); border-color: var(--acid-green); box-shadow: 0 0 12px var(--acid-green); }
-        .close-btn { background: var(--neon-pink); color: white; border: none; padding: 8px 18px; border-radius: 6px; font-weight: 800; cursor: pointer; font-size: 12px; font-family: 'Syne', sans-serif; text-transform: uppercase; }
-        .close-btn:hover { background: #e0006e; }
-        iframe { width: 100%; height: calc(100vh - 65px); border: none; background: #000; }
+        /* Custom Selection */
+        ::selection {
+            background: #f3f4f6;
+            color: #000;
+        }
     </style>
 
     <!-- EmailJS SDK Initialization -->
@@ -177,189 +132,250 @@
         })();
     </script>
 </head>
-<body>
+<body class="min-h-screen selection:bg-chalk selection:text-void font-mono">
 
-    <!-- Dithering Grid Overlay -->
-    <div class="dither-overlay"></div>
+    <!-- Global Noise Overlay -->
+    <div class="noise-overlay"></div>
 
-    <!-- Interactive Groovy Shader Background -->
-    <canvas id="shader-canvas"></canvas>
+    <div id="login-view" class="view-active min-h-screen flex items-center justify-center p-4 md:p-8">
+        
+        <!-- Raw Box Container -->
+        <div class="w-full max-w-lg border-2 border-chalk p-8 md:p-12 relative bg-void">
+            <!-- Decorative raw corner markers -->
+            <div class="absolute top-0 left-0 w-4 h-4 border-t-4 border-l-4 border-chalk -translate-x-[2px] -translate-y-[2px]"></div>
+            <div class="absolute top-0 right-0 w-4 h-4 border-t-4 border-r-4 border-chalk translate-x-[2px] -translate-y-[2px]"></div>
+            <div class="absolute bottom-0 left-0 w-4 h-4 border-b-4 border-l-4 border-chalk -translate-x-[2px] translate-y-[2px]"></div>
+            <div class="absolute bottom-0 right-0 w-4 h-4 border-b-4 border-r-4 border-chalk translate-x-[2px] translate-y-[2px]"></div>
 
-    <!-- Groovy Marquee Ticker -->
-    <div class="marquee">
-        <div class="marquee-track">
-            ⚡ UNIVERSALESS OTT 🌭 ALL 7 CYBER SERVERS UNLOCKED FOR FREE 🎬 STREAM HINDI & HOLLYWOOD IN 4K ⚡ UNIVERSALESS OTT 🌭 ALL 7 CYBER SERVERS UNLOCKED FOR FREE 🎬 STREAM HINDI & HOLLYWOOD IN 4K ⚡
-        </div>
-    </div>
+            <div class="mb-10 text-center">
+                <h1 class="font-brutal text-5xl md:text-7xl font-bold tracking-tighter uppercase glitch-hover" data-text="UNIVERSALESS.">UNIVERSALESS.</h1>
+                <p id="authSubtitle" class="font-mono text-xs md:text-sm mt-2 uppercase tracking-[0.2em] text-gray-400">System_Access_Req</p>
+            </div>
 
-    <!-- Navbar -->
-    <div class="navbar">
-        <div class="logo" onclick="switchView('home', document.querySelector('.nav-item'))">UNIVERSALESS</div>
-        <div class="nav-menu">
-            <button class="nav-item active" onclick="switchView('home', this)">Home</button>
-            <a href="https://t.me/Carderucpacker" target="_blank" class="telegram-btn">💬 TG</a>
-            <select class="lang-dropdown" id="langSelect" onchange="changeLanguage(this.value)">
-                <option value="all">🌍 All</option>
-                <option value="hi">🇮🇳 Hindi</option>
-                <option value="en">🇺🇸 Eng</option>
-            </select>
-            <input type="text" class="search-input" placeholder="Search..." onkeypress="handleSearch(event)">
-            <button class="auth-btn" onclick="logout()">Logout</button>
-        </div>
-    </div>
+            <!-- STEP 1: LOGIN FORM -->
+            <form id="login-form" class="space-y-6 view-active" onsubmit="handleLogin(event)">
+                <div class="space-y-2">
+                    <label class="font-mono text-xs uppercase tracking-widest block text-gray-400">>> Cyber Email</label>
+                    <input type="email" id="loginEmail" required placeholder="user@universaless.net"
+                        class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 focus:outline-none focus:border-chalk transition-none rounded-none placeholder-zinc_raw">
+                </div>
 
-    <!-- 1. Login View -->
-    <div id="loginView" class="view-section active-view">
-        <div class="auth-container">
-            <h2 id="authTitle">System Access</h2>
+                <div class="space-y-2 pb-4">
+                    <label class="font-mono text-xs uppercase tracking-widest block text-gray-400">>> Passcode (Min 10 Chars)</label>
+                    <input type="password" id="loginPass" required minlength="10" placeholder="••••••••••"
+                        class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 focus:outline-none focus:border-chalk transition-none rounded-none placeholder-zinc_raw">
+                </div>
+
+                <button type="submit" id="loginBtn"
+                    class="btn-glitch w-full border-2 border-chalk text-chalk font-brutal uppercase text-xl md:text-2xl py-3 rounded-none flex items-center justify-center gap-3 transition-none cursor-pointer">
+                    <span id="loginBtnText">Access Universaless</span>
+                    <i data-lucide="terminal" class="w-5 h-5"></i>
+                </button>
+            </form>
+
+            <!-- STEP 2: OTP FORM -->
+            <form id="twoFactorForm" class="space-y-6 view-hidden" onsubmit="handle2FA(event)">
+                <div class="space-y-2">
+                    <p class="font-mono text-[11px] uppercase tracking-widest block text-gray-400 text-center leading-relaxed">
+                        >> Transmission sent to email.<br>
+                        <span class="text-blood font-bold">⚠️ Check SPAM/JUNK folder if not found.</span>
+                    </p>
+                </div>
+
+                <div class="space-y-2 pb-4">
+                    <label class="font-mono text-xs uppercase tracking-widest block text-gray-400">>> 6-Digit Neural Code</label>
+                    <input type="text" id="otpCode" required pattern="\d{6}" maxlength="6" placeholder="000000"
+                        class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 text-center tracking-[1em] text-xl focus:outline-none focus:border-chalk transition-none rounded-none placeholder-zinc_raw">
+                </div>
+
+                <button type="submit"
+                    class="btn-glitch w-full border-2 border-chalk text-chalk font-brutal uppercase text-xl md:text-2xl py-3 rounded-none flex items-center justify-center gap-3 transition-none cursor-pointer">
+                    <span>Verify Access</span>
+                    <i data-lucide="unlock" class="w-5 h-5"></i>
+                </button>
+
+                <button type="button" onclick="goBackToLogin()"
+                    class="w-full border-2 border-zinc_raw text-gray-500 font-brutal uppercase text-lg py-2 hover:border-blood hover:text-blood transition-none rounded-none cursor-pointer">
+                    Cancel Operation
+                </button>
+            </form>
             
-            <!-- Step 1: Initial Login Form -->
-            <form id="loginForm" onsubmit="handleLogin(event)">
-                <div class="form-group">
-                    <label>Cyber Email</label>
-                    <input type="email" id="loginEmail" class="form-control" placeholder="user@universaless.net" required>
-                </div>
-                <div class="form-group">
-                    <label>Neural Password (Min 10 Chars)</label>
-                    <input type="password" id="loginPass" class="form-control" placeholder="••••••••••" required minlength="10">
-                </div>
-                <button type="submit" class="submit-btn">Initialize Login</button>
-            </form>
-
-            <!-- Step 2: 2FA Verification Form -->
-            <form id="twoFactorForm" onsubmit="handle2FA(event)" style="display: none;">
-                <p style="color: #94a3b8; font-size: 13px; margin-bottom: 20px; text-align: center;">A verification code has been sent to your neural device.</p>
-                <div class="form-group">
-                    <label>6-Digit Verification Code</label>
-                    <input type="text" id="otpCode" class="form-control" placeholder="000000" required pattern="\d{6}" maxlength="6">
-                </div>
-                <button type="submit" class="submit-btn">Verify & Enter</button>
-                <button type="button" class="auth-btn" style="width: 100%; margin-top: 15px; background: transparent; border: 1px solid var(--neon-pink); box-shadow: none;" onclick="goBackToLogin()">Cancel</button>
-            </form>
-
-        </div>
-    </div>
-
-    <!-- 2. Home View -->
-    <div id="homeView" class="view-section">
-        <div class="hero" id="heroBanner" style="background-image: url('');">
-            <div class="hero-content">
-                <div class="hero-title" id="heroTitle">Loading Featured...</div>
-                <div class="hero-desc" id="heroDesc">Please wait while we load the top trending cinematic release for you.</div>
-                <button class="hero-btn" id="heroPlayBtn">▶ Play Stream Now</button>
+            <div class="mt-8 pt-4 border-t border-zinc_raw text-left">
+                <p class="font-mono text-[10px] text-gray-500 uppercase">Warning: Unauthorized access is strictly monitored. Connection encrypted.</p>
             </div>
         </div>
-        <div class="container">
-            <div class="section-title">Trending Cyber Library</div>
-            <div class="grid" id="movieGrid"></div>
-        </div>
     </div>
 
-    <!-- Video Player Modal -->
-    <div id="player">
-        <div class="player-header">
-            <div class="servers">
-                <button class="server-btn active-server" onclick="changeServer(1, this)">Server 1</button>
-                <button class="server-btn" onclick="changeServer(2, this)">Server 2</button>
-                <button class="server-btn" onclick="changeServer(3, this)">Server 3</button>
-                <button class="server-btn" onclick="changeServer(4, this)">Server 4</button>
-                <button class="server-btn" onclick="changeServer(5, this)">Server 5</button>
-                <button class="server-btn" onclick="changeServer(6, this)">Server 6</button>
-                <button class="server-btn" onclick="changeServer(7, this)">Server 7</button>
+    <!-- DASHBOARD VIEW -->
+    <div id="dashboard-view" class="view-hidden min-h-screen flex flex-col">
+        
+        <nav class="sticky top-0 z-50 bg-void border-b-2 border-chalk">
+            <div class="w-full px-4 md:px-8 h-16 flex items-center justify-between">
+                
+                <div class="flex items-center gap-6">
+                    <h1 class="font-brutal font-bold text-2xl tracking-tighter uppercase cursor-pointer" onclick="logout()">UNI.VRS</h1>
+                    
+                    <div class="hidden md:flex items-center gap-6 font-mono text-xs uppercase tracking-widest">
+                        <a href="#" class="border-b border-chalk pb-0.5">Index</a>
+                        <a href="#" class="text-gray-500 hover:text-chalk hover:border-b hover:border-chalk transition-none pb-0.5">Cinema</a>
+                        <a href="#" class="text-gray-500 hover:text-chalk hover:border-b hover:border-chalk transition-none pb-0.5">Archive</a>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-5">
+                    <button class="text-chalk hover:text-blood transition-none" onclick="logout()" title="Logout">
+                        <i data-lucide="log-out" class="w-5 h-5"></i>
+                    </button>
+                    <div id="userDisplay" class="font-mono text-xs uppercase tracking-widest border border-chalk px-2 py-1">
+                        USER_9942
+                    </div>
+                </div>
             </div>
-            <button class="close-btn" onclick="closePlayer()">✕ Close</button>
-        </div>
-        <iframe id="vidFrame" src="" allowfullscreen></iframe>
+        </nav>
+
+        <main class="flex-1 w-full flex flex-col">
+            
+            <!-- Cinematic Hero -->
+            <section class="relative w-full h-[60vh] md:h-[75vh] border-b-2 border-chalk flex flex-col justify-end overflow-hidden group">
+                <!-- Background Image (Dark/Cinematic) -->
+                <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2000&auto=format&fit=crop" 
+                     alt="Hero Background" 
+                     class="absolute inset-0 w-full h-full object-cover filter grayscale brightness-50 group-hover:grayscale-0 group-hover:brightness-75 transition-all duration-300">
+                
+                <!-- Stark Overlay Gradient (just black to transparent) -->
+                <div class="absolute inset-0 bg-gradient-to-t from-void via-void/50 to-transparent"></div>
+                
+                <div class="relative z-10 p-6 md:p-12 w-full max-w-7xl">
+                    <div class="flex items-center gap-4 mb-4">
+                        <span class="border border-chalk text-chalk font-mono text-[10px] uppercase px-2 py-1 tracking-widest">Curated</span>
+                        <span class="font-mono text-[10px] text-gray-400 uppercase tracking-widest">// DIR: J. DOE // 2026</span>
+                    </div>
+                    
+                    <h2 class="font-brutal font-bold text-6xl md:text-8xl lg:text-[10rem] leading-none tracking-tighter uppercase mb-4 glitch-hover w-fit" data-text="THE ABYSS">
+                        THE ABYSS
+                    </h2>
+                    
+                    <p class="font-mono text-sm md:text-base text-gray-300 max-w-xl mb-8 uppercase leading-relaxed">
+                        A brutalist exploration of the unknown. No signal out. No rescue in. Just the static of the void.
+                    </p>
+                    
+                    <div class="flex items-center gap-4">
+                        <button class="btn-glitch bg-chalk text-void font-brutal uppercase text-xl px-8 py-3 flex items-center gap-2 border-2 border-chalk cursor-pointer">
+                            <i data-lucide="play" class="w-5 h-5 fill-void"></i> Transmit
+                        </button>
+                        <button class="btn-glitch bg-void text-chalk font-brutal uppercase text-xl px-4 py-3 flex items-center justify-center border-2 border-chalk cursor-pointer hover:bg-chalk hover:text-void">
+                            <i data-lucide="bookmark" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="p-4 md:p-8 space-y-12">
+                
+                <!-- Row 1: Trending -->
+                <div class="border-t border-zinc_raw pt-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="font-mono text-sm md:text-base uppercase tracking-[0.3em] text-gray-400">>> Current_Transmission</h3>
+                        <div class="flex gap-2">
+                            <button class="border border-chalk p-1 hover:bg-chalk hover:text-void transition-none" onclick="scrollRow('row-1', -1)">
+                                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                            </button>
+                            <button class="border border-chalk p-1 hover:bg-chalk hover:text-void transition-none" onclick="scrollRow('row-1', 1)">
+                                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="row-1" class="flex overflow-x-auto gap-4 md:gap-6 pb-4 snap-x hide-scrollbar scroll-smooth">
+                        <!-- JS Injected Cards -->
+                    </div>
+                </div>
+
+                <!-- Row 2: Archives -->
+                <div class="border-t border-zinc_raw pt-6 pb-12">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="font-mono text-sm md:text-base uppercase tracking-[0.3em] text-gray-400">>> Vault_Extraction</h3>
+                    </div>
+                    <div id="row-2" class="flex overflow-x-auto gap-4 md:gap-6 pb-4 snap-x hide-scrollbar scroll-smooth">
+                        <!-- JS Injected Cards -->
+                    </div>
+                </div>
+
+            </section>
+        </main>
+        
+        <!-- Raw Footer -->
+        <footer class="border-t-2 border-chalk p-4 md:p-8 flex justify-between items-center font-mono text-[10px] uppercase tracking-widest text-gray-500">
+            <span>Universaless Core // 2026</span>
+            <span>Status: Online</span>
+        </footer>
     </div>
 
-    <!-- JavaScript Logic & Wave Shader -->
     <script>
-        // Interactive Wavy Shader Background
-        const canvas = document.getElementById('shader-canvas');
-        const ctx = canvas.getContext('2d');
-        let width = canvas.width = window.innerWidth;
-        let height = canvas.height = window.innerHeight;
+        // Init Lucide Icons
+        lucide.createIcons();
 
-        window.addEventListener('resize', () => {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        });
+        // Data Rendering Logic
+        const row1Data = [
+            { id: "01", title: "Concrete", dir: "V. Rane", img: "https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?q=80&w=400&auto=format&fit=crop" },
+            { id: "02", title: "Nightwalk", dir: "A. Cole", img: "https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?q=80&w=400&auto=format&fit=crop" },
+            { id: "03", title: "Gridlock", dir: "M. Xin", img: "https://images.unsplash.com/photo-1555680202-c86f0e12f086?q=80&w=400&auto=format&fit=crop" },
+            { id: "04", title: "Static", dir: "F. Kross", img: "https://images.unsplash.com/photo-1618520267448-f8a44ec2bdf2?q=80&w=400&auto=format&fit=crop" },
+            { id: "05", title: "Overpass", dir: "L. Silva", img: "https://images.unsplash.com/photo-1509347528160-9a9e33742cdb?q=80&w=400&auto=format&fit=crop" },
+            { id: "06", title: "Subway", dir: "K. Ito", img: "https://images.unsplash.com/photo-1481277542470-605612bd2d61?q=80&w=400&auto=format&fit=crop" }
+        ];
 
-        let mouse = { x: width / 2, y: height / 2, targetX: width / 2, targetY: height / 2 };
-        window.addEventListener('mousemove', (e) => {
-            mouse.targetX = e.clientX;
-            mouse.targetY = e.clientY;
-        });
+        const row2Data = [
+            { id: "07", title: "Red Eye", dir: "J. Doe", img: "https://images.unsplash.com/photo-1516641885624-9dfc52862ccb?q=80&w=400&auto=format&fit=crop" },
+            { id: "08", title: "Sector 4", dir: "T. Rex", img: "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=400&auto=format&fit=crop" },
+            { id: "09", title: "Alley", dir: "S. Pen", img: "https://images.unsplash.com/photo-1542838685-64bc7754b52c?q=80&w=400&auto=format&fit=crop" },
+            { id: "10", title: "Terminal", dir: "R. Roe", img: "https://images.unsplash.com/photo-1504333638930-c8787321efa0?q=80&w=400&auto=format&fit=crop" },
+            { id: "11", title: "Rust", dir: "E. Mac", img: "https://images.unsplash.com/photo-1519074069444-1ba4fff66d16?q=80&w=400&auto=format&fit=crop" }
+        ];
 
-        let time = 0;
-        function animateShader() {
-            mouse.x += (mouse.targetX - mouse.x) * 0.05;
-            mouse.y += (mouse.targetY - mouse.y) * 0.05;
-
-            ctx.fillStyle = '#050508';
-            ctx.fillRect(0, 0, width, height);
-            time += 0.015;
-
-            const numWaves = 5;
-            for (let i = 0; i < numWaves; i++) {
-                ctx.beginPath();
-                ctx.moveTo(0, height);
-
-                for (let x = 0; x < width; x += 30) {
-                    const dx = x - mouse.x;
-                    const dy = height * 0.5 - mouse.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    const mouseEffect = Math.sin(distance * 0.004 - time * 2) * 40;
-
-                    const y = height * 0.5 + 
-                              Math.sin(x * 0.002 + time + i * 0.6) * (70 + i * 20) + 
-                              Math.cos(x * 0.004 - time * 1.2) * 30 +
-                              mouseEffect * (1 - x / width);
-
-                    ctx.lineTo(x, y);
-                }
-
-                ctx.lineTo(width, height);
-                ctx.closePath();
-
-                const colors = [
-                    'rgba(255, 0, 127, 0.12)', // Neon Pink
-                    'rgba(255, 230, 0, 0.08)',  // Mustard
-                    'rgba(0, 240, 255, 0.09)',  // Cyan
-                    'rgba(57, 255, 20, 0.06)'   // Acid Green
-                ];
-                ctx.fillStyle = colors[i % colors.length];
-                ctx.fill();
-            }
-            requestAnimationFrame(animateShader);
-        }
-        animateShader();
-
-        // OTT App Logic
-        const apiKey = '4150581ccf3ec551c12884bbf92d041d';
-        const proxyBase = 'https://gentle-rice-b132.adnanal8466.workers.dev';
-        let currentMovieId = null;
-
-        function switchView(viewName, el) {
-            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active-view'));
-            if(el) {
-                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-                el.classList.add('active');
-            }
-            if(viewName === 'home') document.getElementById('homeView').classList.add('active-view');
-            if(viewName === 'login') document.getElementById('loginView').classList.add('active-view');
-            window.scrollTo(0, 0);
+        function renderRawCards(containerId, data) {
+            const container = document.getElementById(containerId);
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "w-[160px] md:w-[240px] snap-start shrink-0 group cursor-pointer flex flex-col";
+                card.innerHTML = `
+                    <div class="relative w-full aspect-[2/3] border-2 border-zinc_raw group-hover:border-chalk transition-none bg-void overflow-hidden">
+                        <img src="${item.img}" alt="${item.title}" class="w-full h-full object-cover filter grayscale contrast-125 brightness-75 group-hover:grayscale-0 group-hover:brightness-100 group-hover:scale-[1.03] transition-all duration-[0.15s] ease-linear">
+                        <div class="absolute top-2 left-2 bg-void border border-chalk text-chalk font-mono text-[10px] px-1 py-0.5 z-10 uppercase">${item.id}</div>
+                    </div>
+                    <div class="pt-3 pb-1 border-b-2 border-transparent group-hover:border-chalk transition-none">
+                        <h4 class="font-brutal text-xl md:text-2xl uppercase tracking-tight text-chalk">${item.title}</h4>
+                        <p class="font-mono text-[10px] text-gray-500 uppercase tracking-widest mt-1">DIR // ${item.dir}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
         }
 
-        // OTP store variable
+        renderRawCards('row-1', row1Data);
+        renderRawCards('row-2', row2Data);
+
+        function scrollRow(rowId, direction) {
+            const row = document.getElementById(rowId);
+            const scrollAmount = window.innerWidth > 768 ? 500 : 250;
+            row.scrollBy({ left: scrollAmount * direction, behavior: 'smooth' });
+        }
+
+
+        // AUTHENTICATION LOGIC (EmailJS OTP + Block System)
         let generatedOTP = "";
+        const loginForm = document.getElementById('login-form');
+        const twoFactorForm = document.getElementById('twoFactorForm');
+        const loginView = document.getElementById('login-view');
+        const dashboardView = document.getElementById('dashboard-view');
+        const authSubtitle = document.getElementById('authSubtitle');
+        const loginBtnText = document.getElementById('loginBtnText');
+        const loginBtn = document.getElementById('loginBtn');
 
-        // LOGIN SYSTEM WITH PASSWORD CHECK AND 5-ATTEMPT BLOCK
         function handleLogin(e) {
             e.preventDefault();
             const emailInput = document.getElementById('loginEmail').value.toLowerCase();
             const pass = document.getElementById('loginPass').value;
-            const btn = e.target.querySelector('.submit-btn');
 
             if (pass.length < 10) {
                 alert("Password must be at least 10 characters long!");
@@ -376,32 +392,31 @@
             let savedPass = localStorage.getItem('pass_' + emailInput);
             
             if (savedPass) {
-                // Account exist karta hai, password match karo
                 if (pass !== savedPass) {
                     let attempts = parseInt(localStorage.getItem('attempts_' + emailInput) || "0");
                     attempts++;
                     localStorage.setItem('attempts_' + emailInput, attempts);
 
                     if (attempts >= 5) {
-                        localStorage.setItem('blocked_' + emailInput, "true"); // Block account
+                        localStorage.setItem('blocked_' + emailInput, "true"); 
                         alert("🚫 Aapne 5 baar galat password dala hai. Yeh account hamesha ke liye block kar diya gaya hai!");
                     } else {
                         alert(`❌ Galat password! Aapke paas ${5 - attempts} attempts baaki hain.`);
                     }
-                    return; // Stop execution here if password is wrong
+                    return; 
                 } else {
-                    // Password sahi hai, attempts reset kar do
                     localStorage.setItem('attempts_' + emailInput, "0");
                 }
             } else {
-                // Naya user hai, iska password save kar lo
                 localStorage.setItem('pass_' + emailInput, pass);
                 alert("✅ New Account Registered! Agli baar login karne ke liye yahi password yaad rakhein.");
             }
 
-            // 3. Send OTP only if password is correct or account is new
-            btn.innerText = "Sending Neural OTP...";
-            btn.disabled = true;
+            // 3. Send OTP
+            loginBtnText.innerText = "TRANSMITTING...";
+            loginBtn.style.backgroundColor = '#f3f4f6';
+            loginBtn.style.color = '#000';
+            loginBtn.disabled = true;
 
             generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
             let currentTime = new Date().toLocaleTimeString();
@@ -413,146 +428,81 @@
             }).then(function(response) {
                 console.log("OTP Sent!", response.status);
                 
-                document.getElementById('loginForm').style.display = 'none';
-                document.getElementById('twoFactorForm').style.display = 'block';
-                document.getElementById('authTitle').innerText = '2-Step Verification';
+                // Show 2FA Form
+                loginForm.classList.remove('view-active');
+                loginForm.classList.add('view-hidden');
+                
+                twoFactorForm.classList.remove('view-hidden');
+                twoFactorForm.classList.add('view-active');
+                
+                authSubtitle.innerText = "2FA_Verification_Req";
                 document.getElementById('otpCode').focus();
                 
-                btn.innerText = "Initialize Login";
-                btn.disabled = false;
+                // Reset Button styling
+                loginBtnText.innerText = "Access Universaless";
+                loginBtn.style.backgroundColor = '';
+                loginBtn.style.color = '';
+                loginBtn.disabled = false;
             }, function(error) {
                 console.error("Failed to send OTP", error);
                 alert("❌ OTP send nahi ho paaya. Error: " + error.text);
-                btn.innerText = "Initialize Login";
-                btn.disabled = false;
+                
+                loginBtnText.innerText = "Access Universaless";
+                loginBtn.style.backgroundColor = '';
+                loginBtn.style.color = '';
+                loginBtn.disabled = false;
             });
         }
 
-        // Handle 2FA Verification
+        // Final 2FA Check
         function handle2FA(e) {
             e.preventDefault();
             const otp = document.getElementById('otpCode').value;
+            const emailInput = document.getElementById('loginEmail').value.toLowerCase();
 
             if(otp === generatedOTP) { 
                 localStorage.setItem("isLoggedIn", "true");
-                switchView('home', document.querySelector('.nav-item'));
-                fetchMovies(`${proxyBase}/3/movie/popular?api_key=${apiKey}`);
                 
-                document.getElementById('loginForm').reset();
-                document.getElementById('twoFactorForm').reset();
-                goBackToLogin();
+                // Set username in dashboard
+                document.getElementById('userDisplay').innerText = emailInput.split('@')[0].toUpperCase();
+
+                // Switch to Dashboard View
+                loginView.classList.remove('view-active');
+                loginView.classList.add('view-hidden');
+                
+                dashboardView.classList.remove('view-hidden');
+                dashboardView.classList.add('view-active');
+                window.scrollTo(0, 0); 
+                
+                // Reset forms
+                loginForm.reset();
+                twoFactorForm.reset();
+                goBackToLogin(); 
             } else {
                 alert("❌ Invalid Verification Code! Sahi OTP daalein.");
             }
         }
 
         function goBackToLogin() {
-            document.getElementById('loginForm').style.display = 'block';
-            document.getElementById('twoFactorForm').style.display = 'none';
-            document.getElementById('authTitle').innerText = 'System Access';
+            twoFactorForm.classList.remove('view-active');
+            twoFactorForm.classList.add('view-hidden');
+            
+            loginForm.classList.remove('view-hidden');
+            loginForm.classList.add('view-active');
+            
+            authSubtitle.innerText = "System_Access_Req";
         }
 
         function logout() {
             localStorage.removeItem("isLoggedIn");
-            switchView('login', null);
-            goBackToLogin(); 
-        }
-
-        async function fetchMovies(url) {
-            const grid = document.getElementById('movieGrid');
-            grid.innerHTML = '<p style="text-align:center; grid-column:1/-1; color:var(--acid-green); font-size:16px; padding:40px; font-family:\'Syne\',sans-serif;">Loading Cyber Streams...</p>';
-            try {
-                const res = await fetch(url);
-                const data = await res.json();
-                
-                if(data.results && data.results.length > 0) {
-                    const hero = data.results[0];
-                    const todayDate = new Date();
-                    const heroRelease = new Date(hero.release_date || '2020-01-01');
-                    const isHeroComingSoon = heroRelease > todayDate;
-
-                    document.getElementById('heroBanner').style.backgroundImage = `url(https://image.tmdb.org/t/p/original${hero.backdrop_path})`;
-                    document.getElementById('heroTitle').innerText = hero.title + (isHeroComingSoon ? " [COMING SOON]" : "");
-                    document.getElementById('heroDesc').innerText = hero.overview;
-                    
-                    if (isHeroComingSoon) {
-                        document.getElementById('heroPlayBtn').innerText = "⏳ Coming Soon";
-                        document.getElementById('heroPlayBtn').onclick = () => alert("⏳ Yeh movie abhi release nahi hui hai! Jald hi aayegi.");
-                    } else {
-                        document.getElementById('heroPlayBtn').innerText = "▶ Play Stream Now";
-                        document.getElementById('heroPlayBtn').onclick = () => play(hero.id);
-                    }
-
-                    grid.innerHTML = '';
-                    data.results.forEach(m => {
-                        if(m.poster_path) {
-                            const releaseDate = new Date(m.release_date || '2020-01-01');
-                            const isComingSoon = releaseDate > todayDate;
-                            
-                            const badgeHTML = isComingSoon ? `<div class="coming-soon-badge">Coming Soon</div>` : '';
-                            const clickAction = isComingSoon ? `alert('⏳ ${m.title} is Coming Soon! Release date: ${m.release_date}')` : `play(${m.id})`;
-
-                            grid.innerHTML += `
-                                <div class="card" onclick="${clickAction}">
-                                    ${badgeHTML}
-                                    <img src="https://image.tmdb.org/t/p/w500${m.poster_path}" alt="${m.title}">
-                                    <h3>${m.title}</h3>
-                                </div>`;
-                        }
-                    });
-                }
-            } catch(e) { 
-                grid.innerHTML = '<p style="text-align:center; grid-column:1/-1; color:var(--neon-pink); padding:40px;">Error loading content. Check neural connection.</p>'; 
-            }
-        }
-
-        function changeLanguage(lang) {
-            let url = `${proxyBase}/3/movie/popular?api_key=${apiKey}`;
-            if(lang === 'hi') {
-                url = `${proxyBase}/3/discover/movie?api_key=${apiKey}&with_original_language=hi`;
-            } else if(lang === 'en') {
-                url = `${proxyBase}/3/discover/movie?api_key=${apiKey}&with_original_language=en`;
-            }
-            fetchMovies(url);
-        }
-
-        function handleSearch(e) {
-            if(e.key === 'Enter') {
-                const q = e.target.value.trim();
-                if(q) {
-                    switchView('home', document.querySelectorAll('.nav-item')[0]);
-                    fetchMovies(`${proxyBase}/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(q)}`);
-                }
-            }
-        }
-
-        function play(id) {
-            currentMovieId = id;
-            document.getElementById('vidFrame').src = `https://vidsrc.to/embed/movie/${id}`;
-            document.getElementById('player').style.display = 'flex';
             
-            document.querySelectorAll('.server-btn').forEach((b, idx) => {
-                if(idx === 0) b.classList.add('active-server');
-                else b.classList.remove('active-server');
-            });
-        }
-
-        function changeServer(serverNum, el) {
-            document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active-server'));
-            el.classList.add('active-server');
-
-            if(serverNum === 1) document.getElementById('vidFrame').src = `https://vidsrc.to/embed/movie/${currentMovieId}`;
-            else if(serverNum === 2) document.getElementById('vidFrame').src = `https://vidsrc.cc/v2/embed/movie/${currentMovieId}`;
-            else if(serverNum === 3) document.getElementById('vidFrame').src = `https://2embed.cc/embed/${currentMovieId}`;
-            else if(serverNum === 4) document.getElementById('vidFrame').src = `https://vidsrc.su/embed/movie/${currentMovieId}`;
-            else if(serverNum === 5) document.getElementById('vidFrame').src = `https://player.autoembed.cc/embed/movie/${currentMovieId}`;
-            else if(serverNum === 6) document.getElementById('vidFrame').src = `https://vidlink.pro/embed/movie/${currentMovieId}`;
-            else if(serverNum === 7) document.getElementById('vidFrame').src = `https://vidsrc.vip/embed/movie/${currentMovieId}`;
-        }
-
-        function closePlayer() {
-            document.getElementById('vidFrame').src = '';
-            document.getElementById('player').style.display = 'none';
+            dashboardView.classList.remove('view-active');
+            dashboardView.classList.add('view-hidden');
+            
+            loginView.classList.remove('view-hidden');
+            loginView.classList.add('view-active');
+            
+            goBackToLogin();
         }
     </script>
 </body>
