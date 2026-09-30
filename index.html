@@ -45,7 +45,7 @@
             top: 0; left: 0; width: 100vw; height: 100vh;
             pointer-events: none;
             z-index: 9999;
-            opacity: 0.08; /* Subtle grain */
+            opacity: 0.08; 
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
@@ -141,7 +141,6 @@
         
         <!-- Raw Box Container -->
         <div class="w-full max-w-lg border-2 border-chalk p-8 md:p-12 relative bg-void">
-            <!-- Decorative raw corner markers -->
             <div class="absolute top-0 left-0 w-4 h-4 border-t-4 border-l-4 border-chalk -translate-x-[2px] -translate-y-[2px]"></div>
             <div class="absolute top-0 right-0 w-4 h-4 border-t-4 border-r-4 border-chalk translate-x-[2px] -translate-y-[2px]"></div>
             <div class="absolute bottom-0 left-0 w-4 h-4 border-b-4 border-l-4 border-chalk -translate-x-[2px] translate-y-[2px]"></div>
@@ -160,10 +159,14 @@
                         class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 focus:outline-none focus:border-chalk transition-none rounded-none placeholder-zinc_raw">
                 </div>
 
-                <div class="space-y-2 pb-4">
+                <div class="space-y-2 pb-2">
                     <label class="font-mono text-xs uppercase tracking-widest block text-gray-400">>> Passcode (Min 10 Chars)</label>
                     <input type="password" id="loginPass" required minlength="10" placeholder="••••••••••"
                         class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 focus:outline-none focus:border-chalk transition-none rounded-none placeholder-zinc_raw">
+                </div>
+
+                <div class="text-right">
+                    <button type="button" onclick="showForgotPassword()" class="font-mono text-[11px] text-gray-400 hover:text-chalk underline uppercase">Forgot Passcode?</button>
                 </div>
 
                 <button type="submit" id="loginBtn"
@@ -199,6 +202,41 @@
                     Cancel Operation
                 </button>
             </form>
+
+            <!-- STEP 3: FORGOT PASSWORD FORM -->
+            <form id="forgotForm" class="space-y-6 view-hidden" onsubmit="handleForgot(event)">
+                <div class="space-y-2">
+                    <label class="font-mono text-xs uppercase tracking-widest block text-gray-400">>> Enter Registered Email</label>
+                    <input type="email" id="forgotEmail" required placeholder="user@universaless.net"
+                        class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 focus:outline-none focus:border-chalk transition-none rounded-none placeholder-zinc_raw">
+                </div>
+                <button type="submit" id="forgotBtn"
+                    class="btn-glitch w-full border-2 border-chalk text-chalk font-brutal uppercase text-xl py-3 rounded-none flex items-center justify-center gap-3 transition-none cursor-pointer">
+                    <span>Send Reset OTP</span>
+                </button>
+                <button type="button" onclick="goBackToLogin()"
+                    class="w-full border-2 border-zinc_raw text-gray-500 font-brutal uppercase text-lg py-2 hover:border-blood hover:text-blood transition-none rounded-none cursor-pointer">
+                    Back to Login
+                </button>
+            </form>
+
+            <!-- STEP 4: RESET NEW PASSWORD FORM -->
+            <form id="resetForm" class="space-y-6 view-hidden" onsubmit="handleResetPass(event)">
+                <div class="space-y-2">
+                    <label class="font-mono text-xs uppercase tracking-widest block text-gray-400">>> Enter 6-Digit OTP</label>
+                    <input type="text" id="resetOtp" required pattern="\d{6}" maxlength="6" placeholder="000000"
+                        class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 text-center tracking-[1em] text-xl focus:outline-none focus:border-chalk transition-none rounded-none placeholder-zinc_raw">
+                </div>
+                <div class="space-y-2 pb-4">
+                    <label class="font-mono text-xs uppercase tracking-widest block text-gray-400">>> New Passcode (Min 10 Chars)</label>
+                    <input type="password" id="newPass" required minlength="10" placeholder="••••••••••"
+                        class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 focus:outline-none focus:border-chalk transition-none rounded-none placeholder-zinc_raw">
+                </div>
+                <button type="submit"
+                    class="btn-glitch w-full border-2 border-chalk text-chalk font-brutal uppercase text-xl py-3 rounded-none flex items-center justify-center gap-3 transition-none cursor-pointer">
+                    <span>Update Passcode</span>
+                </button>
+            </form>
             
             <div class="mt-8 pt-4 border-t border-zinc_raw text-left">
                 <p class="font-mono text-[10px] text-gray-500 uppercase">Warning: Unauthorized access is strictly monitored. Connection encrypted.</p>
@@ -216,18 +254,20 @@
                     <h1 class="font-brutal font-bold text-2xl tracking-tighter uppercase cursor-pointer" onclick="logout()">UNI.VRS</h1>
                     
                     <div class="hidden md:flex items-center gap-6 font-mono text-xs uppercase tracking-widest">
-                        <a href="#" class="border-b border-chalk pb-0.5">Index</a>
-                        <a href="#" class="text-gray-500 hover:text-chalk hover:border-b hover:border-chalk transition-none pb-0.5">Cinema</a>
-                        <a href="#" class="text-gray-500 hover:text-chalk hover:border-b hover:border-chalk transition-none pb-0.5">Archive</a>
+                        <a href="#" class="border-b border-chalk pb-0.5" onclick="fetchMovies(`${proxyBase}/3/movie/popular?api_key=${apiKey}`)">Popular</a>
+                        <a href="#" class="text-gray-500 hover:text-chalk transition-none pb-0.5" onclick="fetchMovies(`${proxyBase}/3/discover/movie?api_key=${apiKey}&with_original_language=hi`)">Hindi</a>
+                        <a href="#" class="text-gray-500 hover:text-chalk transition-none pb-0.5" onclick="fetchMovies(`${proxyBase}/3/discover/movie?api_key=${apiKey}&with_original_language=en`)">English</a>
                     </div>
                 </div>
 
                 <div class="flex items-center gap-5">
+                    <input type="text" id="searchInput" placeholder="Search..." onkeypress="handleSearch(event)"
+                        class="bg-void border border-zinc_raw text-chalk font-mono text-xs px-3 py-1.5 focus:outline-none focus:border-chalk w-28 md:w-40">
                     <button class="text-chalk hover:text-blood transition-none" onclick="logout()" title="Logout">
                         <i data-lucide="log-out" class="w-5 h-5"></i>
                     </button>
                     <div id="userDisplay" class="font-mono text-xs uppercase tracking-widest border border-chalk px-2 py-1">
-                        USER_9942
+                        USER
                     </div>
                 </div>
             </div>
@@ -236,71 +276,40 @@
         <main class="flex-1 w-full flex flex-col">
             
             <!-- Cinematic Hero -->
-            <section class="relative w-full h-[60vh] md:h-[75vh] border-b-2 border-chalk flex flex-col justify-end overflow-hidden group">
-                <!-- Background Image (Dark/Cinematic) -->
-                <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2000&auto=format&fit=crop" 
-                     alt="Hero Background" 
-                     class="absolute inset-0 w-full h-full object-cover filter grayscale brightness-50 group-hover:grayscale-0 group-hover:brightness-75 transition-all duration-300">
-                
-                <!-- Stark Overlay Gradient (just black to transparent) -->
+            <section id="heroSection" class="relative w-full h-[60vh] md:h-[75vh] border-b-2 border-chalk flex flex-col justify-end overflow-hidden group">
+                <img id="heroImg" src="" alt="Hero Background" class="absolute inset-0 w-full h-full object-cover filter grayscale brightness-50 group-hover:grayscale-0 group-hover:brightness-75 transition-all duration-300">
                 <div class="absolute inset-0 bg-gradient-to-t from-void via-void/50 to-transparent"></div>
                 
                 <div class="relative z-10 p-6 md:p-12 w-full max-w-7xl">
                     <div class="flex items-center gap-4 mb-4">
-                        <span class="border border-chalk text-chalk font-mono text-[10px] uppercase px-2 py-1 tracking-widest">Curated</span>
-                        <span class="font-mono text-[10px] text-gray-400 uppercase tracking-widest">// DIR: J. DOE // 2026</span>
+                        <span class="border border-chalk text-chalk font-mono text-[10px] uppercase px-2 py-1 tracking-widest">Trending #1</span>
                     </div>
                     
-                    <h2 class="font-brutal font-bold text-6xl md:text-8xl lg:text-[10rem] leading-none tracking-tighter uppercase mb-4 glitch-hover w-fit" data-text="THE ABYSS">
-                        THE ABYSS
+                    <h2 id="heroTitle" class="font-brutal font-bold text-5xl md:text-7xl lg:text-8xl leading-none tracking-tighter uppercase mb-4 glitch-hover w-fit" data-text="LOADING...">
+                        LOADING...
                     </h2>
                     
-                    <p class="font-mono text-sm md:text-base text-gray-300 max-w-xl mb-8 uppercase leading-relaxed">
-                        A brutalist exploration of the unknown. No signal out. No rescue in. Just the static of the void.
+                    <p id="heroDesc" class="font-mono text-sm md:text-base text-gray-300 max-w-xl mb-8 uppercase leading-relaxed line-clamp-3">
+                        Please wait while content streams from the neural network.
                     </p>
                     
                     <div class="flex items-center gap-4">
-                        <button class="btn-glitch bg-chalk text-void font-brutal uppercase text-xl px-8 py-3 flex items-center gap-2 border-2 border-chalk cursor-pointer">
+                        <button id="heroPlayBtn" class="btn-glitch bg-chalk text-void font-brutal uppercase text-xl px-8 py-3 flex items-center gap-2 border-2 border-chalk cursor-pointer">
                             <i data-lucide="play" class="w-5 h-5 fill-void"></i> Transmit
-                        </button>
-                        <button class="btn-glitch bg-void text-chalk font-brutal uppercase text-xl px-4 py-3 flex items-center justify-center border-2 border-chalk cursor-pointer hover:bg-chalk hover:text-void">
-                            <i data-lucide="bookmark" class="w-5 h-5"></i>
                         </button>
                     </div>
                 </div>
             </section>
 
             <section class="p-4 md:p-8 space-y-12">
-                
-                <!-- Row 1: Trending -->
-                <div class="border-t border-zinc_raw pt-6">
-                    <div class="flex items-center justify-between mb-6">
-                        <h3 class="font-mono text-sm md:text-base uppercase tracking-[0.3em] text-gray-400">>> Current_Transmission</h3>
-                        <div class="flex gap-2">
-                            <button class="border border-chalk p-1 hover:bg-chalk hover:text-void transition-none" onclick="scrollRow('row-1', -1)">
-                                <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                            </button>
-                            <button class="border border-chalk p-1 hover:bg-chalk hover:text-void transition-none" onclick="scrollRow('row-1', 1)">
-                                <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div id="row-1" class="flex overflow-x-auto gap-4 md:gap-6 pb-4 snap-x hide-scrollbar scroll-smooth">
-                        <!-- JS Injected Cards -->
-                    </div>
-                </div>
-
-                <!-- Row 2: Archives -->
                 <div class="border-t border-zinc_raw pt-6 pb-12">
                     <div class="flex items-center justify-between mb-6">
-                        <h3 class="font-mono text-sm md:text-base uppercase tracking-[0.3em] text-gray-400">>> Vault_Extraction</h3>
+                        <h3 class="font-mono text-sm md:text-base uppercase tracking-[0.3em] text-gray-400">>> Cyber Library Database</h3>
                     </div>
-                    <div id="row-2" class="flex overflow-x-auto gap-4 md:gap-6 pb-4 snap-x hide-scrollbar scroll-smooth">
-                        <!-- JS Injected Cards -->
+                    <div id="movieGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                        <!-- Dynamic Movies -->
                     </div>
                 </div>
-
             </section>
         </main>
         
@@ -311,150 +320,120 @@
         </footer>
     </div>
 
+    <!-- Video Player Modal with 7 Servers -->
+    <div id="playerModal" class="view-hidden fixed inset-0 z-[99999] bg-void flex flex-col">
+        <div class="bg-void border-b-2 border-chalk p-3 flex justify-between items-center">
+            <div class="flex gap-2 overflow-x-auto hide-scrollbar">
+                <button class="server-btn border border-chalk bg-chalk text-void px-3 py-1 font-mono text-xs uppercase" onclick="changeServer(1, this)">Server 1</button>
+                <button class="server-btn border border-zinc_raw text-chalk px-3 py-1 font-mono text-xs uppercase hover:border-chalk" onclick="changeServer(2, this)">Server 2</button>
+                <button class="server-btn border border-zinc_raw text-chalk px-3 py-1 font-mono text-xs uppercase hover:border-chalk" onclick="changeServer(3, this)">Server 3</button>
+                <button class="server-btn border border-zinc_raw text-chalk px-3 py-1 font-mono text-xs uppercase hover:border-chalk" onclick="changeServer(4, this)">Server 4</button>
+                <button class="server-btn border border-zinc_raw text-chalk px-3 py-1 font-mono text-xs uppercase hover:border-chalk" onclick="changeServer(5, this)">Server 5</button>
+                <button class="server-btn border border-zinc_raw text-chalk px-3 py-1 font-mono text-xs uppercase hover:border-chalk" onclick="changeServer(6, this)">Server 6</button>
+                <button class="server-btn border border-zinc_raw text-chalk px-3 py-1 font-mono text-xs uppercase hover:border-chalk" onclick="changeServer(7, this)">Server 7</button>
+            </div>
+            <button onclick="closePlayer()" class="border border-chalk bg-blood text-chalk px-4 py-1 font-brutal uppercase">✕ Close</button>
+        </div>
+        <iframe id="vidFrame" src="" class="w-full flex-1 border-none bg-void" allowfullscreen></iframe>
+    </div>
+
     <script>
-        // Init Lucide Icons
         lucide.createIcons();
 
-        // Data Rendering Logic
-        const row1Data = [
-            { id: "01", title: "Concrete", dir: "V. Rane", img: "https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?q=80&w=400&auto=format&fit=crop" },
-            { id: "02", title: "Nightwalk", dir: "A. Cole", img: "https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?q=80&w=400&auto=format&fit=crop" },
-            { id: "03", title: "Gridlock", dir: "M. Xin", img: "https://images.unsplash.com/photo-1555680202-c86f0e12f086?q=80&w=400&auto=format&fit=crop" },
-            { id: "04", title: "Static", dir: "F. Kross", img: "https://images.unsplash.com/photo-1618520267448-f8a44ec2bdf2?q=80&w=400&auto=format&fit=crop" },
-            { id: "05", title: "Overpass", dir: "L. Silva", img: "https://images.unsplash.com/photo-1509347528160-9a9e33742cdb?q=80&w=400&auto=format&fit=crop" },
-            { id: "06", title: "Subway", dir: "K. Ito", img: "https://images.unsplash.com/photo-1481277542470-605612bd2d61?q=80&w=400&auto=format&fit=crop" }
-        ];
-
-        const row2Data = [
-            { id: "07", title: "Red Eye", dir: "J. Doe", img: "https://images.unsplash.com/photo-1516641885624-9dfc52862ccb?q=80&w=400&auto=format&fit=crop" },
-            { id: "08", title: "Sector 4", dir: "T. Rex", img: "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=400&auto=format&fit=crop" },
-            { id: "09", title: "Alley", dir: "S. Pen", img: "https://images.unsplash.com/photo-1542838685-64bc7754b52c?q=80&w=400&auto=format&fit=crop" },
-            { id: "10", title: "Terminal", dir: "R. Roe", img: "https://images.unsplash.com/photo-1504333638930-c8787321efa0?q=80&w=400&auto=format&fit=crop" },
-            { id: "11", title: "Rust", dir: "E. Mac", img: "https://images.unsplash.com/photo-1519074069444-1ba4fff66d16?q=80&w=400&auto=format&fit=crop" }
-        ];
-
-        function renderRawCards(containerId, data) {
-            const container = document.getElementById(containerId);
-            data.forEach(item => {
-                const card = document.createElement('div');
-                card.className = "w-[160px] md:w-[240px] snap-start shrink-0 group cursor-pointer flex flex-col";
-                card.innerHTML = `
-                    <div class="relative w-full aspect-[2/3] border-2 border-zinc_raw group-hover:border-chalk transition-none bg-void overflow-hidden">
-                        <img src="${item.img}" alt="${item.title}" class="w-full h-full object-cover filter grayscale contrast-125 brightness-75 group-hover:grayscale-0 group-hover:brightness-100 group-hover:scale-[1.03] transition-all duration-[0.15s] ease-linear">
-                        <div class="absolute top-2 left-2 bg-void border border-chalk text-chalk font-mono text-[10px] px-1 py-0.5 z-10 uppercase">${item.id}</div>
-                    </div>
-                    <div class="pt-3 pb-1 border-b-2 border-transparent group-hover:border-chalk transition-none">
-                        <h4 class="font-brutal text-xl md:text-2xl uppercase tracking-tight text-chalk">${item.title}</h4>
-                        <p class="font-mono text-[10px] text-gray-500 uppercase tracking-widest mt-1">DIR // ${item.dir}</p>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        renderRawCards('row-1', row1Data);
-        renderRawCards('row-2', row2Data);
-
-        function scrollRow(rowId, direction) {
-            const row = document.getElementById(rowId);
-            const scrollAmount = window.innerWidth > 768 ? 500 : 250;
-            row.scrollBy({ left: scrollAmount * direction, behavior: 'smooth' });
-        }
-
-
-        // AUTHENTICATION LOGIC (EmailJS OTP + Block System)
+        const apiKey = '4150581ccf3ec551c12884bbf92d041d';
+        const proxyBase = 'https://gentle-rice-b132.adnanal8466.workers.dev';
+        let currentMovieId = null;
         let generatedOTP = "";
+        let forgotEmailTarget = "";
+
         const loginForm = document.getElementById('login-form');
         const twoFactorForm = document.getElementById('twoFactorForm');
+        const forgotForm = document.getElementById('forgotForm');
+        const resetForm = document.getElementById('resetForm');
         const loginView = document.getElementById('login-view');
         const dashboardView = document.getElementById('dashboard-view');
         const authSubtitle = document.getElementById('authSubtitle');
         const loginBtnText = document.getElementById('loginBtnText');
         const loginBtn = document.getElementById('loginBtn');
 
+        // Navigation Views Control
+        function showForgotPassword() {
+            loginForm.classList.remove('view-active'); loginForm.classList.add('view-hidden');
+            forgotForm.classList.remove('view-hidden'); forgotForm.classList.add('view-active');
+            authSubtitle.innerText = "Password_Reset_Protocol";
+        }
+
+        function goBackToLogin() {
+            twoFactorForm.classList.remove('view-active'); twoFactorForm.classList.add('view-hidden');
+            forgotForm.classList.remove('view-active'); forgotForm.classList.add('view-hidden');
+            resetForm.classList.remove('view-active'); resetForm.classList.add('view-hidden');
+            loginForm.classList.remove('view-hidden'); loginForm.classList.add('view-active');
+            authSubtitle.innerText = "System_Access_Req";
+        }
+
+        // Handle Login and OTP Generation
         function handleLogin(e) {
             e.preventDefault();
             const emailInput = document.getElementById('loginEmail').value.toLowerCase();
             const pass = document.getElementById('loginPass').value;
 
-            if (pass.length < 10) {
-                alert("Password must be at least 10 characters long!");
-                return;
-            }
+            if (pass.length < 10) { alert("Password must be at least 10 characters long!"); return; }
 
-            // 1. Check if email is permanently blocked
             if (localStorage.getItem('blocked_' + emailInput) === "true") {
-                alert("🚫 SECURITY ALERT: Yeh account 5 baar galat password dalne ki wajah se block ho chuka hai.");
+                alert("🚫 SECURITY ALERT: Account blocked due to 5 failed attempts.");
                 return;
             }
 
-            // 2. Password Verification Logic
             let savedPass = localStorage.getItem('pass_' + emailInput);
-            
             if (savedPass) {
                 if (pass !== savedPass) {
-                    let attempts = parseInt(localStorage.getItem('attempts_' + emailInput) || "0");
-                    attempts++;
+                    let attempts = parseInt(localStorage.getItem('attempts_' + emailInput) || "0") + 1;
                     localStorage.setItem('attempts_' + emailInput, attempts);
-
                     if (attempts >= 5) {
-                        localStorage.setItem('blocked_' + emailInput, "true"); 
-                        alert("🚫 Aapne 5 baar galat password dala hai. Yeh account hamesha ke liye block kar diya gaya hai!");
+                        localStorage.setItem('blocked_' + emailInput, "true");
+                        alert("🚫 Account permanently blocked due to multiple incorrect passwords!");
                     } else {
-                        alert(`❌ Galat password! Aapke paas ${5 - attempts} attempts baaki hain.`);
+                        alert(`❌ Incorrect password! Attempts remaining: ${5 - attempts}`);
                     }
-                    return; 
+                    return;
                 } else {
                     localStorage.setItem('attempts_' + emailInput, "0");
                 }
             } else {
                 localStorage.setItem('pass_' + emailInput, pass);
-                alert("✅ New Account Registered! Agli baar login karne ke liye yahi password yaad rakhein.");
+                alert("✅ Account registered successfully!");
             }
 
-            // 3. Send OTP
+            sendOtpEmail(emailInput, () => {
+                loginForm.classList.remove('view-active'); loginForm.classList.add('view-hidden');
+                twoFactorForm.classList.remove('view-hidden'); twoFactorForm.classList.add('view-active');
+                authSubtitle.innerText = "2FA_Verification_Req";
+                document.getElementById('otpCode').focus();
+            });
+        }
+
+        function sendOtpEmail(email, callback) {
             loginBtnText.innerText = "TRANSMITTING...";
-            loginBtn.style.backgroundColor = '#f3f4f6';
-            loginBtn.style.color = '#000';
             loginBtn.disabled = true;
 
             generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
             let currentTime = new Date().toLocaleTimeString();
 
             emailjs.send("service_ydhq81o", "template_ctcykhi", {
-                email: emailInput,
+                email: email,
                 passcode: generatedOTP,
                 time: currentTime
-            }).then(function(response) {
-                console.log("OTP Sent!", response.status);
-                
-                // Show 2FA Form
-                loginForm.classList.remove('view-active');
-                loginForm.classList.add('view-hidden');
-                
-                twoFactorForm.classList.remove('view-hidden');
-                twoFactorForm.classList.add('view-active');
-                
-                authSubtitle.innerText = "2FA_Verification_Req";
-                document.getElementById('otpCode').focus();
-                
-                // Reset Button styling
+            }).then(() => {
                 loginBtnText.innerText = "Access Universaless";
-                loginBtn.style.backgroundColor = '';
-                loginBtn.style.color = '';
                 loginBtn.disabled = false;
-            }, function(error) {
-                console.error("Failed to send OTP", error);
-                alert("❌ OTP send nahi ho paaya. Error: " + error.text);
-                
+                if(callback) callback();
+            }, (err) => {
+                alert("❌ Failed to send OTP. Error: " + err.text);
                 loginBtnText.innerText = "Access Universaless";
-                loginBtn.style.backgroundColor = '';
-                loginBtn.style.color = '';
                 loginBtn.disabled = false;
             });
         }
 
-        // Final 2FA Check
         function handle2FA(e) {
             e.preventDefault();
             const otp = document.getElementById('otpCode').value;
@@ -462,47 +441,142 @@
 
             if(otp === generatedOTP) { 
                 localStorage.setItem("isLoggedIn", "true");
-                
-                // Set username in dashboard
                 document.getElementById('userDisplay').innerText = emailInput.split('@')[0].toUpperCase();
 
-                // Switch to Dashboard View
-                loginView.classList.remove('view-active');
-                loginView.classList.add('view-hidden');
-                
-                dashboardView.classList.remove('view-hidden');
-                dashboardView.classList.add('view-active');
+                loginView.classList.remove('view-active'); loginView.classList.add('view-hidden');
+                dashboardView.classList.remove('view-hidden'); dashboardView.classList.add('view-active');
                 window.scrollTo(0, 0); 
-                
-                // Reset forms
-                loginForm.reset();
-                twoFactorForm.reset();
-                goBackToLogin(); 
+                fetchMovies(`${proxyBase}/3/movie/popular?api_key=${apiKey}`);
+                loginForm.reset(); twoFactorForm.reset(); goBackToLogin(); 
             } else {
-                alert("❌ Invalid Verification Code! Sahi OTP daalein.");
+                alert("❌ Invalid Verification Code!");
             }
         }
 
-        function goBackToLogin() {
-            twoFactorForm.classList.remove('view-active');
-            twoFactorForm.classList.add('view-hidden');
+        // Forgot Password Logic
+        function handleForgot(e) {
+            e.preventDefault();
+            forgotEmailTarget = document.getElementById('forgotEmail').value.toLowerCase();
             
-            loginForm.classList.remove('view-hidden');
-            loginForm.classList.add('view-active');
-            
-            authSubtitle.innerText = "System_Access_Req";
+            if(!localStorage.getItem('pass_' + forgotEmailTarget)) {
+                alert("❌ Email not found in database!");
+                return;
+            }
+
+            generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+            emailjs.send("service_ydhq81o", "template_ctcykhi", {
+                email: forgotEmailTarget,
+                passcode: generatedOTP,
+                time: new Date().toLocaleTimeString()
+            }).then(() => {
+                forgotForm.classList.remove('view-active'); forgotForm.classList.add('view-hidden');
+                resetForm.classList.remove('view-hidden'); resetForm.classList.add('view-active');
+                authSubtitle.innerText = "Enter_New_Passcode";
+                alert("✅ Reset OTP sent to your email!");
+            });
+        }
+
+        function handleResetPass(e) {
+            e.preventDefault();
+            const otp = document.getElementById('resetOtp').value;
+            const newPass = document.getElementById('newPass').value;
+
+            if(otp === generatedOTP) {
+                if(newPass.length < 10) { alert("Password must be at least 10 chars!"); return; }
+                localStorage.setItem('pass_' + forgotEmailTarget, newPass);
+                localStorage.setItem('blocked_' + forgotEmailTarget, "false");
+                localStorage.setItem('attempts_' + forgotEmailTarget, "0");
+                alert("✅ Passcode updated successfully! Login now.");
+                goBackToLogin();
+            } else {
+                alert("❌ Invalid OTP!");
+            }
         }
 
         function logout() {
             localStorage.removeItem("isLoggedIn");
-            
-            dashboardView.classList.remove('view-active');
-            dashboardView.classList.add('view-hidden');
-            
-            loginView.classList.remove('view-hidden');
-            loginView.classList.add('view-active');
-            
+            dashboardView.classList.remove('view-active'); dashboardView.classList.add('view-hidden');
+            loginView.classList.remove('view-hidden'); loginView.classList.add('view-active');
             goBackToLogin();
+        }
+
+        // Fetch Movies from TMDB API via Worker Proxy
+        async function fetchMovies(url) {
+            const grid = document.getElementById('movieGrid');
+            grid.innerHTML = '<p class="font-mono text-xs text-gray-500 col-span-full">FETCHING DATABASE...</p>';
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+                
+                if(data.results && data.results.length > 0) {
+                    const hero = data.results[0];
+                    document.getElementById('heroImg').src = `https://image.tmdb.org/t/p/original${hero.backdrop_path}`;
+                    document.getElementById('heroTitle').innerText = hero.title;
+                    document.getElementById('heroTitle.getAttribute') = hero.title;
+                    document.getElementById('heroDesc').innerText = hero.overview;
+                    document.getElementById('heroPlayBtn').onclick = () => playMovie(hero.id);
+
+                    grid.innerHTML = '';
+                    data.results.forEach(m => {
+                        if(m.poster_path) {
+                            const card = document.createElement('div');
+                            card.className = "group cursor-pointer flex flex-col";
+                            card.innerHTML = `
+                                <div class="relative w-full aspect-[2/3] border-2 border-zinc_raw group-hover:border-chalk bg-void overflow-hidden">
+                                    <img src="https://image.tmdb.org/t/p/w500${m.poster_path}" alt="${m.title}" class="w-full h-full object-cover filter grayscale contrast-125 brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-150">
+                                </div>
+                                <div class="pt-2">
+                                    <h4 class="font-brutal text-sm uppercase truncate text-chalk">${m.title}</h4>
+                                </div>
+                            `;
+                            card.onclick = () => playMovie(m.id);
+                            grid.appendChild(card);
+                        }
+                    });
+                }
+            } catch(e) {
+                grid.innerHTML = '<p class="font-mono text-xs text-blood col-span-full">CONNECTION ERROR TO NEURAL PROXY.</p>';
+            }
+        }
+
+        function handleSearch(e) {
+            if(e.key === 'Enter') {
+                const q = e.target.value.trim();
+                if(q) fetchMovies(`${proxyBase}/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(q)}`);
+            }
+        }
+
+        function playMovie(id) {
+            currentMovieId = id;
+            document.getElementById('vidFrame').src = `https://vidsrc.to/embed/movie/${id}`;
+            document.getElementById('playerModal').classList.remove('view-hidden');
+            document.getElementById('playerModal').classList.add('view-active');
+        }
+
+        function changeServer(num, btn) {
+            document.querySelectorAll('.server-btn').forEach(b => {
+                b.classList.remove('bg-chalk', 'text-void');
+                b.classList.add('border-zinc_raw', 'text-chalk');
+            });
+            btn.classList.remove('border-zinc_raw', 'text-chalk');
+            btn.classList.add('bg-chalk', 'text-void');
+
+            let urls = [
+                `https://vidsrc.to/embed/movie/${currentMovieId}`,
+                `https://vidsrc.cc/v2/embed/movie/${currentMovieId}`,
+                `https://2embed.cc/embed/${currentMovieId}`,
+                `https://vidsrc.su/embed/movie/${currentMovieId}`,
+                `https://player.autoembed.cc/embed/movie/${currentMovieId}`,
+                `https://vidlink.pro/embed/movie/${currentMovieId}`,
+                `https://vidsrc.vip/embed/movie/${currentMovieId}`
+            ];
+            document.getElementById('vidFrame').src = urls[num - 1];
+        }
+
+        function closePlayer() {
+            document.getElementById('vidFrame').src = '';
+            document.getElementById('playerModal').classList.remove('view-active');
+            document.getElementById('playerModal').classList.add('view-hidden');
         }
     </script>
 </body>
