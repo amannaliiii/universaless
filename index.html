@@ -188,7 +188,7 @@
     <!-- Groovy Marquee Ticker -->
     <div class="marquee">
         <div class="marquee-track">
-            ⚡ UNIVERSALESS OTT 🌭 ALL 7 CYBER SERVERS UNLOCKED 🎬 STREAM HINDI & HOLLYWOOD IN 4K ⚡ UNIVERSALESS OTT 🌭 ALL 7 CYBER SERVERS UNLOCKED 🎬 STREAM HINDI & HOLLYWOOD IN 4K ⚡
+            ⚡ UNIVERSALESS OTT 🌭 ALL 7 CYBER SERVERS UNLOCKED FOR FREE 🎬 STREAM HINDI & HOLLYWOOD IN 4K ⚡ UNIVERSALESS OTT 🌭 ALL 7 CYBER SERVERS UNLOCKED FOR FREE 🎬 STREAM HINDI & HOLLYWOOD IN 4K ⚡
         </div>
     </div>
 
@@ -351,13 +351,13 @@
             window.scrollTo(0, 0);
         }
 
-        // OTP store karne ke liye ek global variable
+        // OTP store variable
         let generatedOTP = "";
 
-        // Handle Login for Step 1
+        // LOGIN SYSTEM WITH PASSWORD CHECK AND 5-ATTEMPT BLOCK
         function handleLogin(e) {
             e.preventDefault();
-            const emailInput = document.getElementById('loginEmail').value;
+            const emailInput = document.getElementById('loginEmail').value.toLowerCase();
             const pass = document.getElementById('loginPass').value;
             const btn = e.target.querySelector('.submit-btn');
 
@@ -366,37 +366,69 @@
                 return;
             }
 
-            if(emailInput && pass.length >= 10) {
-                btn.innerText = "Sending Neural OTP...";
-                btn.disabled = true;
-
-                generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-                let currentTime = new Date().toLocaleTimeString();
-
-                emailjs.send("service_ydhq81o", "template_ctcykhi", {
-                    email: emailInput,
-                    passcode: generatedOTP,
-                    time: currentTime
-                }).then(function(response) {
-                    console.log("OTP Sent!", response.status);
-                    
-                    document.getElementById('loginForm').style.display = 'none';
-                    document.getElementById('twoFactorForm').style.display = 'block';
-                    document.getElementById('authTitle').innerText = '2-Step Verification';
-                    document.getElementById('otpCode').focus();
-                    
-                    btn.innerText = "Initialize Login";
-                    btn.disabled = false;
-                }, function(error) {
-                    console.error("Failed to send OTP", error);
-                    alert("❌ OTP send nahi ho paaya. Error: " + error.text);
-                    btn.innerText = "Initialize Login";
-                    btn.disabled = false;
-                });
+            // 1. Check if email is permanently blocked
+            if (localStorage.getItem('blocked_' + emailInput) === "true") {
+                alert("🚫 SECURITY ALERT: Yeh account 5 baar galat password dalne ki wajah se block ho chuka hai.");
+                return;
             }
+
+            // 2. Password Verification Logic
+            let savedPass = localStorage.getItem('pass_' + emailInput);
+            
+            if (savedPass) {
+                // Account exist karta hai, password match karo
+                if (pass !== savedPass) {
+                    let attempts = parseInt(localStorage.getItem('attempts_' + emailInput) || "0");
+                    attempts++;
+                    localStorage.setItem('attempts_' + emailInput, attempts);
+
+                    if (attempts >= 5) {
+                        localStorage.setItem('blocked_' + emailInput, "true"); // Block account
+                        alert("🚫 Aapne 5 baar galat password dala hai. Yeh account hamesha ke liye block kar diya gaya hai!");
+                    } else {
+                        alert(`❌ Galat password! Aapke paas ${5 - attempts} attempts baaki hain.`);
+                    }
+                    return; // Stop execution here if password is wrong
+                } else {
+                    // Password sahi hai, attempts reset kar do
+                    localStorage.setItem('attempts_' + emailInput, "0");
+                }
+            } else {
+                // Naya user hai, iska password save kar lo
+                localStorage.setItem('pass_' + emailInput, pass);
+                alert("✅ New Account Registered! Agli baar login karne ke liye yahi password yaad rakhein.");
+            }
+
+            // 3. Send OTP only if password is correct or account is new
+            btn.innerText = "Sending Neural OTP...";
+            btn.disabled = true;
+
+            generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+            let currentTime = new Date().toLocaleTimeString();
+
+            emailjs.send("service_ydhq81o", "template_ctcykhi", {
+                email: emailInput,
+                passcode: generatedOTP,
+                time: currentTime
+            }).then(function(response) {
+                console.log("OTP Sent!", response.status);
+                
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('twoFactorForm').style.display = 'block';
+                document.getElementById('authTitle').innerText = '2-Step Verification';
+                document.getElementById('otpCode').focus();
+                
+                btn.innerText = "Initialize Login";
+                btn.disabled = false;
+            }, function(error) {
+                console.error("Failed to send OTP", error);
+                alert("❌ OTP send nahi ho paaya. Error: " + error.text);
+                btn.innerText = "Initialize Login";
+                btn.disabled = false;
+            });
         }
 
-        // Handle 2FA Verification for Step 2
+        // Handle 2FA Verification
         function handle2FA(e) {
             e.preventDefault();
             const otp = document.getElementById('otpCode').value;
