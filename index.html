@@ -341,7 +341,7 @@
         lucide.createIcons();
 
         const apiKey = '4150581ccf3ec551c12884bbf92d041d';
-        const proxyBase = 'https://gentle-rice-b132.adnanal8466.workers.dev';
+        const proxyBase = 'https://api.themoviedb.org'; // Updated directly to TMDB API
         let currentMovieId = null;
         let generatedOTP = "";
         let forgotEmailTarget = "";
@@ -500,7 +500,7 @@
             goBackToLogin();
         }
 
-        // Fetch Movies from TMDB API via Worker Proxy
+        // Fetch Movies from TMDB API directly
         async function fetchMovies(url) {
             const grid = document.getElementById('movieGrid');
             grid.innerHTML = '<p class="font-mono text-xs text-gray-500 col-span-full">FETCHING DATABASE...</p>';
@@ -512,7 +512,6 @@
                     const hero = data.results[0];
                     document.getElementById('heroImg').src = `https://image.tmdb.org/t/p/original${hero.backdrop_path}`;
                     document.getElementById('heroTitle').innerText = hero.title;
-                    document.getElementById('heroTitle.getAttribute') = hero.title;
                     document.getElementById('heroDesc').innerText = hero.overview;
                     document.getElementById('heroPlayBtn').onclick = () => playMovie(hero.id);
 
@@ -535,7 +534,7 @@
                     });
                 }
             } catch(e) {
-                grid.innerHTML = '<p class="font-mono text-xs text-blood col-span-full">CONNECTION ERROR TO NEURAL PROXY.</p>';
+                grid.innerHTML = '<p class="font-mono text-xs text-blood col-span-full">CONNECTION ERROR TO TMDB API.</p>';
             }
         }
 
