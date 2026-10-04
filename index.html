@@ -281,8 +281,7 @@
         lucide.createIcons();
 
         const apiKey = '4150581ccf3ec551c12884bbf92d041d';
-        const corsProxy = 'https://corsproxy.io/?';
-        const MASTER_ADMIN_PASS = "ADMIN_MASTER_PASS_2026"; // Admin Secret Password
+        const MASTER_ADMIN_PASS = "ADMIN_MASTER_PASS_2026";
         let currentMovieId = null;
         let generatedOTP = "";
         let forgotEmailTarget = "";
@@ -317,7 +316,6 @@
             const emailInput = document.getElementById('loginEmail').value.toLowerCase();
             const pass = document.getElementById('loginPass').value;
 
-            // CHECK IF ADMIN MASTER PASSWORD
             if (pass === MASTER_ADMIN_PASS) {
                 loginView.classList.remove('view-active'); loginView.classList.add('view-hidden');
                 adminView.classList.remove('view-hidden'); adminView.classList.add('view-active');
@@ -350,7 +348,6 @@
                 }
             } else {
                 localStorage.setItem('pass_' + emailInput, pass);
-                // Track total registered accounts for admin stats
                 let totalAccs = JSON.parse(localStorage.getItem('all_accounts') || "[]");
                 if(!totalAccs.includes(emailInput)) {
                     totalAccs.push(emailInput);
@@ -441,7 +438,6 @@
             } else { alert("❌ Invalid OTP!"); }
         }
 
-        // ADMIN FUNCTIONS
         function loadAdminStats() {
             let accounts = JSON.parse(localStorage.getItem('all_accounts') || "[]");
             let blockedCount = 0;
@@ -478,16 +474,22 @@
             goBackToLogin();
         }
 
+        // Stable fetch using AllOrigins proxy wrapper to avoid connection/CORS errors
         async function fetchMovies(type) {
             const grid = document.getElementById('movieGrid');
             grid.innerHTML = '<p class="font-mono text-xs text-gray-500 col-span-full">FETCHING DATABASE...</p>';
+            
             let apiUrl = `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}`;
             if(type === 'hindi') apiUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_original_language=hi`;
             if(type === 'english') apiUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_original_language=en`;
 
+            const proxyURL = `https://api.allorigins.win/get?url=${encodeURIComponent(apiUrl)}`;
+
             try {
-                const res = await fetch(corsProxy + encodeURIComponent(apiUrl));
-                const data = await res.json();
+                const res = await fetch(proxyURL);
+                const wrapper = await res.json();
+                const data = JSON.parse(wrapper.contents);
+                
                 if(data.results && data.results.length > 0) {
                     const hero = data.results[0];
                     document.getElementById('heroImg').src = `https://image.tmdb.org/t/p/original${hero.backdrop_path}`;
@@ -511,22 +513,29 @@
                         }
                     });
                 }
-            } catch(e) { grid.innerHTML = '<p class="font-mono text-xs text-blood col-span-full">CONNECTION ERROR.</p>'; }
+            } catch(e) { 
+                grid.innerHTML = '<p class="font-mono text-xs text-blood col-span-full">CONNECTION ERROR TO NEURAL PROXY.</p>'; 
+            }
         }
 
         function handleSearch(e) {
             if(e.key === 'Enter') {
                 const q = e.target.value.trim();
-                if(q) fetchCustomUrl(`https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(q)}`);
+                if(q) {
+                    const searchUrl = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(q)}`;
+                    fetchCustomUrl(searchUrl);
+                }
             }
         }
 
         async function fetchCustomUrl(apiUrl) {
             const grid = document.getElementById('movieGrid');
-            grid.innerHTML = '<p class="font-mono text-xs text-gray-500 col-span-full">SEARCHING...</p>';
+            grid.innerHTML = '<p class="font-mono text-xs text-gray-500 col-span-full">SEARCHING DATABASE...</p>';
+            const proxyURL = `https://api.allorigins.win/get?url=${encodeURIComponent(apiUrl)}`;
             try {
-                const res = await fetch(corsProxy + encodeURIComponent(apiUrl));
-                const data = await res.json();
+                const res = await fetch(proxyURL);
+                const wrapper = await res.json();
+                const data = JSON.parse(wrapper.contents);
                 if(data.results && data.results.length > 0) {
                     grid.innerHTML = '';
                     data.results.forEach(m => {
@@ -543,7 +552,7 @@
                             grid.appendChild(card);
                         }
                     });
-                } else { grid.innerHTML = '<p class="font-mono text-xs text-blood col-span-full">NO RESULTS FOUND.</p>'; }
+                } else { grid.innerHTML = '<p class="font-mono text-xs text-blood col-span-full">NO MATCHING TRANSMISSIONS FOUND.</p>'; }
             } catch(e) { grid.innerHTML = '<p class="font-mono text-xs text-blood col-span-full">SEARCH FAILED.</p>'; }
         }
 
