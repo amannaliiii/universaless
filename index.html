@@ -57,6 +57,11 @@
 
     <div class="noise-overlay"></div>
 
+    <!-- GLOBAL ANNOUNCEMENT / MAINTENANCE BANNER (Controlled by Admin) -->
+    <div id="globalAnnouncementBanner" class="bg-blood text-chalk font-mono text-xs uppercase py-2 px-4 text-center tracking-widest hidden z-[99999] relative border-b-2 border-chalk">
+        <span id="announcementText">SYSTEM NOTICE</span>
+    </div>
+
     <!-- LOGIN VIEW -->
     <div id="login-view" class="view-active min-h-screen flex items-center justify-center p-4 md:p-8">
         <div class="w-full max-w-lg border-2 border-chalk p-8 md:p-12 relative bg-void">
@@ -210,7 +215,7 @@
         </footer>
     </div>
 
-    <!-- ADMIN PANEL DASHBOARD VIEW -->
+    <!-- ADMIN PANEL DASHBOARD VIEW (With Maintenance Notice Manager) -->
     <div id="admin-view" class="view-hidden min-h-screen flex flex-col bg-void text-chalk">
         <nav class="sticky top-0 z-50 bg-void border-b-2 border-acid">
             <div class="w-full px-4 md:px-8 h-16 flex items-center justify-between">
@@ -234,21 +239,25 @@
                 </div>
             </div>
 
-            <div class="border-2 border-chalk p-6 bg-void space-y-4">
-                <h3 class="font-brutal text-xl uppercase text-acid">>> Account Unblock Override</h3>
-                <p class="font-mono text-xs text-gray-400">Enter blocked user's cyber email to lift security restriction.</p>
-                <div class="flex gap-4">
-                    <input type="email" id="unblockEmailInput" placeholder="user@domain.net" class="flex-1 bg-void border-2 border-zinc_raw text-chalk font-mono p-3 focus:outline-none focus:border-acid">
-                    <button onclick="adminUnblockUser()" class="border-2 border-acid bg-acid text-void font-brutal uppercase px-6 py-3 font-bold cursor-pointer">Unblock Node</button>
+            <!-- ADMIN TOOL 1: MAINTENANCE / UPDATE NOTICE BANNER -->
+            <div class="border-2 border-acid p-6 bg-void space-y-4">
+                <h3 class="font-brutal text-xl uppercase text-acid">>> Maintenance & Update Notice Control</h3>
+                <p class="font-mono text-xs text-gray-400">Set notice for users (e.g., "Website is down for maintenance, back in 4 hours" or "New project coming soon!").</p>
+                <div class="space-y-3">
+                    <input type="text" id="maintenanceInput" placeholder="e.g. SYSTEM UPDATE: Website back online in 3 hours!" class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 focus:outline-none focus:border-acid">
+                    <div class="flex gap-4">
+                        <button onclick="adminSetMaintenance(true)" class="border-2 border-blood bg-blood text-chalk font-brutal uppercase px-6 py-2.5 font-bold cursor-pointer">Publish Notice</button>
+                        <button onclick="adminSetMaintenance(false)" class="border-2 border-zinc_raw text-gray-400 font-brutal uppercase px-6 py-2.5 font-bold cursor-pointer hover:border-chalk hover:text-chalk">Disable Notice</button>
+                    </div>
                 </div>
             </div>
 
+            <!-- ADMIN TOOL 2: UNBLOCK USER -->
             <div class="border-2 border-chalk p-6 bg-void space-y-4">
-                <h3 class="font-brutal text-xl uppercase text-acid">>> Global Broadcast Notice</h3>
-                <p class="font-mono text-xs text-gray-400">Publish system-wide alert or marquee banner.</p>
+                <h3 class="font-brutal text-xl uppercase text-acid">>> Account Unblock Override</h3>
                 <div class="flex gap-4">
-                    <input type="text" id="broadcastInput" placeholder="Type system alert message..." class="flex-1 bg-void border-2 border-zinc_raw text-chalk font-mono p-3 focus:outline-none focus:border-acid">
-                    <button onclick="adminSetBroadcast()" class="border-2 border-chalk bg-chalk text-void font-brutal uppercase px-6 py-3 font-bold cursor-pointer">Broadcast</button>
+                    <input type="email" id="unblockEmailInput" placeholder="user@domain.net" class="flex-1 bg-void border-2 border-zinc_raw text-chalk font-mono p-3 focus:outline-none focus:border-acid">
+                    <button onclick="adminUnblockUser()" class="border-2 border-acid bg-acid text-void font-brutal uppercase px-6 py-3 font-bold cursor-pointer">Unblock Node</button>
                 </div>
             </div>
         </main>
@@ -275,10 +284,21 @@
         lucide.createIcons();
 
         const apiKey = '4150581ccf3ec551c12884bbf92d041d';
+        const corsProxy = 'https://corsproxy.io/?';
         const MASTER_ADMIN_PASS = "Adnan_Admin_2026_Secure";
         let currentMovieId = null;
         let generatedOTP = "";
         let forgotEmailTarget = "";
+
+        // Check and display maintenance banner on load
+        window.addEventListener('DOMContentLoaded', () => {
+            let notice = localStorage.getItem('site_maintenance_msg');
+            let isActive = localStorage.getItem('site_maintenance_active') === 'true';
+            if(isActive && notice) {
+                document.getElementById('announcementText').innerText = notice;
+                document.getElementById('globalAnnouncementBanner').classList.remove('hidden');
+            }
+        });
 
         const loginForm = document.getElementById('login-form');
         const twoFactorForm = document.getElementById('twoFactorForm');
@@ -442,6 +462,22 @@
             document.getElementById('statBlockedUsers').innerText = blockedCount;
         }
 
+        // Admin Action: Set Maintenance / Update Banner
+        function adminSetMaintenance(isActive) {
+            let msg = document.getElementById('maintenanceInput').value.trim();
+            if(isActive && !msg) { alert("Please enter maintenance notice message!"); return; }
+            
+            localStorage.setItem('site_maintenance_active', isActive);
+            if(isActive) {
+                localStorage.setItem('site_maintenance_msg', msg);
+                alert("✅ Maintenance banner published live across the platform!");
+            } else {
+                localStorage.removeItem('site_maintenance_msg');
+                alert("✅ Maintenance notice disabled. Platform is fully active!");
+            }
+            document.getElementById('maintenanceInput').value = "";
+        }
+
         function adminUnblockUser() {
             let email = document.getElementById('unblockEmailInput').value.toLowerCase().trim();
             if(!email) return;
@@ -452,14 +488,6 @@
             loadAdminStats();
         }
 
-        function adminSetBroadcast() {
-            let msg = document.getElementById('broadcastInput').value.trim();
-            if(!msg) return;
-            localStorage.setItem('admin_broadcast', msg);
-            alert("✅ Global broadcast alert updated!");
-            document.getElementById('broadcastInput').value = "";
-        }
-
         function logout() {
             localStorage.removeItem("isLoggedIn");
             dashboardView.classList.remove('view-active'); dashboardView.classList.add('view-hidden');
@@ -468,7 +496,6 @@
             goBackToLogin();
         }
 
-        // Bulletproof fetch with automatic fallback data if proxy blocks
         async function fetchMovies(type) {
             const grid = document.getElementById('movieGrid');
             grid.innerHTML = '<p class="font-mono text-xs text-gray-500 col-span-full">FETCHING DATABASE...</p>';
@@ -485,50 +512,31 @@
                 const data = JSON.parse(wrapper.contents);
                 
                 if(data.results && data.results.length > 0) {
-                    renderMovieData(data.results);
-                } else {
-                    loadFallbackMovies();
+                    const hero = data.results[0];
+                    document.getElementById('heroImg').src = `https://image.tmdb.org/t/p/original${hero.backdrop_path}`;
+                    document.getElementById('heroTitle').innerText = hero.title;
+                    document.getElementById('heroDesc').innerText = hero.overview;
+                    document.getElementById('heroPlayBtn').onclick = () => playMovie(hero.id);
+
+                    grid.innerHTML = '';
+                    data.results.forEach(m => {
+                        if(m.poster_path) {
+                            const card = document.createElement('div');
+                            card.className = "group cursor-pointer flex flex-col";
+                            card.innerHTML = `
+                                <div class="relative w-full aspect-[2/3] border-2 border-zinc_raw group-hover:border-chalk bg-void overflow-hidden">
+                                    <img src="https://image.tmdb.org/t/p/w500${m.poster_path}" alt="${m.title}" class="w-full h-full object-cover filter grayscale contrast-125 brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-150">
+                                </div>
+                                <div class="pt-2"><h4 class="font-brutal text-sm uppercase truncate text-chalk">${m.title}</h4></div>
+                            `;
+                            card.onclick = () => playMovie(m.id);
+                            grid.appendChild(card);
+                        }
+                    });
                 }
             } catch(e) { 
-                loadFallbackMovies(); 
+                grid.innerHTML = '<p class="font-mono text-xs text-blood col-span-full">CONNECTION ERROR TO NEURAL PROXY.</p>'; 
             }
-        }
-
-        function loadFallbackMovies() {
-            const fallbackResults = [
-                { id: 550, title: "Fight Club", backdrop_path: "/hZkgoQYus5vegHoetLkCJzb17zJ.jpg", poster_path: "/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg", overview: "A ticking-time-bomb insomniac and a slippery soap salesman channel primal male aggression into a shocking new form of therapy." },
-                { id: 27205, title: "Inception", backdrop_path: "/s3TBrRGB1ij7gFOCJcCfJLZADvT.jpg", poster_path: "/edv5CZvWj09upOsy2Y6IwDhK8bt.jpg", overview: "Cobb, a skilled thief who commits corporate espionage by infiltrating the subconscious of his targets, is offered a chance to regain his old life." },
-                { id: 157336, title: "Interstellar", backdrop_path: "/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg", poster_path: "/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg", overview: "When Earth becomes uninhabitable in the future, a farmer and ex-NASA pilot, Joseph Cooper, is tasked to pilot a spacecraft, along with a team of researchers, to find a new planet for humans." },
-                { id: 680, title: "Pulp Fiction", backdrop_path: "/suaEOtk1N1sgg2MTM7oZd2cfVp3.jpg", poster_path: "/d5iIlFn5s0ImszYzBPb8JPIfbXD.jpg", overview: "The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption." },
-                { id: 13, title: "Forrest Gump", backdrop_path: "/qdIMHd4sEfJSckdVJfKQvisL02V.jpg", poster_path: "/arw2vcBveWOVZr6pxd9XTd1TdQa.jpg", overview: "The presidencies of Kennedy and Johnson, the Vietnam War, the Watergate scandal and other historical events unfold from the perspective of an Alabama man with an IQ of 75." },
-                { id: 238, title: "The Godfather", backdrop_path: "/tmU7GeKVybMWFButWEGl2M4GeiP.jpg", poster_path: "/3bhkrj58Vtu7enYsRolD1fZdja1.jpg", overview: "The aging patriarch of an organized crime dynasty in postwar New York City transfers control of his clandestine empire to his reluctant youngest son." }
-            ];
-            renderMovieData(fallbackResults);
-        }
-
-        function renderMovieData(results) {
-            const grid = document.getElementById('movieGrid');
-            const hero = results[0];
-            document.getElementById('heroImg').src = `https://image.tmdb.org/t/p/original${hero.backdrop_path}`;
-            document.getElementById('heroTitle').innerText = hero.title;
-            document.getElementById('heroDesc').innerText = hero.overview;
-            document.getElementById('heroPlayBtn').onclick = () => playMovie(hero.id);
-
-            grid.innerHTML = '';
-            results.forEach(m => {
-                if(m.poster_path) {
-                    const card = document.createElement('div');
-                    card.className = "group cursor-pointer flex flex-col";
-                    card.innerHTML = `
-                        <div class="relative w-full aspect-[2/3] border-2 border-zinc_raw group-hover:border-chalk bg-void overflow-hidden">
-                            <img src="https://image.tmdb.org/t/p/w500${m.poster_path}" alt="${m.title}" class="w-full h-full object-cover filter grayscale contrast-125 brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-150">
-                        </div>
-                        <div class="pt-2"><h4 class="font-brutal text-sm uppercase truncate text-chalk">${m.title}</h4></div>
-                    `;
-                    card.onclick = () => playMovie(m.id);
-                    grid.appendChild(card);
-                }
-            });
         }
 
         function handleSearch(e) {
@@ -550,13 +558,23 @@
                 const wrapper = await res.json();
                 const data = JSON.parse(wrapper.contents);
                 if(data.results && data.results.length > 0) {
-                    renderMovieData(data.results);
-                } else { 
-                    grid.innerHTML = '<p class="font-mono text-xs text-blood col-span-full">NO MATCHING TRANSMISSIONS FOUND.</p>'; 
-                }
-            } catch(e) { 
-                grid.innerHTML = '<p class="font-mono text-xs text-blood col-span-full">SEARCH FAILED.</p>'; 
-            }
+                    grid.innerHTML = '';
+                    data.results.forEach(m => {
+                        if(m.poster_path) {
+                            const card = document.createElement('div');
+                            card.className = "group cursor-pointer flex flex-col";
+                            card.innerHTML = `
+                                <div class="relative w-full aspect-[2/3] border-2 border-zinc_raw group-hover:border-chalk bg-void overflow-hidden">
+                                    <img src="https://image.tmdb.org/t/p/w500${m.poster_path}" alt="${m.title}" class="w-full h-full object-cover filter grayscale contrast-125 brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-150">
+                                </div>
+                                <div class="pt-2"><h4 class="font-brutal text-sm uppercase truncate text-chalk">${m.title}</h4></div>
+                            `;
+                            card.onclick = () => playMovie(m.id);
+                            grid.appendChild(card);
+                        }
+                    });
+                } else { grid.innerHTML = '<p class="font-mono text-xs text-blood col-span-full">NO MATCHING TRANSMISSIONS FOUND.</p>'; }
+            } catch(e) { grid.innerHTML = '<p class="font-mono text-xs text-blood col-span-full">SEARCH FAILED.</p>'; }
         }
 
         function playMovie(id) {
