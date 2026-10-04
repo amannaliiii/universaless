@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RetroMouseMic | Raw Audio Transmission</title>
+    <title>Universaless | Raw Streaming</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,11 +20,10 @@
                         mono: ['Space Mono', 'monospace'],
                     },
                     colors: {
-                        void: '#000000',
-                        chalk: '#f3f4f6',
-                        zinc_raw: '#27272a',
-                        blood: '#ff0000',
-                        acid: '#39ff14',
+                        void: '#000000',      
+                        chalk: '#f3f4f6',     
+                        zinc_raw: '#27272a',  
+                        blood: '#ff0000',     
                     }
                 }
             }
@@ -32,43 +31,106 @@
     </script>
 
     <style>
-        body { background-color: #000; color: #f3f4f6; margin: 0; overflow-x: hidden; }
+        body {
+            background-color: #000;
+            color: #f3f4f6;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
         .noise-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            pointer-events: none; z-index: 9999; opacity: 0.08;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.08; 
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
+
         .view-hidden { display: none !important; }
         .view-active { display: block !important; }
+
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        .glitch-hover { position: relative; }
-        .glitch-hover:hover::before, .glitch-hover:hover::after {
-            content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000;
-        }
-        .glitch-hover:hover::before { left: 2px; text-shadow: -1px 0 red; clip: rect(24px, 550px, 90px, 0); }
-        .glitch-hover:hover::after { left: -2px; text-shadow: -1px 0 blue; clip: rect(85px, 550px, 140px, 0); }
 
-        .btn-glitch { position: relative; overflow: hidden; }
-        .btn-glitch:hover { background-color: #f3f4f6; color: #000; }
-        ::selection { background: #39ff14; color: #000; }
+        .glitch-hover {
+            position: relative;
+        }
+        .glitch-hover:hover::before,
+        .glitch-hover:hover::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
+        .glitch-hover:hover::before {
+            left: 2px;
+            text-shadow: -1px 0 red;
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim 2s infinite linear alternate-reverse;
+        }
+        .glitch-hover:hover::after {
+            left: -2px;
+            text-shadow: -1px 0 blue;
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim 2s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(10px, 9999px, 31px, 0); }
+            20% { clip: rect(61px, 9999px, 11px, 0); }
+            40% { clip: rect(32px, 9999px, 83px, 0); }
+            60% { clip: rect(98px, 9999px, 45px, 0); }
+            80% { clip: rect(24px, 9999px, 78px, 0); }
+            100% { clip: rect(55px, 9999px, 12px, 0); }
+        }
+
+        .btn-glitch {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-glitch:hover {
+            background-color: #f3f4f6;
+            color: #000;
+        }
+        .btn-glitch::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: rgba(255, 0, 0, 0.5);
+            transition: none;
+        }
+        .btn-glitch:hover::before {
+            left: 100%;
+            transition: left 0.15s ease-in-out;
+        }
+
+        ::selection {
+            background: #f3f4f6;
+            color: #000;
+        }
     </style>
 
     <!-- EmailJS SDK Initialization -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script type="text/javascript">
         (function(){
-            emailjs.init({ publicKey: "F9sqNCN9LoRcE9FC1" });
+            emailjs.init({
+                publicKey: "F9sqNCN9LoRcE9FC1",
+            });
         })();
     </script>
 </head>
-<body class="min-h-screen selection:bg-acid selection:text-void font-mono">
+<body class="min-h-screen selection:bg-chalk selection:text-void font-mono">
 
     <div class="noise-overlay"></div>
 
-    <!-- LOGIN & OTP VIEW -->
     <div id="login-view" class="view-active min-h-screen flex items-center justify-center p-4 md:p-8">
+        
         <div class="w-full max-w-lg border-2 border-chalk p-8 md:p-12 relative bg-void">
             <div class="absolute top-0 left-0 w-4 h-4 border-t-4 border-l-4 border-chalk -translate-x-[2px] -translate-y-[2px]"></div>
             <div class="absolute top-0 right-0 w-4 h-4 border-t-4 border-r-4 border-chalk translate-x-[2px] -translate-y-[2px]"></div>
@@ -76,33 +138,36 @@
             <div class="absolute bottom-0 right-0 w-4 h-4 border-b-4 border-r-4 border-chalk translate-x-[2px] translate-y-[2px]"></div>
 
             <div class="mb-10 text-center">
-                <h1 class="font-brutal text-5xl md:text-7xl font-bold tracking-tighter uppercase glitch-hover" data-text="RETROMOUSEMIC">RETROMOUSEMIC</h1>
+                <h1 class="font-brutal text-5xl md:text-7xl font-bold tracking-tighter uppercase glitch-hover" data-text="UNIVERSALESS.">UNIVERSALESS.</h1>
                 <p id="authSubtitle" class="font-mono text-xs md:text-sm mt-2 uppercase tracking-[0.2em] text-gray-400">System_Access_Req</p>
             </div>
 
-            <!-- STEP 1: Login Form -->
+            <!-- STEP 1: LOGIN FORM -->
             <form id="login-form" class="space-y-6 view-active" onsubmit="handleLogin(event)">
                 <div class="space-y-2">
                     <label class="font-mono text-xs uppercase tracking-widest block text-gray-400">>> Cyber Email</label>
-                    <input type="email" id="loginEmail" required placeholder="user@domain.net"
-                        class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 focus:outline-none focus:border-chalk rounded-none placeholder-zinc_raw">
+                    <input type="email" id="loginEmail" required placeholder="user@universaless.net"
+                        class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 focus:outline-none focus:border-chalk transition-none rounded-none placeholder-zinc_raw">
                 </div>
+
                 <div class="space-y-2 pb-2">
                     <label class="font-mono text-xs uppercase tracking-widest block text-gray-400">>> Passcode (Min 10 Chars)</label>
                     <input type="password" id="loginPass" required minlength="10" placeholder="••••••••••"
-                        class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 focus:outline-none focus:border-chalk rounded-none placeholder-zinc_raw">
+                        class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 focus:outline-none focus:border-chalk transition-none rounded-none placeholder-zinc_raw">
                 </div>
+
                 <div class="text-right">
                     <button type="button" onclick="showForgotPassword()" class="font-mono text-[11px] text-gray-400 hover:text-chalk underline uppercase">Forgot Passcode?</button>
                 </div>
+
                 <button type="submit" id="loginBtn"
-                    class="btn-glitch w-full border-2 border-chalk text-chalk font-brutal uppercase text-xl md:text-2xl py-3 rounded-none flex items-center justify-center gap-3 cursor-pointer">
-                    <span id="loginBtnText">Access Audio Node</span>
+                    class="btn-glitch w-full border-2 border-chalk text-chalk font-brutal uppercase text-xl md:text-2xl py-3 rounded-none flex items-center justify-center gap-3 transition-none cursor-pointer">
+                    <span id="loginBtnText">Access Universaless</span>
                     <i data-lucide="terminal" class="w-5 h-5"></i>
                 </button>
             </form>
 
-            <!-- STEP 2: 2FA OTP Form -->
+            <!-- STEP 2: OTP FORM -->
             <form id="twoFactorForm" class="space-y-6 view-hidden" onsubmit="handle2FA(event)">
                 <div class="space-y-2">
                     <p class="font-mono text-[11px] uppercase tracking-widest block text-gray-400 text-center leading-relaxed">
@@ -110,152 +175,165 @@
                         <span class="text-blood font-bold">⚠️ Check SPAM/JUNK folder if not found.</span>
                     </p>
                 </div>
+
                 <div class="space-y-2 pb-4">
                     <label class="font-mono text-xs uppercase tracking-widest block text-gray-400">>> 6-Digit Neural Code</label>
                     <input type="text" id="otpCode" required pattern="\d{6}" maxlength="6" placeholder="000000"
-                        class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 text-center tracking-[1em] text-xl focus:outline-none focus:border-chalk rounded-none placeholder-zinc_raw">
+                        class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 text-center tracking-[1em] text-xl focus:outline-none focus:border-chalk transition-none rounded-none placeholder-zinc_raw">
                 </div>
+
                 <button type="submit"
-                    class="btn-glitch w-full border-2 border-chalk text-chalk font-brutal uppercase text-xl md:text-2xl py-3 rounded-none flex items-center justify-center gap-3 cursor-pointer">
+                    class="btn-glitch w-full border-2 border-chalk text-chalk font-brutal uppercase text-xl md:text-2xl py-3 rounded-none flex items-center justify-center gap-3 transition-none cursor-pointer">
                     <span>Verify Access</span>
                     <i data-lucide="unlock" class="w-5 h-5"></i>
                 </button>
+
                 <button type="button" onclick="goBackToLogin()"
-                    class="w-full border-2 border-zinc_raw text-gray-500 font-brutal uppercase text-lg py-2 hover:border-blood hover:text-blood rounded-none cursor-pointer">
+                    class="w-full border-2 border-zinc_raw text-gray-500 font-brutal uppercase text-lg py-2 hover:border-blood hover:text-blood transition-none rounded-none cursor-pointer">
                     Cancel Operation
                 </button>
             </form>
 
-            <!-- STEP 3: Forgot Password Form -->
+            <!-- STEP 3: FORGOT PASSWORD FORM -->
             <form id="forgotForm" class="space-y-6 view-hidden" onsubmit="handleForgot(event)">
                 <div class="space-y-2">
                     <label class="font-mono text-xs uppercase tracking-widest block text-gray-400">>> Enter Registered Email</label>
-                    <input type="email" id="forgotEmail" required placeholder="user@domain.net"
-                        class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 focus:outline-none focus:border-chalk rounded-none placeholder-zinc_raw">
+                    <input type="email" id="forgotEmail" required placeholder="user@universaless.net"
+                        class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 focus:outline-none focus:border-chalk transition-none rounded-none placeholder-zinc_raw">
                 </div>
-                <button type="submit"
-                    class="btn-glitch w-full border-2 border-chalk text-chalk font-brutal uppercase text-xl py-3 rounded-none flex items-center justify-center gap-3 cursor-pointer">
+                <button type="submit" id="forgotBtn"
+                    class="btn-glitch w-full border-2 border-chalk text-chalk font-brutal uppercase text-xl py-3 rounded-none flex items-center justify-center gap-3 transition-none cursor-pointer">
                     <span>Send Reset OTP</span>
                 </button>
                 <button type="button" onclick="goBackToLogin()"
-                    class="w-full border-2 border-zinc_raw text-gray-500 font-brutal uppercase text-lg py-2 hover:border-blood hover:text-blood rounded-none cursor-pointer">
+                    class="w-full border-2 border-zinc_raw text-gray-500 font-brutal uppercase text-lg py-2 hover:border-blood hover:text-blood transition-none rounded-none cursor-pointer">
                     Back to Login
                 </button>
             </form>
 
-            <!-- STEP 4: Reset Password Form -->
+            <!-- STEP 4: RESET NEW PASSWORD FORM -->
             <form id="resetForm" class="space-y-6 view-hidden" onsubmit="handleResetPass(event)">
                 <div class="space-y-2">
                     <label class="font-mono text-xs uppercase tracking-widest block text-gray-400">>> Enter 6-Digit OTP</label>
                     <input type="text" id="resetOtp" required pattern="\d{6}" maxlength="6" placeholder="000000"
-                        class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 text-center tracking-[1em] text-xl focus:outline-none focus:border-chalk rounded-none placeholder-zinc_raw">
+                        class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 text-center tracking-[1em] text-xl focus:outline-none focus:border-chalk transition-none rounded-none placeholder-zinc_raw">
                 </div>
                 <div class="space-y-2 pb-4">
                     <label class="font-mono text-xs uppercase tracking-widest block text-gray-400">>> New Passcode (Min 10 Chars)</label>
                     <input type="password" id="newPass" required minlength="10" placeholder="••••••••••"
-                        class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 focus:outline-none focus:border-chalk rounded-none placeholder-zinc_raw">
+                        class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 focus:outline-none focus:border-chalk transition-none rounded-none placeholder-zinc_raw">
                 </div>
                 <button type="submit"
-                    class="btn-glitch w-full border-2 border-chalk text-chalk font-brutal uppercase text-xl py-3 rounded-none flex items-center justify-center gap-3 cursor-pointer">
+                    class="btn-glitch w-full border-2 border-chalk text-chalk font-brutal uppercase text-xl py-3 rounded-none flex items-center justify-center gap-3 transition-none cursor-pointer">
                     <span>Update Passcode</span>
                 </button>
             </form>
-
+            
             <div class="mt-8 pt-4 border-t border-zinc_raw text-left">
-                <p class="font-mono text-[10px] text-gray-500 uppercase">Warning: Max 5 incorrect attempts will permanently block account.</p>
+                <p class="font-mono text-[10px] text-gray-500 uppercase">Warning: Unauthorized access is strictly monitored. Connection encrypted.</p>
             </div>
         </div>
     </div>
 
-    <!-- MUSIC APP DASHBOARD VIEW -->
-    <div id="dashboard-view" class="view-hidden min-h-screen flex flex-col pb-32">
-        <header class="sticky top-0 z-50 bg-void border-b-2 border-chalk">
+    <!-- DASHBOARD VIEW -->
+    <div id="dashboard-view" class="view-hidden min-h-screen flex flex-col">
+        
+        <nav class="sticky top-0 z-50 bg-void border-b-2 border-chalk">
             <div class="w-full px-4 md:px-8 h-16 flex items-center justify-between">
-                <h1 class="font-brutal font-bold text-2xl tracking-tighter uppercase text-acid cursor-pointer" onclick="logout()">RETRO.MIC</h1>
-                <div class="flex items-center gap-4">
-                    <input type="text" id="searchInput" placeholder="Search track..." onkeypress="handleSearch(event)"
-                        class="bg-void border border-zinc_raw text-chalk font-mono text-xs px-3 py-1.5 focus:outline-none focus:border-acid w-32 md:w-56">
+                
+                <div class="flex items-center gap-6">
+                    <h1 class="font-brutal font-bold text-2xl tracking-tighter uppercase cursor-pointer" onclick="logout()">UNI.VRS</h1>
+                    
+                    <div class="hidden md:flex items-center gap-6 font-mono text-xs uppercase tracking-widest">
+                        <a href="#" class="border-b border-chalk pb-0.5" onclick="fetchMovies('popular')">Popular</a>
+                        <a href="#" class="text-gray-500 hover:text-chalk transition-none pb-0.5" onclick="fetchMovies('hindi')">Hindi</a>
+                        <a href="#" class="text-gray-500 hover:text-chalk transition-none pb-0.5" onclick="fetchMovies('english')">English</a>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-5">
+                    <input type="text" id="searchInput" placeholder="Search..." onkeypress="handleSearch(event)"
+                        class="bg-void border border-zinc_raw text-chalk font-mono text-xs px-3 py-1.5 focus:outline-none focus:border-chalk w-28 md:w-40">
                     <button class="text-chalk hover:text-blood transition-none" onclick="logout()" title="Logout">
                         <i data-lucide="log-out" class="w-5 h-5"></i>
                     </button>
-                    <div id="userDisplay" class="font-mono text-xs uppercase tracking-widest border border-chalk px-2 py-1 hidden sm:block">
+                    <div id="userDisplay" class="font-mono text-xs uppercase tracking-widest border border-chalk px-2 py-1">
                         USER
                     </div>
                 </div>
             </div>
-        </header>
+        </nav>
 
-        <main class="w-full max-w-7xl mx-auto p-4 md:p-8 space-y-8 flex-1">
-            <section class="border-2 border-chalk p-6 md:p-10 relative bg-void overflow-hidden">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-acid/10 rounded-full blur-3xl pointer-events-none"></div>
-                <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-                    <div>
-                        <span class="border border-acid text-acid font-mono text-[10px] uppercase px-2 py-1 tracking-widest">Global Stream</span>
-                        <h2 class="font-brutal font-bold text-4xl md:text-6xl tracking-tight uppercase mt-3">Raw Cyber Frequencies</h2>
-                        <p class="font-mono text-xs md:text-sm text-gray-400 mt-2 max-w-xl uppercase">
-                            Direct connection to audio nodes. Zero latency. Pure sound waves extracted from the grid.
-                        </p>
+        <main class="flex-1 w-full flex flex-col">
+            
+            <!-- Cinematic Hero -->
+            <section id="heroSection" class="relative w-full h-[60vh] md:h-[75vh] border-b-2 border-chalk flex flex-col justify-end overflow-hidden group">
+                <img id="heroImg" src="" alt="Hero Background" class="absolute inset-0 w-full h-full object-cover filter grayscale brightness-50 group-hover:grayscale-0 group-hover:brightness-75 transition-all duration-300">
+                <div class="absolute inset-0 bg-gradient-to-t from-void via-void/50 to-transparent"></div>
+                
+                <div class="relative z-10 p-6 md:p-12 w-full max-w-7xl">
+                    <div class="flex items-center gap-4 mb-4">
+                        <span class="border border-chalk text-chalk font-mono text-[10px] uppercase px-2 py-1 tracking-widest">Trending #1</span>
                     </div>
-                    <button onclick="loadTracks()" class="border-2 border-acid bg-acid text-void font-brutal uppercase text-base px-6 py-2.5 cursor-pointer hover:bg-void hover:text-acid transition-none">
-                        Refresh Feed
-                    </button>
+                    
+                    <h2 id="heroTitle" class="font-brutal font-bold text-5xl md:text-7xl lg:text-8xl leading-none tracking-tighter uppercase mb-4 glitch-hover w-fit" data-text="LOADING...">
+                        LOADING...
+                    </h2>
+                    
+                    <p id="heroDesc" class="font-mono text-sm md:text-base text-gray-300 max-w-xl mb-8 uppercase leading-relaxed line-clamp-3">
+                        Please wait while content streams from the neural network.
+                    </p>
+                    
+                    <div class="flex items-center gap-4">
+                        <button id="heroPlayBtn" class="btn-glitch bg-chalk text-void font-brutal uppercase text-xl px-8 py-3 flex items-center gap-2 border-2 border-chalk cursor-pointer">
+                            <i data-lucide="play" class="w-5 h-5 fill-void"></i> Transmit
+                        </button>
+                    </div>
                 </div>
             </section>
 
-            <section class="space-y-4">
-                <div class="flex items-center justify-between border-b border-zinc_raw pb-2">
-                    <h3 class="font-mono text-xs md:text-sm uppercase tracking-[0.3em] text-gray-400">> Active_Tracks_Database</h3>
-                    <span id="trackCount" class="font-mono text-xs text-acid">00 Tracks</span>
-                </div>
-                <div id="trackGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    <p class="font-mono text-xs text-gray-500 col-span-full">CONNECTING TO AUDIO NODES...</p>
+            <section class="p-4 md:p-8 space-y-12">
+                <div class="border-t border-zinc_raw pt-6 pb-12">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="font-mono text-sm md:text-base uppercase tracking-[0.3em] text-gray-400">>> Cyber Library Database</h3>
+                    </div>
+                    <div id="movieGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                        <!-- Dynamic Movies -->
+                    </div>
                 </div>
             </section>
         </main>
-
-        <!-- Sticky Bottom Music Player Console -->
-        <div class="fixed bottom-0 left-0 w-full bg-void border-t-2 border-chalk p-4 z-50 flex flex-col md:flex-row items-center justify-between gap-4 shadow-2xl">
-            <div class="flex items-center gap-3 w-full md:w-1/4">
-                <div class="w-12 h-12 border border-zinc_raw bg-zinc-900 shrink-0 overflow-hidden">
-                    <img id="playerImg" src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=200&auto=format&fit=crop" alt="Art" class="w-full h-full object-cover">
-                </div>
-                <div class="overflow-hidden">
-                    <h4 id="playerTitle" class="font-brutal text-sm uppercase truncate text-chalk">Select a track</h4>
-                    <p id="playerArtist" class="font-mono text-[10px] text-gray-400 uppercase truncate">Unknown Artist</p>
-                </div>
-            </div>
-
-            <div class="flex flex-col items-center w-full md:w-2/4 gap-2">
-                <div class="flex items-center gap-6">
-                    <button onclick="prevTrack()" class="text-gray-400 hover:text-chalk"><i data-lucide="skip-back" class="w-5 h-5"></i></button>
-                    <button onclick="togglePlay()" id="playPauseBtn" class="border-2 border-chalk p-2 bg-chalk text-void hover:bg-acid hover:border-acid">
-                        <i data-lucide="play" id="playIcon" class="w-5 h-5 fill-void"></i>
-                    </button>
-                    <button onclick="nextTrack()" class="text-gray-400 hover:text-chalk"><i data-lucide="skip-forward" class="w-5 h-5"></i></button>
-                </div>
-                <div class="w-full flex items-center gap-3">
-                    <span id="currentTime" class="font-mono text-[10px] text-gray-500">0:00</span>
-                    <input type="range" id="progressBar" value="0" max="100" class="w-full accent-acid cursor-pointer h-1 bg-zinc_raw rounded-none" oninput="seekAudio(this.value)">
-                    <span id="durationTime" class="font-mono text-[10px] text-gray-500">0:00</span>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-3 w-full md:w-1/4 justify-end">
-                <i data-lucide="volume-2" class="w-4 h-4 text-gray-400"></i>
-                <input type="range" min="0" max="1" step="0.01" value="1" class="w-20 accent-acid cursor-pointer h-1 bg-zinc_raw rounded-none" oninput="setVolume(this.value)">
-            </div>
-        </div>
+        
+        <!-- Raw Footer -->
+        <footer class="border-t-2 border-chalk p-4 md:p-8 flex justify-between items-center font-mono text-[10px] uppercase tracking-widest text-gray-500">
+            <span>Universaless Core // 2026</span>
+            <span>Status: Online</span>
+        </footer>
     </div>
 
-    <audio id="audioElement" ontimeupdate="updateProgress()" onended="nextTrack()"></audio>
+    <!-- Video Player Modal with 7 Servers -->
+    <div id="playerModal" class="view-hidden fixed inset-0 z-[99999] bg-void flex flex-col">
+        <div class="bg-void border-b-2 border-chalk p-3 flex justify-between items-center">
+            <div class="flex gap-2 overflow-x-auto hide-scrollbar">
+                <button class="server-btn border border-chalk bg-chalk text-void px-3 py-1 font-mono text-xs uppercase" onclick="changeServer(1, this)">Server 1</button>
+                <button class="server-btn border border-zinc_raw text-chalk px-3 py-1 font-mono text-xs uppercase hover:border-chalk" onclick="changeServer(2, this)">Server 2</button>
+                <button class="server-btn border border-zinc_raw text-chalk px-3 py-1 font-mono text-xs uppercase hover:border-chalk" onclick="changeServer(3, this)">Server 3</button>
+                <button class="server-btn border border-zinc_raw text-chalk px-3 py-1 font-mono text-xs uppercase hover:border-chalk" onclick="changeServer(4, this)">Server 4</button>
+                <button class="server-btn border border-zinc_raw text-chalk px-3 py-1 font-mono text-xs uppercase hover:border-chalk" onclick="changeServer(5, this)">Server 5</button>
+                <button class="server-btn border border-zinc_raw text-chalk px-3 py-1 font-mono text-xs uppercase hover:border-chalk" onclick="changeServer(6, this)">Server 6</button>
+                <button class="server-btn border border-zinc_raw text-chalk px-3 py-1 font-mono text-xs uppercase hover:border-chalk" onclick="changeServer(7, this)">Server 7</button>
+            </div>
+            <button onclick="closePlayer()" class="border border-chalk bg-blood text-chalk px-4 py-1 font-brutal uppercase">✕ Close</button>
+        </div>
+        <iframe id="vidFrame" src="" class="w-full flex-1 border-none bg-void" allowfullscreen></iframe>
+    </div>
 
     <script>
         lucide.createIcons();
 
-        let tracks = [];
-        let currentIndex = 0;
-        const audio = document.getElementById('audioElement');
-        const playIcon = document.getElementById('playIcon');
+        const apiKey = '4150581ccf3ec551c12884bbf92d041d';
+        const corsProxy = 'https://corsproxy.io/?';
+        let currentMovieId = null;
         let generatedOTP = "";
         let forgotEmailTarget = "";
 
@@ -335,12 +413,12 @@
                 passcode: generatedOTP,
                 time: currentTime
             }).then(() => {
-                loginBtnText.innerText = "Access Audio Node";
+                loginBtnText.innerText = "Access Universaless";
                 loginBtn.disabled = false;
                 if(callback) callback();
             }, (err) => {
                 alert("❌ Failed to send OTP. Error: " + err.text);
-                loginBtnText.innerText = "Access Audio Node";
+                loginBtnText.innerText = "Access Universaless";
                 loginBtn.disabled = false;
             });
         }
@@ -357,7 +435,7 @@
                 loginView.classList.remove('view-active'); loginView.classList.add('view-hidden');
                 dashboardView.classList.remove('view-hidden'); dashboardView.classList.add('view-active');
                 window.scrollTo(0, 0); 
-                loadTracks();
+                fetchMovies('popular');
                 loginForm.reset(); twoFactorForm.reset(); goBackToLogin(); 
             } else {
                 alert("❌ Invalid Verification Code!");
@@ -410,139 +488,121 @@
             goBackToLogin();
         }
 
-        // Music Player Functions
-        async function loadTracks(query = '') {
-            const grid = document.getElementById('trackGrid');
-            grid.innerHTML = '<p class="font-mono text-xs text-gray-500 col-span-full">EXTRACTING AUDIO STREAMS...</p>';
-
-            let apiUrl = `https://api.jamendo.com/v3.0/tracks/?client_id=599eedee&format=json&limit=20&audioformat=mp31&fuzzytags=rock+electronic+chillout+pop`;
-            if(query) {
-                apiUrl = `https://api.jamendo.com/v3.0/tracks/?client_id=599eedee&format=json&limit=20&search=${encodeURIComponent(query)}&audioformat=mp31`;
-            }
-
-            const proxyURL = `https://api.allorigins.win/get?url=${encodeURIComponent(apiUrl)}`;
+        async function fetchMovies(type) {
+            const grid = document.getElementById('movieGrid');
+            grid.innerHTML = '<p class="font-mono text-xs text-gray-500 col-span-full">FETCHING DATABASE...</p>';
+            
+            let apiUrl = `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}`;
+            if(type === 'hindi') apiUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_original_language=hi`;
+            if(type === 'english') apiUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_original_language=en`;
 
             try {
-                const response = await fetch(proxyURL);
-                const wrapper = await response.json();
-                const data = JSON.parse(wrapper.contents);
+                const res = await fetch(corsProxy + encodeURIComponent(apiUrl));
+                const data = await res.json();
                 
                 if(data.results && data.results.length > 0) {
-                    tracks = data.results;
-                    document.getElementById('trackCount').innerText = `${tracks.length} Tracks`;
-                    renderTracks();
-                } else {
-                    loadFallbackTracks();
+                    const hero = data.results[0];
+                    document.getElementById('heroImg').src = `https://image.tmdb.org/t/p/original${hero.backdrop_path}`;
+                    document.getElementById('heroTitle').innerText = hero.title;
+                    document.getElementById('heroDesc').innerText = hero.overview;
+                    document.getElementById('heroPlayBtn').onclick = () => playMovie(hero.id);
+
+                    grid.innerHTML = '';
+                    data.results.forEach(m => {
+                        if(m.poster_path) {
+                            const card = document.createElement('div');
+                            card.className = "group cursor-pointer flex flex-col";
+                            card.innerHTML = `
+                                <div class="relative w-full aspect-[2/3] border-2 border-zinc_raw group-hover:border-chalk bg-void overflow-hidden">
+                                    <img src="https://image.tmdb.org/t/p/w500${m.poster_path}" alt="${m.title}" class="w-full h-full object-cover filter grayscale contrast-125 brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-150">
+                                </div>
+                                <div class="pt-2">
+                                    <h4 class="font-brutal text-sm uppercase truncate text-chalk">${m.title}</h4>
+                                </div>
+                            `;
+                            card.onclick = () => playMovie(m.id);
+                            grid.appendChild(card);
+                        }
+                    });
                 }
-            } catch (error) {
-                loadFallbackTracks();
+            } catch(e) {
+                grid.innerHTML = '<p class="font-mono text-xs text-blood col-span-full">CONNECTION ERROR TO NEURAL PROXY.</p>';
             }
-        }
-
-        function loadFallbackTracks() {
-            tracks = [
-                { name: "Cyber Void Anthem", artist_name: "Null Sector", image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=400&auto=format&fit=crop", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
-                { name: "Neon District Run", artist_name: "Voxel Grid", image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=400&auto=format&fit=crop", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
-                { name: "Static Overload", artist_name: "Glitch Syntax", image: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=400&auto=format&fit=crop", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
-                { name: "Subterranean Bass", artist_name: "Deep Core", image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=400&auto=format&fit=crop", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" }
-            ];
-            document.getElementById('trackCount').innerText = `${tracks.length} Tracks`;
-            renderTracks();
-        }
-
-        function renderTracks() {
-            const grid = document.getElementById('trackGrid');
-            grid.innerHTML = '';
-
-            tracks.forEach((track, index) => {
-                const card = document.createElement('div');
-                card.className = "group border-2 border-zinc_raw hover:border-acid bg-void p-3 flex flex-col justify-between cursor-pointer transition-none";
-                card.innerHTML = `
-                    <div class="relative aspect-square border border-zinc_raw overflow-hidden mb-3">
-                        <img src="${track.image || track.album_image}" alt="${track.name}" class="w-full h-full object-cover filter grayscale contrast-125 group-hover:grayscale-0 transition-all duration-150">
-                        <div class="absolute inset-0 bg-void/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                            <span class="border border-acid bg-acid text-void p-2 font-bold"><i data-lucide="play" class="w-4 h-4 fill-void"></i></span>
-                        </div>
-                    </div>
-                    <div>
-                        <h4 class="font-brutal text-base uppercase truncate text-chalk group-hover:text-acid">${track.name}</h4>
-                        <p class="font-mono text-[10px] text-gray-400 uppercase truncate mt-0.5">${track.artist_name}</p>
-                    </div>
-                `;
-                card.onclick = () => playTrack(index);
-                grid.appendChild(card);
-            });
-            lucide.createIcons();
-        }
-
-        function playTrack(index) {
-            currentIndex = index;
-            const track = tracks[currentIndex];
-            
-            document.getElementById('playerTitle').innerText = track.name;
-            document.getElementById('playerArtist').innerText = track.artist_name;
-            document.getElementById('playerImg').src = track.image || track.album_image;
-            
-            audio.src = track.audio || track.audiodownload;
-            audio.play();
-            
-            playIcon.setAttribute('data-lucide', 'pause');
-            lucide.createIcons();
-        }
-
-        function togglePlay() {
-            if (audio.paused) {
-                if(!audio.src && tracks.length > 0) { playTrack(0); return; }
-                audio.play();
-                playIcon.setAttribute('data-lucide', 'pause');
-            } else {
-                audio.pause();
-                playIcon.setAttribute('data-lucide', 'play');
-            }
-            lucide.createIcons();
-        }
-
-        function nextTrack() {
-            if(tracks.length === 0) return;
-            currentIndex = (currentIndex + 1) % tracks.length;
-            playTrack(currentIndex);
-        }
-
-        function prevTrack() {
-            if(tracks.length === 0) return;
-            currentIndex = (currentIndex - 1 + tracks.length) % tracks.length;
-            playTrack(currentIndex);
-        }
-
-        function updateProgress() {
-            const progressBar = document.getElementById('progressBar');
-            const currentTime = document.getElementById('currentTime');
-            const durationTime = document.getElementById('durationTime');
-
-            if(audio.duration) {
-                progressBar.value = (audio.currentTime / audio.duration) * 100;
-                currentTime.innerText = formatTime(audio.currentTime);
-                durationTime.innerText = formatTime(audio.duration);
-            }
-        }
-
-        function seekAudio(val) {
-            if(audio.duration) { audio.currentTime = (val / 100) * audio.duration; }
-        }
-
-        function setVolume(val) { audio.volume = val; }
-
-        function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
         }
 
         function handleSearch(e) {
             if(e.key === 'Enter') {
-                const query = e.target.value.trim();
-                loadTracks(query);
+                const q = e.target.value.trim();
+                if(q) {
+                    const searchUrl = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(q)}`;
+                    fetchCustomUrl(searchUrl);
+                }
             }
+        }
+
+        async function fetchCustomUrl(apiUrl) {
+            const grid = document.getElementById('movieGrid');
+            grid.innerHTML = '<p class="font-mono text-xs text-gray-500 col-span-full">SEARCHING DATABASE...</p>';
+            try {
+                const res = await fetch(corsProxy + encodeURIComponent(apiUrl));
+                const data = await res.json();
+                if(data.results && data.results.length > 0) {
+                    grid.innerHTML = '';
+                    data.results.forEach(m => {
+                        if(m.poster_path) {
+                            const card = document.createElement('div');
+                            card.className = "group cursor-pointer flex flex-col";
+                            card.innerHTML = `
+                                <div class="relative w-full aspect-[2/3] border-2 border-zinc_raw group-hover:border-chalk bg-void overflow-hidden">
+                                    <img src="https://image.tmdb.org/t/p/w500${m.poster_path}" alt="${m.title}" class="w-full h-full object-cover filter grayscale contrast-125 brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-150">
+                                </div>
+                                <div class="pt-2">
+                                    <h4 class="font-brutal text-sm uppercase truncate text-chalk">${m.title}</h4>
+                                </div>
+                            `;
+                            card.onclick = () => playMovie(m.id);
+                            grid.appendChild(card);
+                        }
+                    });
+                } else {
+                    grid.innerHTML = '<p class="font-mono text-xs text-blood col-span-full">NO MATCHING TRANSMISSIONS FOUND.</p>';
+                }
+            } catch(e) {
+                grid.innerHTML = '<p class="font-mono text-xs text-blood col-span-full">SEARCH FAILED.</p>';
+            }
+        }
+
+        function playMovie(id) {
+            currentMovieId = id;
+            document.getElementById('vidFrame').src = `https://vidsrc.to/embed/movie/${id}`;
+            document.getElementById('playerModal').classList.remove('view-hidden');
+            document.getElementById('playerModal').classList.add('view-active');
+        }
+
+        function changeServer(num, btn) {
+            document.querySelectorAll('.server-btn').forEach(b => {
+                b.classList.remove('bg-chalk', 'text-void');
+                b.classList.add('border-zinc_raw', 'text-chalk');
+            });
+            btn.classList.remove('border-zinc_raw', 'text-chalk');
+            btn.classList.add('bg-chalk', 'text-void');
+
+            let urls = [
+                `https://vidsrc.to/embed/movie/${currentMovieId}`,
+                `https://vidsrc.cc/v2/embed/movie/${currentMovieId}`,
+                `https://2embed.cc/embed/${currentMovieId}`,
+                `https://vidsrc.su/embed/movie/${currentMovieId}`,
+                `https://player.autoembed.cc/embed/movie/${currentMovieId}`,
+                `https://vidlink.pro/embed/movie/${currentMovieId}`,
+                `https://vidsrc.vip/embed/movie/${currentMovieId}`
+            ];
+            document.getElementById('vidFrame').src = urls[num - 1];
+        }
+
+        function closePlayer() {
+            document.getElementById('vidFrame').src = '';
+            document.getElementById('playerModal').classList.remove('view-active');
+            document.getElementById('playerModal').classList.add('view-hidden');
         }
     </script>
 </body>
