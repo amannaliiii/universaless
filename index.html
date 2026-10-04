@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Universaless | Raw Streaming & Admin Node</title>
+    <title>Universaless™ | Created by Adnan Ali</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -67,7 +67,7 @@
 
             <div class="mb-10 text-center">
                 <h1 class="font-brutal text-5xl md:text-7xl font-bold tracking-tighter uppercase text-chalk">UNIVERSALESS.</h1>
-                <p id="authSubtitle" class="font-mono text-xs md:text-sm mt-2 uppercase tracking-[0.2em] text-gray-400">System_Access_Req</p>
+                <p id="authSubtitle" class="font-mono text-xs md:text-sm mt-2 uppercase tracking-[0.2em] text-gray-400">System_Access_Req // By Adnan Ali</p>
             </div>
 
             <!-- STEP 1: LOGIN FORM -->
@@ -152,7 +152,7 @@
             </form>
             
             <div class="mt-8 pt-4 border-t border-zinc_raw text-left">
-                <p class="font-mono text-[10px] text-gray-500 uppercase">Master Admin Password: <span class="text-acid">ADMIN_MASTER_PASS_2026</span></p>
+                <p class="font-mono text-[10px] text-gray-500 uppercase">System Status: Encrypted // Developer: Adnan Ali</p>
             </div>
         </div>
     </div>
@@ -209,7 +209,7 @@
             </section>
         </main>
         <footer class="border-t-2 border-chalk p-4 md:p-8 flex justify-between items-center font-mono text-[10px] uppercase tracking-widest text-gray-500">
-            <span>Universaless Core // 2026</span>
+            <span>Universaless Core // Built by Adnan Ali</span>
             <span>Status: Online</span>
         </footer>
     </div>
@@ -218,7 +218,7 @@
     <div id="admin-view" class="view-hidden min-h-screen flex flex-col bg-void text-chalk">
         <nav class="sticky top-0 z-50 bg-void border-b-2 border-acid">
             <div class="w-full px-4 md:px-8 h-16 flex items-center justify-between">
-                <h1 class="font-brutal font-bold text-2xl tracking-tighter uppercase text-acid">⚡ ADMIN_CONTROL_CENTER</h1>
+                <h1 class="font-brutal font-bold text-2xl tracking-tighter uppercase text-acid">⚡ ADMIN_CONTROL_CENTER // ADNAN ALI</h1>
                 <button onclick="logout()" class="border border-blood bg-blood text-chalk font-mono text-xs px-4 py-2 uppercase">Terminate Session</button>
             </div>
         </nav>
@@ -281,7 +281,7 @@
         lucide.createIcons();
 
         const apiKey = '4150581ccf3ec551c12884bbf92d041d';
-        const MASTER_ADMIN_PASS = "ADMIN_MASTER_PASS_2026";
+        const MASTER_ADMIN_PASS = "Adnan_Admin_2026_Secure"; // Hidden secure admin password
         let currentMovieId = null;
         let generatedOTP = "";
         let forgotEmailTarget = "";
@@ -308,7 +308,7 @@
             forgotForm.classList.remove('view-active'); forgotForm.classList.add('view-hidden');
             resetForm.classList.remove('view-active'); resetForm.classList.add('view-hidden');
             loginForm.classList.remove('view-hidden'); loginForm.classList.add('view-active');
-            authSubtitle.innerText = "System_Access_Req";
+            authSubtitle.innerText = "System_Access_Req // By Adnan Ali";
         }
 
         function handleLogin(e) {
@@ -474,7 +474,6 @@
             goBackToLogin();
         }
 
-        // Stable fetch using AllOrigins proxy wrapper to avoid connection/CORS errors
         async function fetchMovies(type) {
             const grid = document.getElementById('movieGrid');
             grid.innerHTML = '<p class="font-mono text-xs text-gray-500 col-span-full">FETCHING DATABASE...</p>';
