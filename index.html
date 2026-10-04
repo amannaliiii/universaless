@@ -57,7 +57,7 @@
 
     <div class="noise-overlay"></div>
 
-    <!-- GLOBAL ANNOUNCEMENT / MAINTENANCE BANNER (Controlled by Admin) -->
+    <!-- GLOBAL ANNOUNCEMENT BANNER -->
     <div id="globalAnnouncementBanner" class="bg-blood text-chalk font-mono text-xs uppercase py-2 px-4 text-center tracking-widest hidden z-[99999] relative border-b-2 border-chalk">
         <span id="announcementText">SYSTEM NOTICE</span>
     </div>
@@ -215,7 +215,7 @@
         </footer>
     </div>
 
-    <!-- ADMIN PANEL DASHBOARD VIEW (With Maintenance Notice Manager) -->
+    <!-- ADMIN PANEL DASHBOARD VIEW (With User Gmail List & Maintenance Control) -->
     <div id="admin-view" class="view-hidden min-h-screen flex flex-col bg-void text-chalk">
         <nav class="sticky top-0 z-50 bg-void border-b-2 border-acid">
             <div class="w-full px-4 md:px-8 h-16 flex items-center justify-between">
@@ -226,7 +226,7 @@
         <main class="flex-1 p-6 md:p-10 max-w-6xl mx-auto w-full space-y-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="border-2 border-chalk p-6 bg-void">
-                    <p class="font-mono text-xs text-gray-400 uppercase">Total Database Accounts</p>
+                    <p class="font-mono text-xs text-gray-400 uppercase">Total Logged-In Accounts</p>
                     <h3 id="statTotalUsers" class="font-brutal text-4xl text-acid mt-2">0</h3>
                 </div>
                 <div class="border-2 border-chalk p-6 bg-void">
@@ -239,7 +239,27 @@
                 </div>
             </div>
 
-            <!-- ADMIN TOOL 1: MAINTENANCE / UPDATE NOTICE BANNER -->
+            <!-- ADMIN TOOL: REGISTERED USERS GMAIL LIST (Privacy Protected - No Passwords) -->
+            <div class="border-2 border-chalk p-6 bg-void space-y-4">
+                <h3 class="font-brutal text-xl uppercase text-acid">>> Registered User Nodes (Gmail List)</h3>
+                <p class="font-mono text-xs text-gray-400">List of all emails/gmails that have logged into the platform (Passwords are fully secure and hidden).</p>
+                <div class="overflow-x-auto border border-zinc_raw">
+                    <table class="w-full text-left font-mono text-xs">
+                        <thead class="bg-zinc_raw text-chalk uppercase">
+                            <tr>
+                                <th class="p-3">#</th>
+                                <th class="p-3">User Gmail / Email ID</th>
+                                <th class="p-3">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userEmailsTableBody" class="divide-y divide-zinc_raw">
+                            <!-- Dynamic User Gmails will load here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ADMIN TOOL: MAINTENANCE NOTICE BANNER -->
             <div class="border-2 border-acid p-6 bg-void space-y-4">
                 <h3 class="font-brutal text-xl uppercase text-acid">>> Maintenance & Update Notice Control</h3>
                 <p class="font-mono text-xs text-gray-400">Set notice for users (e.g., "Website is down for maintenance, back in 4 hours" or "New project coming soon!").</p>
@@ -252,7 +272,7 @@
                 </div>
             </div>
 
-            <!-- ADMIN TOOL 2: UNBLOCK USER -->
+            <!-- ADMIN TOOL: UNBLOCK USER -->
             <div class="border-2 border-chalk p-6 bg-void space-y-4">
                 <h3 class="font-brutal text-xl uppercase text-acid">>> Account Unblock Override</h3>
                 <div class="flex gap-4">
@@ -284,13 +304,12 @@
         lucide.createIcons();
 
         const apiKey = '4150581ccf3ec551c12884bbf92d041d';
-        const corsProxy = 'https://corsproxy.io/?';
         const MASTER_ADMIN_PASS = "Adnan_Admin_2026_Secure";
         let currentMovieId = null;
         let generatedOTP = "";
         let forgotEmailTarget = "";
 
-        // Check and display maintenance banner on load
+        // Check maintenance banner on load
         window.addEventListener('DOMContentLoaded', () => {
             let notice = localStorage.getItem('site_maintenance_msg');
             let isActive = localStorage.getItem('site_maintenance_active') === 'true';
@@ -452,6 +471,7 @@
             } else { alert("❌ Invalid OTP!"); }
         }
 
+        // Admin Statistics & User Gmail List Loader (Privacy Maintained: No Passwords Shown)
         function loadAdminStats() {
             let accounts = JSON.parse(localStorage.getItem('all_accounts') || "[]");
             let blockedCount = 0;
@@ -460,9 +480,27 @@
             });
             document.getElementById('statTotalUsers').innerText = accounts.length;
             document.getElementById('statBlockedUsers').innerText = blockedCount;
+
+            // Populate Gmail Table (Only Emails, Passwords completely hidden)
+            const tableBody = document.getElementById('userEmailsTableBody');
+            tableBody.innerHTML = '';
+            if(accounts.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-gray-500">NO USER NODES DETECTED YET.</td></tr>';
+                return;
+            }
+
+            accounts.forEach((accEmail, index) => {
+                let isBlocked = localStorage.getItem('blocked_' + accEmail) === "true";
+                let row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="p-3">${index + 1}</td>
+                    <td class="p-3 text-acid font-bold">${accEmail}</td>
+                    <td class="p-3">${isBlocked ? '<span class="text-blood">BLOCKED</span>' : '<span class="text-chalk">ACTIVE</span>'}</td>
+                `;
+                tableBody.appendChild(row);
+            });
         }
 
-        // Admin Action: Set Maintenance / Update Banner
         function adminSetMaintenance(isActive) {
             let msg = document.getElementById('maintenanceInput').value.trim();
             if(isActive && !msg) { alert("Please enter maintenance notice message!"); return; }
@@ -496,6 +534,7 @@
             goBackToLogin();
         }
 
+        // Reliable TMDB Fetch using AllOrigins public JSON proxy wrapper to bypass CORS
         async function fetchMovies(type) {
             const grid = document.getElementById('movieGrid');
             grid.innerHTML = '<p class="font-mono text-xs text-gray-500 col-span-full">FETCHING DATABASE...</p>';
@@ -533,6 +572,8 @@
                             grid.appendChild(card);
                         }
                     });
+                } else {
+                    grid.innerHTML = '<p class="font-mono text-xs text-blood col-span-full">NO TRANSMISSIONS FOUND.</p>';
                 }
             } catch(e) { 
                 grid.innerHTML = '<p class="font-mono text-xs text-blood col-span-full">CONNECTION ERROR TO NEURAL PROXY.</p>'; 
