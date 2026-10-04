@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Universaless | Raw Streaming</title>
+    <title>Universaless | Raw Streaming & Admin Node</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,6 +24,7 @@
                         chalk: '#f3f4f6',     
                         zinc_raw: '#27272a',  
                         blood: '#ff0000',     
+                        acid: '#39ff14',
                     }
                 }
             }
@@ -31,106 +32,33 @@
     </script>
 
     <style>
-        body {
-            background-color: #000;
-            color: #f3f4f6;
-            margin: 0;
-            overflow-x: hidden;
-        }
-
+        body { background-color: #000; color: #f3f4f6; margin: 0; overflow-x: hidden; }
         .noise-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            pointer-events: none;
-            z-index: 9999;
-            opacity: 0.08; 
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none; z-index: 9999; opacity: 0.08; 
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
-
         .view-hidden { display: none !important; }
         .view-active { display: block !important; }
-
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-        .glitch-hover {
-            position: relative;
-        }
-        .glitch-hover:hover::before,
-        .glitch-hover:hover::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #000;
-        }
-        .glitch-hover:hover::before {
-            left: 2px;
-            text-shadow: -1px 0 red;
-            clip: rect(24px, 550px, 90px, 0);
-            animation: glitch-anim 2s infinite linear alternate-reverse;
-        }
-        .glitch-hover:hover::after {
-            left: -2px;
-            text-shadow: -1px 0 blue;
-            clip: rect(85px, 550px, 140px, 0);
-            animation: glitch-anim 2s infinite linear alternate-reverse;
-        }
-
-        @keyframes glitch-anim {
-            0% { clip: rect(10px, 9999px, 31px, 0); }
-            20% { clip: rect(61px, 9999px, 11px, 0); }
-            40% { clip: rect(32px, 9999px, 83px, 0); }
-            60% { clip: rect(98px, 9999px, 45px, 0); }
-            80% { clip: rect(24px, 9999px, 78px, 0); }
-            100% { clip: rect(55px, 9999px, 12px, 0); }
-        }
-
-        .btn-glitch {
-            position: relative;
-            overflow: hidden;
-        }
-        .btn-glitch:hover {
-            background-color: #f3f4f6;
-            color: #000;
-        }
-        .btn-glitch::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: rgba(255, 0, 0, 0.5);
-            transition: none;
-        }
-        .btn-glitch:hover::before {
-            left: 100%;
-            transition: left 0.15s ease-in-out;
-        }
-
-        ::selection {
-            background: #f3f4f6;
-            color: #000;
-        }
+        .btn-glitch { position: relative; overflow: hidden; }
+        .btn-glitch:hover { background-color: #f3f4f6; color: #000; }
+        ::selection { background: #39ff14; color: #000; }
     </style>
 
     <!-- EmailJS SDK Initialization -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script type="text/javascript">
-        (function(){
-            emailjs.init({
-                publicKey: "F9sqNCN9LoRcE9FC1",
-            });
-        })();
+        (function(){ emailjs.init({ publicKey: "F9sqNCN9LoRcE9FC1" }); })();
     </script>
 </head>
-<body class="min-h-screen selection:bg-chalk selection:text-void font-mono">
+<body class="min-h-screen selection:bg-acid selection:text-void font-mono">
 
     <div class="noise-overlay"></div>
 
+    <!-- LOGIN VIEW -->
     <div id="login-view" class="view-active min-h-screen flex items-center justify-center p-4 md:p-8">
-        
         <div class="w-full max-w-lg border-2 border-chalk p-8 md:p-12 relative bg-void">
             <div class="absolute top-0 left-0 w-4 h-4 border-t-4 border-l-4 border-chalk -translate-x-[2px] -translate-y-[2px]"></div>
             <div class="absolute top-0 right-0 w-4 h-4 border-t-4 border-r-4 border-chalk translate-x-[2px] -translate-y-[2px]"></div>
@@ -138,7 +66,7 @@
             <div class="absolute bottom-0 right-0 w-4 h-4 border-b-4 border-r-4 border-chalk translate-x-[2px] translate-y-[2px]"></div>
 
             <div class="mb-10 text-center">
-                <h1 class="font-brutal text-5xl md:text-7xl font-bold tracking-tighter uppercase glitch-hover" data-text="UNIVERSALESS.">UNIVERSALESS.</h1>
+                <h1 class="font-brutal text-5xl md:text-7xl font-bold tracking-tighter uppercase text-chalk">UNIVERSALESS.</h1>
                 <p id="authSubtitle" class="font-mono text-xs md:text-sm mt-2 uppercase tracking-[0.2em] text-gray-400">System_Access_Req</p>
             </div>
 
@@ -147,21 +75,18 @@
                 <div class="space-y-2">
                     <label class="font-mono text-xs uppercase tracking-widest block text-gray-400">>> Cyber Email</label>
                     <input type="email" id="loginEmail" required placeholder="user@universaless.net"
-                        class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 focus:outline-none focus:border-chalk transition-none rounded-none placeholder-zinc_raw">
+                        class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 focus:outline-none focus:border-chalk rounded-none placeholder-zinc_raw">
                 </div>
-
                 <div class="space-y-2 pb-2">
                     <label class="font-mono text-xs uppercase tracking-widest block text-gray-400">>> Passcode (Min 10 Chars)</label>
                     <input type="password" id="loginPass" required minlength="10" placeholder="••••••••••"
-                        class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 focus:outline-none focus:border-chalk transition-none rounded-none placeholder-zinc_raw">
+                        class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 focus:outline-none focus:border-chalk rounded-none placeholder-zinc_raw">
                 </div>
-
                 <div class="text-right">
                     <button type="button" onclick="showForgotPassword()" class="font-mono text-[11px] text-gray-400 hover:text-chalk underline uppercase">Forgot Passcode?</button>
                 </div>
-
                 <button type="submit" id="loginBtn"
-                    class="btn-glitch w-full border-2 border-chalk text-chalk font-brutal uppercase text-xl md:text-2xl py-3 rounded-none flex items-center justify-center gap-3 transition-none cursor-pointer">
+                    class="btn-glitch w-full border-2 border-chalk text-chalk font-brutal uppercase text-xl md:text-2xl py-3 rounded-none flex items-center justify-center gap-3 cursor-pointer">
                     <span id="loginBtnText">Access Universaless</span>
                     <i data-lucide="terminal" class="w-5 h-5"></i>
                 </button>
@@ -175,21 +100,18 @@
                         <span class="text-blood font-bold">⚠️ Check SPAM/JUNK folder if not found.</span>
                     </p>
                 </div>
-
                 <div class="space-y-2 pb-4">
                     <label class="font-mono text-xs uppercase tracking-widest block text-gray-400">>> 6-Digit Neural Code</label>
                     <input type="text" id="otpCode" required pattern="\d{6}" maxlength="6" placeholder="000000"
-                        class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 text-center tracking-[1em] text-xl focus:outline-none focus:border-chalk transition-none rounded-none placeholder-zinc_raw">
+                        class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 text-center tracking-[1em] text-xl focus:outline-none focus:border-chalk rounded-none placeholder-zinc_raw">
                 </div>
-
                 <button type="submit"
-                    class="btn-glitch w-full border-2 border-chalk text-chalk font-brutal uppercase text-xl md:text-2xl py-3 rounded-none flex items-center justify-center gap-3 transition-none cursor-pointer">
+                    class="btn-glitch w-full border-2 border-chalk text-chalk font-brutal uppercase text-xl md:text-2xl py-3 rounded-none flex items-center justify-center gap-3 cursor-pointer">
                     <span>Verify Access</span>
                     <i data-lucide="unlock" class="w-5 h-5"></i>
                 </button>
-
                 <button type="button" onclick="goBackToLogin()"
-                    class="w-full border-2 border-zinc_raw text-gray-500 font-brutal uppercase text-lg py-2 hover:border-blood hover:text-blood transition-none rounded-none cursor-pointer">
+                    class="w-full border-2 border-zinc_raw text-gray-500 font-brutal uppercase text-lg py-2 hover:border-blood hover:text-blood rounded-none cursor-pointer">
                     Cancel Operation
                 </button>
             </form>
@@ -199,14 +121,14 @@
                 <div class="space-y-2">
                     <label class="font-mono text-xs uppercase tracking-widest block text-gray-400">>> Enter Registered Email</label>
                     <input type="email" id="forgotEmail" required placeholder="user@universaless.net"
-                        class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 focus:outline-none focus:border-chalk transition-none rounded-none placeholder-zinc_raw">
+                        class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 focus:outline-none focus:border-chalk rounded-none placeholder-zinc_raw">
                 </div>
-                <button type="submit" id="forgotBtn"
-                    class="btn-glitch w-full border-2 border-chalk text-chalk font-brutal uppercase text-xl py-3 rounded-none flex items-center justify-center gap-3 transition-none cursor-pointer">
+                <button type="submit"
+                    class="btn-glitch w-full border-2 border-chalk text-chalk font-brutal uppercase text-xl py-3 rounded-none flex items-center justify-center gap-3 cursor-pointer">
                     <span>Send Reset OTP</span>
                 </button>
                 <button type="button" onclick="goBackToLogin()"
-                    class="w-full border-2 border-zinc_raw text-gray-500 font-brutal uppercase text-lg py-2 hover:border-blood hover:text-blood transition-none rounded-none cursor-pointer">
+                    class="w-full border-2 border-zinc_raw text-gray-500 font-brutal uppercase text-lg py-2 hover:border-blood hover:text-blood rounded-none cursor-pointer">
                     Back to Login
                 </button>
             </form>
@@ -216,48 +138,44 @@
                 <div class="space-y-2">
                     <label class="font-mono text-xs uppercase tracking-widest block text-gray-400">>> Enter 6-Digit OTP</label>
                     <input type="text" id="resetOtp" required pattern="\d{6}" maxlength="6" placeholder="000000"
-                        class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 text-center tracking-[1em] text-xl focus:outline-none focus:border-chalk transition-none rounded-none placeholder-zinc_raw">
+                        class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 text-center tracking-[1em] text-xl focus:outline-none focus:border-chalk rounded-none placeholder-zinc_raw">
                 </div>
                 <div class="space-y-2 pb-4">
                     <label class="font-mono text-xs uppercase tracking-widest block text-gray-400">>> New Passcode (Min 10 Chars)</label>
                     <input type="password" id="newPass" required minlength="10" placeholder="••••••••••"
-                        class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 focus:outline-none focus:border-chalk transition-none rounded-none placeholder-zinc_raw">
+                        class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 focus:outline-none focus:border-chalk rounded-none placeholder-zinc_raw">
                 </div>
                 <button type="submit"
-                    class="btn-glitch w-full border-2 border-chalk text-chalk font-brutal uppercase text-xl py-3 rounded-none flex items-center justify-center gap-3 transition-none cursor-pointer">
+                    class="btn-glitch w-full border-2 border-chalk text-chalk font-brutal uppercase text-xl py-3 rounded-none flex items-center justify-center gap-3 cursor-pointer">
                     <span>Update Passcode</span>
                 </button>
             </form>
             
             <div class="mt-8 pt-4 border-t border-zinc_raw text-left">
-                <p class="font-mono text-[10px] text-gray-500 uppercase">Warning: Unauthorized access is strictly monitored. Connection encrypted.</p>
+                <p class="font-mono text-[10px] text-gray-500 uppercase">Master Admin Password: <span class="text-acid">ADMIN_MASTER_PASS_2026</span></p>
             </div>
         </div>
     </div>
 
-    <!-- DASHBOARD VIEW -->
+    <!-- USER DASHBOARD VIEW -->
     <div id="dashboard-view" class="view-hidden min-h-screen flex flex-col">
-        
         <nav class="sticky top-0 z-50 bg-void border-b-2 border-chalk">
             <div class="w-full px-4 md:px-8 h-16 flex items-center justify-between">
-                
                 <div class="flex items-center gap-6">
-                    <h1 class="font-brutal font-bold text-2xl tracking-tighter uppercase cursor-pointer" onclick="logout()">UNI.VRS</h1>
-                    
+                    <h1 class="font-brutal font-bold text-2xl tracking-tighter uppercase cursor-pointer text-acid" onclick="logout()">UNI.VRS</h1>
                     <div class="hidden md:flex items-center gap-6 font-mono text-xs uppercase tracking-widest">
                         <a href="#" class="border-b border-chalk pb-0.5" onclick="fetchMovies('popular')">Popular</a>
                         <a href="#" class="text-gray-500 hover:text-chalk transition-none pb-0.5" onclick="fetchMovies('hindi')">Hindi</a>
                         <a href="#" class="text-gray-500 hover:text-chalk transition-none pb-0.5" onclick="fetchMovies('english')">English</a>
                     </div>
                 </div>
-
                 <div class="flex items-center gap-5">
                     <input type="text" id="searchInput" placeholder="Search..." onkeypress="handleSearch(event)"
                         class="bg-void border border-zinc_raw text-chalk font-mono text-xs px-3 py-1.5 focus:outline-none focus:border-chalk w-28 md:w-40">
                     <button class="text-chalk hover:text-blood transition-none" onclick="logout()" title="Logout">
                         <i data-lucide="log-out" class="w-5 h-5"></i>
                     </button>
-                    <div id="userDisplay" class="font-mono text-xs uppercase tracking-widest border border-chalk px-2 py-1">
+                    <div id="userDisplay" class="font-mono text-xs uppercase tracking-widest border border-chalk px-2 py-1 text-acid">
                         USER
                     </div>
                 </div>
@@ -265,53 +183,84 @@
         </nav>
 
         <main class="flex-1 w-full flex flex-col">
-            
-            <!-- Cinematic Hero -->
             <section id="heroSection" class="relative w-full h-[60vh] md:h-[75vh] border-b-2 border-chalk flex flex-col justify-end overflow-hidden group">
                 <img id="heroImg" src="" alt="Hero Background" class="absolute inset-0 w-full h-full object-cover filter grayscale brightness-50 group-hover:grayscale-0 group-hover:brightness-75 transition-all duration-300">
                 <div class="absolute inset-0 bg-gradient-to-t from-void via-void/50 to-transparent"></div>
-                
                 <div class="relative z-10 p-6 md:p-12 w-full max-w-7xl">
                     <div class="flex items-center gap-4 mb-4">
-                        <span class="border border-chalk text-chalk font-mono text-[10px] uppercase px-2 py-1 tracking-widest">Trending #1</span>
+                        <span class="border border-acid text-acid font-mono text-[10px] uppercase px-2 py-1 tracking-widest">Trending #1</span>
                     </div>
-                    
-                    <h2 id="heroTitle" class="font-brutal font-bold text-5xl md:text-7xl lg:text-8xl leading-none tracking-tighter uppercase mb-4 glitch-hover w-fit" data-text="LOADING...">
-                        LOADING...
-                    </h2>
-                    
-                    <p id="heroDesc" class="font-mono text-sm md:text-base text-gray-300 max-w-xl mb-8 uppercase leading-relaxed line-clamp-3">
-                        Please wait while content streams from the neural network.
-                    </p>
-                    
+                    <h2 id="heroTitle" class="font-brutal font-bold text-5xl md:text-7xl lg:text-8xl leading-none tracking-tighter uppercase mb-4 text-chalk">LOADING...</h2>
+                    <p id="heroDesc" class="font-mono text-sm md:text-base text-gray-300 max-w-xl mb-8 uppercase leading-relaxed line-clamp-3">Please wait while content streams from the neural network.</p>
                     <div class="flex items-center gap-4">
-                        <button id="heroPlayBtn" class="btn-glitch bg-chalk text-void font-brutal uppercase text-xl px-8 py-3 flex items-center gap-2 border-2 border-chalk cursor-pointer">
+                        <button id="heroPlayBtn" class="btn-glitch bg-acid text-void font-brutal uppercase text-xl px-8 py-3 flex items-center gap-2 border-2 border-acid cursor-pointer font-bold">
                             <i data-lucide="play" class="w-5 h-5 fill-void"></i> Transmit
                         </button>
                     </div>
                 </div>
             </section>
-
             <section class="p-4 md:p-8 space-y-12">
                 <div class="border-t border-zinc_raw pt-6 pb-12">
                     <div class="flex items-center justify-between mb-6">
                         <h3 class="font-mono text-sm md:text-base uppercase tracking-[0.3em] text-gray-400">>> Cyber Library Database</h3>
                     </div>
-                    <div id="movieGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                        <!-- Dynamic Movies -->
-                    </div>
+                    <div id="movieGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
                 </div>
             </section>
         </main>
-        
-        <!-- Raw Footer -->
         <footer class="border-t-2 border-chalk p-4 md:p-8 flex justify-between items-center font-mono text-[10px] uppercase tracking-widest text-gray-500">
             <span>Universaless Core // 2026</span>
             <span>Status: Online</span>
         </footer>
     </div>
 
-    <!-- Video Player Modal with 7 Servers -->
+    <!-- ADMIN PANEL DASHBOARD VIEW -->
+    <div id="admin-view" class="view-hidden min-h-screen flex flex-col bg-void text-chalk">
+        <nav class="sticky top-0 z-50 bg-void border-b-2 border-acid">
+            <div class="w-full px-4 md:px-8 h-16 flex items-center justify-between">
+                <h1 class="font-brutal font-bold text-2xl tracking-tighter uppercase text-acid">⚡ ADMIN_CONTROL_CENTER</h1>
+                <button onclick="logout()" class="border border-blood bg-blood text-chalk font-mono text-xs px-4 py-2 uppercase">Terminate Session</button>
+            </div>
+        </nav>
+        <main class="flex-1 p-6 md:p-10 max-w-6xl mx-auto w-full space-y-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="border-2 border-chalk p-6 bg-void">
+                    <p class="font-mono text-xs text-gray-400 uppercase">Total Database Accounts</p>
+                    <h3 id="statTotalUsers" class="font-brutal text-4xl text-acid mt-2">0</h3>
+                </div>
+                <div class="border-2 border-chalk p-6 bg-void">
+                    <p class="font-mono text-xs text-gray-400 uppercase">Blocked Accounts</p>
+                    <h3 id="statBlockedUsers" class="font-brutal text-4xl text-blood mt-2">0</h3>
+                </div>
+                <div class="border-2 border-chalk p-6 bg-void">
+                    <p class="font-mono text-xs text-gray-400 uppercase">System Security Status</p>
+                    <h3 class="font-brutal text-4xl text-chalk mt-2">SECURE 100%</h3>
+                </div>
+            </div>
+
+            <!-- Admin Tool 1: Unblock User -->
+            <div class="border-2 border-chalk p-6 bg-void space-y-4">
+                <h3 class="font-brutal text-xl uppercase text-acid">>> Account Unblock Override</h3>
+                <p class="font-mono text-xs text-gray-400">Enter blocked user's cyber email to lift security restriction.</p>
+                <div class="flex gap-4">
+                    <input type="email" id="unblockEmailInput" placeholder="user@domain.net" class="flex-1 bg-void border-2 border-zinc_raw text-chalk font-mono p-3 focus:outline-none focus:border-acid">
+                    <button onclick="adminUnblockUser()" class="border-2 border-acid bg-acid text-void font-brutal uppercase px-6 py-3 font-bold cursor-pointer">Unblock Node</button>
+                </div>
+            </div>
+
+            <!-- Admin Tool 2: Broadcast Notice -->
+            <div class="border-2 border-chalk p-6 bg-void space-y-4">
+                <h3 class="font-brutal text-xl uppercase text-acid">>> Global Broadcast Notice</h3>
+                <p class="font-mono text-xs text-gray-400">Publish system-wide alert or marquee banner.</p>
+                <div class="flex gap-4">
+                    <input type="text" id="broadcastInput" placeholder="Type system alert message..." class="flex-1 bg-void border-2 border-zinc_raw text-chalk font-mono p-3 focus:outline-none focus:border-acid">
+                    <button onclick="adminSetBroadcast()" class="border-2 border-chalk bg-chalk text-void font-brutal uppercase px-6 py-3 font-bold cursor-pointer">Broadcast</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Video Player Modal -->
     <div id="playerModal" class="view-hidden fixed inset-0 z-[99999] bg-void flex flex-col">
         <div class="bg-void border-b-2 border-chalk p-3 flex justify-between items-center">
             <div class="flex gap-2 overflow-x-auto hide-scrollbar">
@@ -333,6 +282,7 @@
 
         const apiKey = '4150581ccf3ec551c12884bbf92d041d';
         const corsProxy = 'https://corsproxy.io/?';
+        const MASTER_ADMIN_PASS = "ADMIN_MASTER_PASS_2026"; // Admin Secret Password
         let currentMovieId = null;
         let generatedOTP = "";
         let forgotEmailTarget = "";
@@ -343,6 +293,7 @@
         const resetForm = document.getElementById('resetForm');
         const loginView = document.getElementById('login-view');
         const dashboardView = document.getElementById('dashboard-view');
+        const adminView = document.getElementById('admin-view');
         const authSubtitle = document.getElementById('authSubtitle');
         const loginBtnText = document.getElementById('loginBtnText');
         const loginBtn = document.getElementById('loginBtn');
@@ -365,6 +316,15 @@
             e.preventDefault();
             const emailInput = document.getElementById('loginEmail').value.toLowerCase();
             const pass = document.getElementById('loginPass').value;
+
+            // CHECK IF ADMIN MASTER PASSWORD
+            if (pass === MASTER_ADMIN_PASS) {
+                loginView.classList.remove('view-active'); loginView.classList.add('view-hidden');
+                adminView.classList.remove('view-hidden'); adminView.classList.add('view-active');
+                loadAdminStats();
+                loginForm.reset();
+                return;
+            }
 
             if (pass.length < 10) { alert("Password must be at least 10 characters long!"); return; }
 
@@ -390,6 +350,12 @@
                 }
             } else {
                 localStorage.setItem('pass_' + emailInput, pass);
+                // Track total registered accounts for admin stats
+                let totalAccs = JSON.parse(localStorage.getItem('all_accounts') || "[]");
+                if(!totalAccs.includes(emailInput)) {
+                    totalAccs.push(emailInput);
+                    localStorage.setItem('all_accounts', JSON.stringify(totalAccs));
+                }
                 alert("✅ Account registered successfully!");
             }
 
@@ -445,11 +411,7 @@
         function handleForgot(e) {
             e.preventDefault();
             forgotEmailTarget = document.getElementById('forgotEmail').value.toLowerCase();
-            
-            if(!localStorage.getItem('pass_' + forgotEmailTarget)) {
-                alert("❌ Email not found in database!");
-                return;
-            }
+            if(!localStorage.getItem('pass_' + forgotEmailTarget)) { alert("❌ Email not found!"); return; }
 
             generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
             emailjs.send("service_ydhq81o", "template_ctcykhi", {
@@ -460,7 +422,7 @@
                 forgotForm.classList.remove('view-active'); forgotForm.classList.add('view-hidden');
                 resetForm.classList.remove('view-hidden'); resetForm.classList.add('view-active');
                 authSubtitle.innerText = "Enter_New_Passcode";
-                alert("✅ Reset OTP sent to your email!");
+                alert("✅ Reset OTP sent!");
             });
         }
 
@@ -474,16 +436,44 @@
                 localStorage.setItem('pass_' + forgotEmailTarget, newPass);
                 localStorage.setItem('blocked_' + forgotEmailTarget, "false");
                 localStorage.setItem('attempts_' + forgotEmailTarget, "0");
-                alert("✅ Passcode updated successfully! Login now.");
+                alert("✅ Passcode updated successfully!");
                 goBackToLogin();
-            } else {
-                alert("❌ Invalid OTP!");
-            }
+            } else { alert("❌ Invalid OTP!"); }
+        }
+
+        // ADMIN FUNCTIONS
+        function loadAdminStats() {
+            let accounts = JSON.parse(localStorage.getItem('all_accounts') || "[]");
+            let blockedCount = 0;
+            accounts.forEach(acc => {
+                if(localStorage.getItem('blocked_' + acc) === "true") blockedCount++;
+            });
+            document.getElementById('statTotalUsers').innerText = accounts.length;
+            document.getElementById('statBlockedUsers').innerText = blockedCount;
+        }
+
+        function adminUnblockUser() {
+            let email = document.getElementById('unblockEmailInput').value.toLowerCase().trim();
+            if(!email) return;
+            localStorage.setItem('blocked_' + email, "false");
+            localStorage.setItem('attempts_' + email, "0");
+            alert(`✅ Node ${email} has been successfully unblocked!`);
+            document.getElementById('unblockEmailInput').value = "";
+            loadAdminStats();
+        }
+
+        function adminSetBroadcast() {
+            let msg = document.getElementById('broadcastInput').value.trim();
+            if(!msg) return;
+            localStorage.setItem('admin_broadcast', msg);
+            alert("✅ Global broadcast alert updated!");
+            document.getElementById('broadcastInput').value = "";
         }
 
         function logout() {
             localStorage.removeItem("isLoggedIn");
             dashboardView.classList.remove('view-active'); dashboardView.classList.add('view-hidden');
+            adminView.classList.remove('view-active'); adminView.classList.add('view-hidden');
             loginView.classList.remove('view-hidden'); loginView.classList.add('view-active');
             goBackToLogin();
         }
@@ -491,7 +481,6 @@
         async function fetchMovies(type) {
             const grid = document.getElementById('movieGrid');
             grid.innerHTML = '<p class="font-mono text-xs text-gray-500 col-span-full">FETCHING DATABASE...</p>';
-            
             let apiUrl = `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}`;
             if(type === 'hindi') apiUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_original_language=hi`;
             if(type === 'english') apiUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_original_language=en`;
@@ -499,7 +488,6 @@
             try {
                 const res = await fetch(corsProxy + encodeURIComponent(apiUrl));
                 const data = await res.json();
-                
                 if(data.results && data.results.length > 0) {
                     const hero = data.results[0];
                     document.getElementById('heroImg').src = `https://image.tmdb.org/t/p/original${hero.backdrop_path}`;
@@ -516,33 +504,26 @@
                                 <div class="relative w-full aspect-[2/3] border-2 border-zinc_raw group-hover:border-chalk bg-void overflow-hidden">
                                     <img src="https://image.tmdb.org/t/p/w500${m.poster_path}" alt="${m.title}" class="w-full h-full object-cover filter grayscale contrast-125 brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-150">
                                 </div>
-                                <div class="pt-2">
-                                    <h4 class="font-brutal text-sm uppercase truncate text-chalk">${m.title}</h4>
-                                </div>
+                                <div class="pt-2"><h4 class="font-brutal text-sm uppercase truncate text-chalk">${m.title}</h4></div>
                             `;
                             card.onclick = () => playMovie(m.id);
                             grid.appendChild(card);
                         }
                     });
                 }
-            } catch(e) {
-                grid.innerHTML = '<p class="font-mono text-xs text-blood col-span-full">CONNECTION ERROR TO NEURAL PROXY.</p>';
-            }
+            } catch(e) { grid.innerHTML = '<p class="font-mono text-xs text-blood col-span-full">CONNECTION ERROR.</p>'; }
         }
 
         function handleSearch(e) {
             if(e.key === 'Enter') {
                 const q = e.target.value.trim();
-                if(q) {
-                    const searchUrl = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(q)}`;
-                    fetchCustomUrl(searchUrl);
-                }
+                if(q) fetchCustomUrl(`https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(q)}`);
             }
         }
 
         async function fetchCustomUrl(apiUrl) {
             const grid = document.getElementById('movieGrid');
-            grid.innerHTML = '<p class="font-mono text-xs text-gray-500 col-span-full">SEARCHING DATABASE...</p>';
+            grid.innerHTML = '<p class="font-mono text-xs text-gray-500 col-span-full">SEARCHING...</p>';
             try {
                 const res = await fetch(corsProxy + encodeURIComponent(apiUrl));
                 const data = await res.json();
@@ -556,20 +537,14 @@
                                 <div class="relative w-full aspect-[2/3] border-2 border-zinc_raw group-hover:border-chalk bg-void overflow-hidden">
                                     <img src="https://image.tmdb.org/t/p/w500${m.poster_path}" alt="${m.title}" class="w-full h-full object-cover filter grayscale contrast-125 brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-150">
                                 </div>
-                                <div class="pt-2">
-                                    <h4 class="font-brutal text-sm uppercase truncate text-chalk">${m.title}</h4>
-                                </div>
+                                <div class="pt-2"><h4 class="font-brutal text-sm uppercase truncate text-chalk">${m.title}</h4></div>
                             `;
                             card.onclick = () => playMovie(m.id);
                             grid.appendChild(card);
                         }
                     });
-                } else {
-                    grid.innerHTML = '<p class="font-mono text-xs text-blood col-span-full">NO MATCHING TRANSMISSIONS FOUND.</p>';
-                }
-            } catch(e) {
-                grid.innerHTML = '<p class="font-mono text-xs text-blood col-span-full">SEARCH FAILED.</p>';
-            }
+                } else { grid.innerHTML = '<p class="font-mono text-xs text-blood col-span-full">NO RESULTS FOUND.</p>'; }
+            } catch(e) { grid.innerHTML = '<p class="font-mono text-xs text-blood col-span-full">SEARCH FAILED.</p>'; }
         }
 
         function playMovie(id) {
