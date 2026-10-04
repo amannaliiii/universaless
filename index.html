@@ -265,7 +265,6 @@
                 </div>
             </div>
 
-            <!-- ADMIN TOOL: REGISTERED USERS GMAIL LIST (Privacy Protected) -->
             <div class="border-2 border-chalk p-6 bg-void space-y-4">
                 <h3 class="font-brutal text-xl uppercase text-acid">>> Registered User Nodes (Gmail List)</h3>
                 <div class="overflow-x-auto border border-zinc_raw">
@@ -282,7 +281,6 @@
                 </div>
             </div>
 
-            <!-- ADMIN TOOL: MAINTENANCE NOTICE BANNER -->
             <div class="border-2 border-acid p-6 bg-void space-y-4">
                 <h3 class="font-brutal text-xl uppercase text-acid">>> Maintenance & Update Notice Control</h3>
                 <div class="space-y-3">
@@ -294,7 +292,6 @@
                 </div>
             </div>
 
-            <!-- ADMIN TOOL: UNBLOCK USER -->
             <div class="border-2 border-chalk p-6 bg-void space-y-4">
                 <h3 class="font-brutal text-xl uppercase text-acid">>> Account Unblock Override</h3>
                 <div class="flex gap-4">
@@ -333,7 +330,7 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             let notice = localStorage.getItem('site_maintenance_msg');
-            let isActive = localStorage.getItem('site_maintenance_active'] === 'true';
+            let isActive = localStorage.getItem('site_maintenance_active') === 'true';
             if(isActive && notice) {
                 document.getElementById('announcementText').innerText = notice;
                 document.getElementById('globalAnnouncementBanner').classList.remove('hidden');
@@ -553,7 +550,6 @@
             goBackToLogin();
         }
 
-        // Fetch and load separate sections for Popular, Hindi, and English simultaneously
         async function fetchAllCategories() {
             await loadCategoryMovies('popular', 'popularGrid', true);
             await loadCategoryMovies('hindi', 'hindiGrid', false);
