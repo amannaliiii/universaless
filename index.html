@@ -165,9 +165,9 @@
                 <div class="flex items-center gap-6">
                     <h1 class="font-brutal font-bold text-2xl tracking-tighter uppercase cursor-pointer text-acid" onclick="logout()">UNI.VRS</h1>
                     <div class="hidden md:flex items-center gap-6 font-mono text-xs uppercase tracking-widest">
-                        <a href="#" class="border-b border-chalk pb-0.5" onclick="fetchMovies('popular')">Popular</a>
-                        <a href="#" class="text-gray-500 hover:text-chalk transition-none pb-0.5" onclick="fetchMovies('hindi')">Hindi</a>
-                        <a href="#" class="text-gray-500 hover:text-chalk transition-none pb-0.5" onclick="fetchMovies('english')">English</a>
+                        <a href="#popularSection" class="border-b border-chalk pb-0.5">Popular</a>
+                        <a href="#hindiSection" class="text-gray-500 hover:text-chalk transition-none pb-0.5">Hindi</a>
+                        <a href="#englishSection" class="text-gray-500 hover:text-chalk transition-none pb-0.5">English</a>
                     </div>
                 </div>
                 <div class="flex items-center gap-5">
@@ -200,15 +200,41 @@
                     </div>
                 </div>
             </section>
-            <section class="p-4 md:p-8 space-y-12">
-                <div class="border-t border-zinc_raw pt-6 pb-12">
-                    <div class="flex items-center justify-between mb-6">
-                        <h3 class="font-mono text-sm md:text-base uppercase tracking-[0.3em] text-gray-400">>> Cyber Library Database</h3>
+
+            <!-- SEPARATE SECTIONS FOR POPULAR, HINDI, AND ENGLISH -->
+            <section class="p-4 md:p-8 space-y-16">
+                <!-- Popular Section -->
+                <div id="popularSection" class="pt-6">
+                    <div class="flex items-center justify-between mb-6 border-b border-zinc_raw pb-2">
+                        <h3 class="font-mono text-sm md:text-base uppercase tracking-[0.3em] text-acid">> Popular Database Streams</h3>
                     </div>
-                    <div id="movieGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
+                    <div id="popularGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                        <p class="font-mono text-xs text-gray-500 col-span-full">LOADING POPULAR...</p>
+                    </div>
+                </div>
+
+                <!-- Hindi Section -->
+                <div id="hindiSection" class="pt-6">
+                    <div class="flex items-center justify-between mb-6 border-b border-zinc_raw pb-2">
+                        <h3 class="font-mono text-sm md:text-base uppercase tracking-[0.3em] text-acid">> Hindi Cinematic Feeds</h3>
+                    </div>
+                    <div id="hindiGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                        <p class="font-mono text-xs text-gray-500 col-span-full">LOADING HINDI...</p>
+                    </div>
+                </div>
+
+                <!-- English Section -->
+                <div id="englishSection" class="pt-6">
+                    <div class="flex items-center justify-between mb-6 border-b border-zinc_raw pb-2">
+                        <h3 class="font-mono text-sm md:text-base uppercase tracking-[0.3em] text-acid">> English Global Nodes</h3>
+                    </div>
+                    <div id="englishGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                        <p class="font-mono text-xs text-gray-500 col-span-full">LOADING ENGLISH...</p>
+                    </div>
                 </div>
             </section>
         </main>
+        
         <footer class="border-t-2 border-chalk p-4 md:p-8 flex justify-between items-center font-mono text-[10px] uppercase tracking-widest text-gray-500">
             <span>Universaless Core // Built by Adnan Ali</span>
             <span>Status: Online</span>
@@ -242,7 +268,6 @@
             <!-- ADMIN TOOL: REGISTERED USERS GMAIL LIST (Privacy Protected) -->
             <div class="border-2 border-chalk p-6 bg-void space-y-4">
                 <h3 class="font-brutal text-xl uppercase text-acid">>> Registered User Nodes (Gmail List)</h3>
-                <p class="font-mono text-xs text-gray-400">List of all emails/gmails that have logged into the platform (Passwords are fully secure and hidden).</p>
                 <div class="overflow-x-auto border border-zinc_raw">
                     <table class="w-full text-left font-mono text-xs">
                         <thead class="bg-zinc_raw text-chalk uppercase">
@@ -260,7 +285,6 @@
             <!-- ADMIN TOOL: MAINTENANCE NOTICE BANNER -->
             <div class="border-2 border-acid p-6 bg-void space-y-4">
                 <h3 class="font-brutal text-xl uppercase text-acid">>> Maintenance & Update Notice Control</h3>
-                <p class="font-mono text-xs text-gray-400">Set notice for users (e.g., "Website is down for maintenance, back in 4 hours" or "New project coming soon!").</p>
                 <div class="space-y-3">
                     <input type="text" id="maintenanceInput" placeholder="e.g. SYSTEM UPDATE: Website back online in 3 hours!" class="w-full bg-void border-2 border-zinc_raw text-chalk font-mono p-3 focus:outline-none focus:border-acid">
                     <div class="flex gap-4">
@@ -309,7 +333,7 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             let notice = localStorage.getItem('site_maintenance_msg');
-            let isActive = localStorage.getItem('site_maintenance_active') === 'true';
+            let isActive = localStorage.getItem('site_maintenance_active'] === 'true';
             if(isActive && notice) {
                 document.getElementById('announcementText').innerText = notice;
                 document.getElementById('globalAnnouncementBanner').classList.remove('hidden');
@@ -428,7 +452,7 @@
                 loginView.classList.remove('view-active'); loginView.classList.add('view-hidden');
                 dashboardView.classList.remove('view-hidden'); dashboardView.classList.add('view-active');
                 window.scrollTo(0, 0); 
-                fetchMovies('popular');
+                fetchAllCategories();
                 loginForm.reset(); twoFactorForm.reset(); goBackToLogin(); 
             } else {
                 alert("❌ Invalid Verification Code!");
@@ -529,11 +553,15 @@
             goBackToLogin();
         }
 
-        // Bulletproof Fetch: Tries proxy first, instantly falls back to embedded safe movies if blocked
-        async function fetchMovies(type) {
-            const grid = document.getElementById('movieGrid');
-            grid.innerHTML = '<p class="font-mono text-xs text-gray-500 col-span-full">FETCHING DATABASE...</p>';
-            
+        // Fetch and load separate sections for Popular, Hindi, and English simultaneously
+        async function fetchAllCategories() {
+            await loadCategoryMovies('popular', 'popularGrid', true);
+            await loadCategoryMovies('hindi', 'hindiGrid', false);
+            await loadCategoryMovies('english', 'englishGrid', false);
+        }
+
+        async function loadCategoryMovies(type, gridId, isHero) {
+            const grid = document.getElementById(gridId);
             let apiUrl = `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}`;
             if(type === 'hindi') apiUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_original_language=hi`;
             if(type === 'english') apiUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_original_language=en`;
@@ -546,49 +574,60 @@
                 const data = JSON.parse(wrapper.contents);
                 
                 if(data.results && data.results.length > 0) {
-                    renderMovieResults(data.results);
+                    if(isHero) {
+                        const hero = data.results[0];
+                        document.getElementById('heroImg').src = `https://image.tmdb.org/t/p/original${hero.backdrop_path}`;
+                        document.getElementById('heroTitle').innerText = hero.title;
+                        document.getElementById('heroDesc').innerText = hero.overview;
+                        document.getElementById('heroPlayBtn').onclick = () => playMovie(hero.id);
+                    }
+
+                    grid.innerHTML = '';
+                    data.results.forEach(m => {
+                        if(m.poster_path) {
+                            const card = document.createElement('div');
+                            card.className = "group cursor-pointer flex flex-col";
+                            card.innerHTML = `
+                                <div class="relative w-full aspect-[2/3] border-2 border-zinc_raw group-hover:border-chalk bg-void overflow-hidden">
+                                    <img src="https://image.tmdb.org/t/p/w500${m.poster_path}" alt="${m.title}" class="w-full h-full object-cover filter grayscale contrast-125 brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-150">
+                                </div>
+                                <div class="pt-2"><h4 class="font-brutal text-sm uppercase truncate text-chalk">${m.title}</h4></div>
+                            `;
+                            card.onclick = () => playMovie(m.id);
+                            grid.appendChild(card);
+                        }
+                    });
                 } else {
-                    loadFallbackDatabase();
+                    loadFallbackCategory(gridId);
                 }
-            } catch(e) { 
-                loadFallbackDatabase(); 
+            } catch(e) {
+                loadFallbackCategory(gridId);
             }
         }
 
-        function loadFallbackDatabase() {
+        function loadFallbackCategory(gridId) {
             const fallbackMovies = [
-                { id: 550, title: "Fight Club", backdrop_path: "/hZkgoQYus5vegHoetLkCJzb17zJ.jpg", poster_path: "/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg", overview: "A ticking-time-bomb insomniac and a slippery soap salesman channel primal male aggression into a shocking new form of therapy." },
-                { id: 27205, title: "Inception", backdrop_path: "/s3TBrRGB1ij7gFOCJcCfJLZADvT.jpg", poster_path: "/edv5CZvWj09upOsy2Y6IwDhK8bt.jpg", overview: "Cobb, a skilled thief who commits corporate espionage by infiltrating the subconscious of his targets, is offered a chance to regain his old life." },
-                { id: 157336, title: "Interstellar", backdrop_path: "/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg", poster_path: "/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg", overview: "When Earth becomes uninhabitable in the future, a farmer and ex-NASA pilot, Joseph Cooper, is tasked to pilot a spacecraft, along with a team of researchers." },
-                { id: 680, title: "Pulp Fiction", backdrop_path: "/suaEOtk1N1sgg2MTM7oZd2cfVp3.jpg", poster_path: "/d5iIlFn5s0ImszYzBPb8JPIfbXD.jpg", overview: "The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption." },
-                { id: 13, title: "Forrest Gump", backdrop_path: "/qdIMHd4sEfJSckdVJfKQvisL02V.jpg", poster_path: "/arw2vcBveWOVZr6pxd9XTd1TdQa.jpg", overview: "The presidencies of Kennedy and Johnson, the Vietnam War, the Watergate scandal and other historical events unfold from the perspective of an Alabama man." },
-                { id: 238, title: "The Godfather", backdrop_path: "/tmU7GeKVybMWFButWEGl2M4GeiP.jpg", poster_path: "/3bhkrj58Vtu7enYsRolD1fZdja1.jpg", overview: "The aging patriarch of an organized crime dynasty in postwar New York City transfers control of his clandestine empire to his reluctant youngest son." }
+                { id: 550, title: "Fight Club", poster_path: "/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg" },
+                { id: 27205, title: "Inception", poster_path: "/edv5CZvWj09upOsy2Y6IwDhK8bt.jpg" },
+                { id: 157336, title: "Interstellar", poster_path: "/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg" },
+                { id: 680, title: "Pulp Fiction", poster_path: "/d5iIlFn5s0ImszYzBPb8JPIfbXD.jpg" },
+                { id: 13, title: "Forrest Gump", poster_path: "/arw2vcBveWOVZr6pxd9XTd1TdQa.jpg" },
+                { id: 238, title: "The Godfather", poster_path: "/3bhkrj58Vtu7enYsRolD1fZdja1.jpg" }
             ];
-            renderMovieResults(fallbackMovies);
-        }
 
-        function renderMovieResults(results) {
-            const grid = document.getElementById('movieGrid');
-            const hero = results[0];
-            document.getElementById('heroImg').src = `https://image.tmdb.org/t/p/original${hero.backdrop_path}`;
-            document.getElementById('heroTitle').innerText = hero.title;
-            document.getElementById('heroDesc').innerText = hero.overview;
-            document.getElementById('heroPlayBtn').onclick = () => playMovie(hero.id);
-
+            const grid = document.getElementById(gridId);
             grid.innerHTML = '';
-            results.forEach(m => {
-                if(m.poster_path) {
-                    const card = document.createElement('div');
-                    card.className = "group cursor-pointer flex flex-col";
-                    card.innerHTML = `
-                        <div class="relative w-full aspect-[2/3] border-2 border-zinc_raw group-hover:border-chalk bg-void overflow-hidden">
-                            <img src="https://image.tmdb.org/t/p/w500${m.poster_path}" alt="${m.title}" class="w-full h-full object-cover filter grayscale contrast-125 brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-150">
-                        </div>
-                        <div class="pt-2"><h4 class="font-brutal text-sm uppercase truncate text-chalk">${m.title}</h4></div>
-                    `;
-                    card.onclick = () => playMovie(m.id);
-                    grid.appendChild(card);
-                }
+            fallbackMovies.forEach(m => {
+                const card = document.createElement('div');
+                card.className = "group cursor-pointer flex flex-col";
+                card.innerHTML = `
+                    <div class="relative w-full aspect-[2/3] border-2 border-zinc_raw group-hover:border-chalk bg-void overflow-hidden">
+                        <img src="https://image.tmdb.org/t/p/w500${m.poster_path}" alt="${m.title}" class="w-full h-full object-cover filter grayscale contrast-125 brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-150">
+                    </div>
+                    <div class="pt-2"><h4 class="font-brutal text-sm uppercase truncate text-chalk">${m.title}</h4></div>
+                `;
+                card.onclick = () => playMovie(m.id);
+                grid.appendChild(card);
             });
         }
 
@@ -597,13 +636,13 @@
                 const q = e.target.value.trim();
                 if(q) {
                     const searchUrl = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(q)}`;
-                    fetchCustomUrl(searchUrl);
+                    fetchCustomSearch(searchUrl);
                 }
             }
         }
 
-        async function fetchCustomUrl(apiUrl) {
-            const grid = document.getElementById('movieGrid');
+        async function fetchCustomSearch(apiUrl) {
+            const grid = document.getElementById('popularGrid');
             grid.innerHTML = '<p class="font-mono text-xs text-gray-500 col-span-full">SEARCHING DATABASE...</p>';
             const proxyURL = `https://api.allorigins.win/get?url=${encodeURIComponent(apiUrl)}`;
             try {
@@ -611,13 +650,23 @@
                 const wrapper = await res.json();
                 const data = JSON.parse(wrapper.contents);
                 if(data.results && data.results.length > 0) {
-                    renderMovieResults(data.results);
-                } else { 
-                    grid.innerHTML = '<p class="font-mono text-xs text-blood col-span-full">NO MATCHING TRANSMISSIONS FOUND.</p>'; 
-                }
-            } catch(e) { 
-                loadFallbackDatabase(); 
-            }
+                    grid.innerHTML = '';
+                    data.results.forEach(m => {
+                        if(m.poster_path) {
+                            const card = document.createElement('div');
+                            card.className = "group cursor-pointer flex flex-col";
+                            card.innerHTML = `
+                                <div class="relative w-full aspect-[2/3] border-2 border-zinc_raw group-hover:border-chalk bg-void overflow-hidden">
+                                    <img src="https://image.tmdb.org/t/p/w500${m.poster_path}" alt="${m.title}" class="w-full h-full object-cover filter grayscale contrast-125 brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-150">
+                                </div>
+                                <div class="pt-2"><h4 class="font-brutal text-sm uppercase truncate text-chalk">${m.title}</h4></div>
+                            `;
+                            card.onclick = () => playMovie(m.id);
+                            grid.appendChild(card);
+                        }
+                    });
+                } else { grid.innerHTML = '<p class="font-mono text-xs text-blood col-span-full">NO MATCHING TRANSMISSIONS FOUND.</p>'; }
+            } catch(e) { grid.innerHTML = '<p class="font-mono text-xs text-blood col-span-full">SEARCH FAILED.</p>'; }
         }
 
         function playMovie(id) {
